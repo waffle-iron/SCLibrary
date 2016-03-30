@@ -10,6 +10,18 @@ router.get('/', function(req, res, next) {
 
 /* GET home page. */
 router.get('/home/', function(req, res, next) {
+
+  var code = req.query.code;
+
+  req.SC.authorize(code, function(err, accessToken) {
+    if ( err ) {
+      throw err;
+    } else {
+      // Client is now authorized and able to make API calls
+      console.log('access token:', accessToken);
+    }
+  });
+  
   res.render('home');
 });
 
