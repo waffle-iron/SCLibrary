@@ -15,6 +15,10 @@ SC.init({
   uri: 'http://sc-library.herokuapp.com/home'
 });
 
+// Database
+var neo4j = require('neo4j');
+var db = new neo4j.GraphDatabase('http://neo4j:zomboy69@localhost:7474');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -37,13 +41,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Make our db and SC object accessible to our router
 app.use(function(req,res,next){
-    //req.db = db;
+    req.db = db;
     req.SC = SC;
     next();
 });
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
