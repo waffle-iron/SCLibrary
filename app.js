@@ -4,6 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var SC = require('node-soundcloud');
+
+// Initialize client
+SC.init({
+  id: 'b784f5490df1c16b90fe1fc07d5b619d',
+  secret: '5fd44b5e8554a0b22f0355f088033052',
+  uri: 'http://sc-library.herokuapp.com/home'
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -21,6 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 app.use('/', routes);
 app.use('/users', users);
