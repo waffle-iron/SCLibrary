@@ -18,7 +18,7 @@ router.get('/home/', function(req, res, next) {
       throw err;
     } else {
       // Client is now authorized and able to make API calls
-  	  res.render('home', { token: accessToken };
+  	  res.render('home', { token: accessToken });
     }
   });
 
