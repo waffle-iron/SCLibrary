@@ -5,6 +5,10 @@ if(environment === 'prod'){
     config = require('./config/prod.js');
 }else if(environment === 'dev'){
     config = require('./config/dev.js');
+}else if(environment === 'heroku'){
+    config = require('./config/heroku.js');
+}else if(environment === 'local'){
+    config = require('./config/local.js');
 }
 
 module.exports = config;
