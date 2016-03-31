@@ -1,4 +1,4 @@
-process.env.ENV = "dev";
+process.env.ENV = "local";
 
 var express = require('express');
 var path = require('path');
@@ -7,12 +7,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SC = require('node-soundcloud');
+var config = require('./config.js');
 
 // Initialize client
 SC.init({
-  id: 'b784f5490df1c16b90fe1fc07d5b619d',
-  secret: '5fd44b5e8554a0b22f0355f088033052',
-  uri: 'http://sc-library.herokuapp.com/home'
+  id: config.auth.client_id,
+  secret: config.auth.client_secret,
+  uri: config.auth.redirect_uri
 });
 
 // Database
