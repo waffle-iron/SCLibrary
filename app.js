@@ -7,10 +7,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SC = require('node-soundcloud');
+var session = require('express-session');
 var config = require('./config.js');
-
-var passport = require('passport');
-var SoundCloudStrategy = require('passport-soundcloud').Strategy
 
 // Initialize client
 SC.init({
@@ -42,6 +40,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({secret: '1234567890QWERTY'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Make our db and SC object accessible to our router
