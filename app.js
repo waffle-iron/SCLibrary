@@ -22,7 +22,6 @@ var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase('http://neo4j:zomboy69@localhost:7474');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var api = require('./routes/api');
 
 var app = express();
@@ -51,7 +50,6 @@ app.use(function(req,res,next){
 });
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/api', api);
 
 // catch 404 and forward to error handler
