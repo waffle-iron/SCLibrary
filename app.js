@@ -9,6 +9,9 @@ var bodyParser = require('body-parser');
 var SC = require('node-soundcloud');
 var config = require('./config.js');
 
+var passport = require('passport');
+var SoundCloudStrategy = require('passport-soundcloud').Strategy
+
 // Initialize client
 SC.init({
   id: config.auth.client_id,
