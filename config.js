@@ -9,6 +9,8 @@ if(environment === 'prod'){
     config = require('./config/heroku.js');
 }else if(environment === 'local'){
     config = require('./config/local.js');
+}else if(environment === 'ngrok'){
+    config = require('./config/ngrok.js');
 }
 
 module.exports = config;
