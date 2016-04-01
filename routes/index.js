@@ -6,8 +6,7 @@ var config = require('../config.js');
 /* GET index page. */
 router.get('/', function(req, res, next) {
   var connect_url = req.SC.getConnectUrl();
-  res.render('index', { title: 'Express',
-  						connect_url: connect_url });
+  res.render('index', { title: 'Express', connect_url: connect_url });
 });
 
 /* GET home page. */
@@ -24,10 +23,12 @@ router.get('/home/', function(req, res, next) {
       //res.render('home', { token: accessToken });
       var url = 'https://api.soundcloud.com/me?oauth_token=' + accessToken;
       requestify.get(url).then(function(response){
+        var user = response.getBody();
+        req.session.user = user;
         var user_url = config.base_url + '/api/users/add';
-        var options = { user: response.getBody() };
+        var options = { user: user };
         requestify.post(user_url, options).then(function(response){
-          res.json(response.getBody());
+          res.render('home', { username: user.username });
         });
       });
     }
