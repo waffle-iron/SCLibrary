@@ -47,7 +47,7 @@ router.post('/', function(req, res) {
                 } else {
                     console.log("User added to database");
                     // Request the users soundcloud ID from the server
-                    res.render('home', {username: user.username});
+                    res.json({success: "user added"});
                     //res.json({"success":"User added to database"});
                     //return 1;
                 }
@@ -55,7 +55,7 @@ router.post('/', function(req, res) {
         // If match found, do nothing
         } else {
             console.log("User already in database");
-            res.render('home', {username: user.username});
+            res.json({success: "user already in db"});
             //return 0;
         }
     });
