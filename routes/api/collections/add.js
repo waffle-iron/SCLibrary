@@ -2,7 +2,7 @@ var express = require('express');
 var requestify = require('requestify');
 var config = require('../../../config.js');
 //var Q = require('q');
-//var soundcloud = require('../../../util/soundcloud');
+var soundcloud = require('../../../client/soundcloud');
 var router = express.Router();
 
 router.post('/', function(req, res) {
@@ -10,26 +10,15 @@ router.post('/', function(req, res) {
 	var user = req.session.user;
     var href = 'https://api.soundcloud.com/users/' + user.id 
         + '/favorites?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
-	getCollection(req, res, [], href);
+	soundcloud.getCollection(req, res, [], href, function(collection){
+		console.log("suh dude");
+		console.log(collection);
+		res.json(collection);
+		//return collection;
+	});
 });
 
 
-function getCollection(req, res, collection, next_href){
-    console.log("here");
-
-    requestify.get(next_href).then(function(response){
-        collection = collection + response.getBody().collection;
-        if (next_href){ 
-            var href = response.getBody().next_href;
-            getCollection(req, res, collection, href);
-        }
-        else {
-            console.log("done");
-            res.json(collection);
-        }
-        //res.json(response.getBody());
-    });
-}     
 
 /*
 function addTracks(req, res, collection, index){
