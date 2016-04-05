@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var requestify = require('requestify');
 var config = require('../config.js');
+var soundcloud = require('../client/soundcloud');
 
 /* GET index page. */
 router.get('/', function(req, res, next) {
@@ -21,16 +22,28 @@ router.get('/home/', function(req, res, next) {
       req.session.oauth_token = accessToken;
       // Client is now authorized and able to make API calls
       //res.render('home', { token: accessToken });
-      var url = 'https://api.soundcloud.com/me?oauth_token=' + accessToken;
-      requestify.get(url).then(function(response){
-        var user = response.getBody();
+      soundcloud.getUser(accessToken, function(user){
         req.session.user = user;
         var user_url = config.base_url + '/api/users/add';
         var options = { user: user };
         requestify.post(user_url, options).then(function(response){
-          res.render('home', { username: user.username });
+          console.log("done with users/add")
+
+          soundcloud.getCollection(user, function(collection){
+            console.log("suh dude");
+            //console.log(collection);
+            res.json(collection);
+            //return collection;
+          });
+          /*
+          var collection_url = config.base_url + '/api/collections/add';
+          requestify.post(collection_url, options).then(function(response){
+            console.log("done with collections/add")
+            res.json(response);
+          })
+          */
         });
-      });
+      })
     }
   });
 

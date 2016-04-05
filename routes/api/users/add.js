@@ -2,7 +2,7 @@ var express = require('express');
 var requestify = require('requestify');
 var config = require('../../../config.js');
 //var Q = require('q');
-//var soundcloud = require('../../../util/soundcloud');
+var soundcloud = require('../../../client/soundcloud');
 var router = express.Router();
 
 /* POST to Add User Service */
@@ -49,13 +49,14 @@ router.post('/', function(req, res) {
                     // Request the users soundcloud ID from the server
                     res.render('home', {username: user.username});
                     //res.json({"success":"User added to database"});
+                    //return 1;
                 }
             });
         // If match found, do nothing
         } else {
             console.log("User already in database");
             res.render('home', {username: user.username});
-            //return;
+            //return 0;
         }
     });
 
