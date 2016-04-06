@@ -22,7 +22,7 @@ function getCollectionRecurse(collection, next_href, done){
     console.log("recurse");
     requestify.get(next_href).then(function(response){
         var updatedCollection = collection.concat(response.getBody().collection);
-        if (next_href && updatedCollection.length < 400){ 
+        if (next_href && updatedCollection.length < 100){ 
             var href = response.getBody().next_href;
             getCollectionRecurse(updatedCollection, href, done);
         }
