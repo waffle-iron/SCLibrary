@@ -6,7 +6,7 @@ router.get('/', function(req, res) {
 	res.json({hi:"there"});
 });
 
-router.use('/add', require('./collections/add'));
+//router.use('/add', require('./collections/add'));
 //router.use('/update', require('./collections/update'));
 
 module.exports = router;
