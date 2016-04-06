@@ -3,6 +3,7 @@ var router = express.Router();
 var requestify = require('requestify');
 var config = require('../config.js');
 var soundcloud = require('../client/soundcloud');
+var db = require('../client/database');
 
 /* GET index page. */
 router.get('/', function(req, res, next) {
@@ -23,27 +24,23 @@ router.get('/home/', function(req, res, next) {
       // Client is now authorized and able to make API calls
       //res.render('home', { token: accessToken });
       soundcloud.getUser(accessToken, function(user){
+        console.log("done getting user from SC");
         req.session.user = user;
-        var user_url = config.base_url + '/api/users/add';
-        var options = { user: user };
-        requestify.post(user_url, options).then(function(response){
-          console.log("done with users/add")
+        //var user_url = config.base_url + '/api/users/add';
+        //var user_data = { "user": user };
+        db.addUser(user, function(){
+          console.log("done adding user");
 
           soundcloud.getCollection(user, function(collection){
-            console.log("suh dude");
-            //console.log(collection);
-            res.json(collection);
-            //return collection;
+            console.log("done getting collection from SC");
+
+            db.addCollection(user, collection, function(){
+              console.log("done adding collection");
+              res.json({"done":"adding collection"});
+            });
           });
-          /*
-          var collection_url = config.base_url + '/api/collections/add';
-          requestify.post(collection_url, options).then(function(response){
-            console.log("done with collections/add")
-            res.json(response);
-          })
-          */
         });
-      })
+      });
     }
   });
 
