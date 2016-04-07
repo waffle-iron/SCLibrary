@@ -9,6 +9,12 @@ var bodyParser = require('body-parser');
 var SC = require('node-soundcloud');
 var session = require('express-session');
 var config = require('./config.js');
+var hbs = require('hbs');
+
+//Allows us to pass JSON from server side (express? i think) to a client JS file via the HTML file. Look in player.js at the bottom for an example
+ hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+ });
 
 // Initialize client
 SC.init({
