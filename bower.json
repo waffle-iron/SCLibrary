@@ -1,0 +1,22 @@
+{
+  "name": "sclibrary",
+  "description": "library interface for soundcloud",
+  "main": "app.js",
+  "authors": [
+    "Milad Imen <mimen@ucsd.edu>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/mimen/SCLibrary",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.3",
+    "list.js": "^1.2.0"
+  }
+}
