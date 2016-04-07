@@ -1,13 +1,36 @@
 var requestify = require('requestify');
 var config = require('../config.js');
 
-function getUser(accessToken, done){
-    var href = 'https://api.soundcloud.com/me?oauth_token=' + accessToken;
+//used for get requests to soundcloud API
+function getRequest(href, done){
     requestify.get(href).then(function(response){
         done(response.getBody());
-    });
+    })
 }
 
+//get a user's data
+function getUser(uid, done){
+    var href = "http://api.soundcloud.com/users/" + uid + "?client_id=" + config.auth.client_id;
+    getRequest(href, done);
+}
+
+/* Get a particular resource of a user. 
+*  Options include:
+*     tracks, playlists, followings, followers, comments, favorites, groups, web-profiles
+*/
+function getUserResource(uid, resource, done){
+    var href = "http://api.soundcloud.com/users/" + uid + 
+         "/" + resource + "?client_id=" + config.auth.client_id;
+    getRequest(href, done);
+}
+
+//get data for the user who is logged in
+function getLoggedInUser(accessToken, done){
+    var href = 'https://api.soundcloud.com/me?oauth_token=' + accessToken;
+    getRequest(href, done);
+}
+
+//get a user's collection 
 function getCollection(user, done){
     console.log("here");
 
@@ -39,10 +62,10 @@ function getCollection(user, done){
 function getCollectionRecurse(collection, next_href, done){
 
     console.log("recurse");
-    requestify.get(next_href).then(function(response){
-        var updatedCollection = collection.concat(response.getBody().collection);
+    getRequest(next_href, function(response){
+        var updatedCollection = collection.concat(response.collection);
         if (next_href && updatedCollection.length < 100){ 
-            var href = response.getBody().next_href;
+            var href = response.next_href;
             getCollectionRecurse(updatedCollection, href, done);
         }
         else {
@@ -52,7 +75,22 @@ function getCollectionRecurse(collection, next_href, done){
     });
 }
 
+function getTrack(tid, done){
+    var href = "http://api.soundcloud.com/tracks/" + tid + "?client_id=" + config.auth.client_id;
+    getRequest(href, done);
+}
+
+function getPlaylist(pid, done){
+    var href = "http://api.soundcloud.com/playlists/" + pid + "?client_id=" + config.auth.client_id;
+    getRequest(href, done);
+}
+
 module.exports = {
+    getRequest: getRequest,
 	getCollection: getCollection,
-    getUser: getUser
+    getLoggedInUser: getLoggedInUser,
+    getUser: getUser,
+    getUserResource: getUserResource,
+    getTrack: getTrack,
+    getPlaylist: getPlaylist
 }     
