@@ -1,6 +1,6 @@
-// Database
+var config = require('../config.js');
 var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase('http://neo4j:zomboy69@localhost:7474');
+var db = new neo4j.GraphDatabase(config.neo4j_href);
 
 function addUser(user, done){
     // Search the database to find a match
