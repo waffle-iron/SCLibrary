@@ -99,8 +99,31 @@ function addCollection(user, collection, done){
     done();
 }
 
+function getCollection(user, done){
+//MATCH (currUser:Channel { name: "miladmaaan"}),(currUser)-[:LIKES_TRACK]->(t) RETURN t;
+    db.cypher({ 
+        query: 'MATCH (currUser:Channel { name: {name}}),(currUser)-[:LIKES_TRACK]->(t) RETURN t',
+        params: {
+            name: user.username
+        },
+    }, function(err, results){
+        if (err){
+            console.log("error when getting collection from database");
+        }
+        // No collection found for the user
+        if (results.length == 0) {
+            console.log("no collection found for this user");
+            done(results);
+        // If match found, do nothing
+        } else {
+            done(results);
+        }
+    });
+}
+
 
 module.exports = {
     addUser: addUser,
-    addCollection: addCollection
+    addCollection: addCollection,
+    getCollection: getCollection
 }     
