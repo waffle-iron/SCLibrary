@@ -38,7 +38,7 @@ router.get('/home/', function(req, res, next) {
       req.session.oauth_token = accessToken;
       // Client is now authorized and able to make API calls
       //res.render('home', { token: accessToken });
-      soundcloud.getUser(accessToken, function(user){
+      soundcloud.getLoggedInUser(accessToken, function(user){
         console.log("done getting user from SC");
         req.session.user = user;
         //var user_url = config.base_url + '/api/users/add';
