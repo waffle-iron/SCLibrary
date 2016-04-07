@@ -11,6 +11,21 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express', connect_url: connect_url });
 });
 
+/*GET player page. */
+/*
+When using a custom player must abide by these TOS:
+Credit the uploader as the creator of the sound
+Credit SoundCloud as the source by including one of the logos found here
+Link to the SoundCloud URL containing the work
+If the sound is private link to the profile of the creator
+*/
+router.get('/player/', function(req, res, next) {
+  var connect_url = req.SC.getConnectUrl();
+  var accessToken = req.session.oauth_token;
+  res.render('player', { token: accessToken, test: "ateststringtojsfile", client_id: config.auth.client_id});
+});
+
+
 /* GET home page. */
 router.get('/home/', function(req, res, next) {
 
