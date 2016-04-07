@@ -23,9 +23,6 @@ SC.init({
   uri: config.auth.redirect_uri
 });
 
-// Database
-var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase('http://neo4j:zomboy69@localhost:7474');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
@@ -52,9 +49,8 @@ app.use(cookieParser());
 app.use(session({secret: config.session_secret}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Make our db and SC object accessible to our router
+// Make our SC middleware accessible to our router
 app.use(function(req,res,next){
-    req.db = db;
     req.SC = SC;
     next();
 });
