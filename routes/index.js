@@ -61,6 +61,15 @@ router.get('/home/', function(req, res, next) {
 
 });
 
+router.get('/library/', function(req, res, next) {
+
+  var user = req.session.user;
+  db.getCollection(user, function(collection){
+    res.render('library', { user: user, collection: collection });
+  });
+
+});
+
 
 /* GET home page. */
 router.get('/token/', function(req, res, next) {
