@@ -14,6 +14,25 @@ function getCollection(user, done){
     var href = 'https://api.soundcloud.com/users/' + user.id 
         + '/favorites?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
 
+
+
+    // This code is asynchronous. It doesn't work. Going to keep recursion for now.
+    /*
+    var collection = [];
+    while (collection.length < 100){
+        console.log(collection.length);
+        requestify.get(href).then(function(response){
+            collection.push(response.getBody().collection);
+            if (response.getBody().next_href)
+                href = response.getBody().next_href;
+            else
+                href = '';
+        });
+
+    }
+    done(collection);
+    */
+    
     getCollectionRecurse([], href, done);
 }
 

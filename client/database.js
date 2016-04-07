@@ -86,12 +86,13 @@ function addCollection(user, collection, done){
                     uid: track.user.id
                 },
             }, function(err, results){
-                console.log(results);
+                //console.log("added track");
             });
 
         } 
         else {
             console.log("attempted to add playlist");
+            //TODO: Add tracks from this playlist 
         }
         index++;
     }
