@@ -30,11 +30,13 @@ router.get('/player/', function(req, res, next) {
 router.get('/home/', function(req, res, next) {
 
   var code = req.query.code;
+  console.log("acquired code from SC");
 
   req.SC.authorize(code, function(err, accessToken) {
     if ( err ) {
       throw err;
     } else {
+      console.log("traded code for access token");
       req.session.oauth_token = accessToken;
       // Client is now authorized and able to make API calls
       //res.render('home', { token: accessToken });
@@ -51,7 +53,7 @@ router.get('/home/', function(req, res, next) {
 
             db.addCollection(user, collection, function(){
               console.log("done adding collection");
-              res.json({"done":"adding collection"});
+              res.redirect('/api/mycollection/');
             });
           });
         });
@@ -67,14 +69,6 @@ router.get('/library/', function(req, res, next) {
   db.getCollection(user, function(collection){
     res.render('library', { user: user, collection: collection });
   });
-
-});
-
-
-/* GET home page. */
-router.get('/token/', function(req, res, next) {
-
-  res.render('token', { token: req.session.oauth_token });
 
 });
 
