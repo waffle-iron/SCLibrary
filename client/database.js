@@ -184,8 +184,12 @@ function addCollection(user, collection, done){
 
 function getCollection(user, done){
 //MATCH (currUser:Channel { name: "miladmaaan"}),(currUser)-[:LIKES_TRACK]->(t) RETURN t;
+
+    var query = 'MATCH (currUser:Channel { name: {name}}),(currUser)-[:LIKES_TRACK]->(t)'
+                + '<-[:UPLOADED]-(c) RETURN t, c';
+
     db.cypher({ 
-        query: 'MATCH (currUser:Channel { name: {name}}),(currUser)-[:LIKES_TRACK]->(t) RETURN t',
+        query: query,
         params: {
             name: user.username
         },
