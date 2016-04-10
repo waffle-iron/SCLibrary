@@ -138,8 +138,12 @@ function addTracks(user, collection, index, done){
             //otherwise relationship does not yet exist; create it.
             else {
                 var query = 'MATCH (user:Channel {name: {name}}) ' + 
-                            'MERGE (t:Track { name: {title}, genre: {genre}, duration: {duration}, scid: {tid}, ' +
-                            'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
+                            'MERGE (t:Track { name: {title},' 
+
+                if(track.genre != null)
+                    query += 'genre: {genre},';
+                query += 'duration: {duration}, scid: {tid}, ' +
+                         'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
                 if (track.purchase_url != null)
                     query += 'purchase_url: {purchase_url}, ';
                 if (track.artwork_url != null)
