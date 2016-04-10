@@ -31,7 +31,7 @@ ___________________________________________________________________
 				client_secret: 'YOUR_CLIENT_SECRET',
 				redirect_uri: 'http://localhost:3000/home'
 			  },
-	  	session_secret : "thisisasecret69",
+	  	redis_secret : MAKE_YOUR_OWN_SECRET,
 		neo4j_href : 'http://YOUR_USERNAME:YOUR_PASSWORD@localhost:7474'
 
 	}
