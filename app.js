@@ -7,9 +7,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var SC = require('node-soundcloud');
-var session = require('express-session');
 var config = require('./config.js');
 var hbs = require('hbs');
+
+//Redis Store Session
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
 
 //Allows us to pass JSON from server side (express? i think) to a client JS file via the HTML file. Look in player.js at the bottom for an example
  hbs.registerHelper('json', function(context) {
@@ -29,6 +32,12 @@ var api = require('./routes/api');
 
 var app = express();
 
+//create session manager using a redis store
+app.use(session({
+    store: new RedisStore(),
+    secret: 'keyboard cat'
+}));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -46,10 +55,8 @@ app.use(bodyParser.text({type : 'application/text-enriched', limit: '10mb'}));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
-app.use(session({secret: config.session_secret}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
-
 
 // Make our SC middleware accessible to our router
 app.use(function(req,res,next){
