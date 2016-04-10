@@ -3,16 +3,11 @@
 
 You are logged in as {{user.username}}.
 
-<div id="body ng-app="Library">
-	<div id="tracks">
-  		<input class="search" placeholder="Search" />
-  		<button class="sort" data-sort="name">
-    		Sort by name
-  		</button>
-  		<library>
-  		</library>
-	</div>
+<div id="library" ng-app="Library">
+	<library>
+	</library>
 </div>
 
 <script src="http://localhost:3000/bower_components/list.js/dist/list.min.js"></script>
+<script src="http://localhost:3000/bower_components/angular/angular.min.js"></script>
 <script src="http://localhost:3000/js/lib/library.js"></script>

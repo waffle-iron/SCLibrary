@@ -1,15 +1,21 @@
 
+<input class="search" placeholder="Search" />
+
 <table>
 	<thead>
 		<tr>
-			<td>Name</td>
-			<td>Genre</td>
+			<td class="sort" data-sort="name">Name</td>
+			<td class="sort" data-sort="genre">Genre</td>
+			<td class="sort" data-sort="duration">Duration</td>
 		</tr>
 </thead>
-	<tbody class="list" ng-controller="LibraryController as ctlr">
+	<tbody class="list">
 			<tr ng-repeat="track in ctlr.data">
-  			<td class="name">{{track.t.properties.name}}</td>
-  			<td class="genre">{{track.t.properties.genre}}</td>
+	  			<td class="name">{{track.t.properties.name}}</td>
+	  			<td class="genre">{{track.t.properties.genre}}</td>
+	  			<td class="created hidden">{{track.t.properties.created_at}}</td>
+	  			<td class="duration">{{ctlr.convertTime(track.t.properties.duration)}}</td>
+	  			<td class="scid hidden">{{track.t.properties.scid}}</td>
 			</tr>
 	</tbody>
 </table>
