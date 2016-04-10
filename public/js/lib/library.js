@@ -49,7 +49,7 @@ angular.module("Library", [])
 
 
 var options = {
-    valueNames: ['name', 'genre', 'duration']
+    valueNames: ['channel', 'name', 'genre', 'duration']
 };
 
 function createList(){
