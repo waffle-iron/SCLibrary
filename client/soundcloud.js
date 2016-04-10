@@ -6,12 +6,12 @@ function getRequest(href, done){
     console.log(href);
     requestify.get(href).then(
         function(response){
-            if (response) console.log("response)");
+            if (response)
             //console.log(response.getBody());
             done(response.getBody());
         },
         function(error){
-            if (error) console.log("error");
+            if (error)
             console.log(error);
         }
     );
@@ -41,34 +41,12 @@ function getLoggedInUser(accessToken, done){
 
 //get a user's collection 
 function getCollection(user, done){
-
     var href = 'https://api.soundcloud.com/users/' + user.id 
         + '/favorites?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
-
     getCollectionRecurse([], href, done);
-
-    // This code is asynchronous. It doesn't work. Going to keep recursion for now.
-    /*
-    var collection = [];
-    while (collection.length < 100){
-        console.log(collection.length);
-        requestify.get(href).then(function(response){
-            collection.push(response.getBody().collection);
-            if (response.getBody().next_href)
-                href = response.getBody().next_href;
-            else
-                href = '';
-        });
-
-    }
-    done(collection);
-    */
-    
 }
 
 function getCollectionRecurse(collection, next_href, done){
-
-    console.log("recurse");
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
         if (next_href && updatedCollection.length < 100){ 
@@ -76,7 +54,7 @@ function getCollectionRecurse(collection, next_href, done){
             getCollectionRecurse(updatedCollection, href, done);
         }
         else {
-            console.log("done");
+            console.log("done grabbing collection");
             done(updatedCollection);
         }
     });
