@@ -2,8 +2,9 @@ var config = require('../config.js');
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(config.neo4j_href);
 
-function addUser(user, done){
+function addUser(user, accessToken, done){
     // Search the database to find a match
+    /*
     db.cypher({ 
         query: 'MATCH (user:Channel {name: {name}}) RETURN user',
         params: {
@@ -17,9 +18,10 @@ function addUser(user, done){
         if (results.length == 0) {
             console.log('User not found. Going to create user ' + user.username + '.');
             // Create an entry for the user
+            */
             var query = 'CREATE (user:Channel {name: {name}, scuid: {scuid},' +
                                     'permalink: {permalink}, avatar_url: {avatar_url},' +
-                                    'country: {country} }) RETURN user';
+                                    'country: {country}, token: {token} }) RETURN user';
             db.cypher({ 
                 query: query,
                 params: {
@@ -27,24 +29,99 @@ function addUser(user, done){
                     scuid: user.id,
                     permalink: user.permalink,
                     avatar_url: user.avatar_url,
-                    country: user.country
+                    country: user.country,
+                    token: accessToken
                 },
             }, function(err, results){
                 if (err){
-                    res.json({"error":"error"});
+                    console.log(err);
                 } else {
+                    //console.log(results);
                     console.log("User added to database");
                     // Request the users soundcloud ID from the server
                     done();
                 }
             });
+            /*
         // If match found, do nothing
         } else {
             console.log("User already in database");
             done();
         }
     });
+*/
 }
+
+function findUser(accessToken, done){
+    console.log(accessToken);
+    var query = 'MATCH (user:Channel { token: "1-232387-12073749-07655e048b589a" }) RETURN user';
+
+    db.cypher({ 
+        query: query
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            console.log(results);
+            // If no match, create an entry for the user
+            if (results.length == 0) {
+                console.log("No user found with this access token.");
+                done(false, null);
+                //TODO: Update access token
+            }
+            else {
+                console.log("User was found with this access token.");
+                done(true, results);
+            }
+        }
+    });
+}
+/*
+function findUser(user, accessToken, done){
+    db.cypher({ 
+        query: 'MATCH (user:Channel {name: {name}}) RETURN user',
+        params: {
+            name: user.username
+        },
+    }, function(err, results){
+        if (err){
+            res.json({"error":"error"});
+        }
+        // If no match, create an entry for the user
+        if (results.length == 0) {
+            console.log('User not found.');
+            done(0);
+        // If match found, do nothing
+        } else {
+            console.log("User already in database");
+
+
+            db.cypher({ 
+                query: 'MATCH (user:Channel {name: {name}, token: {token} }) RETURN user',
+                params: {
+                    name: user.username,
+                    token: accessToken
+                },
+            }, function(err, results){
+                if (err){
+                    res.json({"error":"error"});
+                }
+                // If no match, create an entry for the user
+                if (results.length == 0) {
+                    console.log("Access token has changed");
+                    //TODO: Update access token
+                }
+                else {
+                    console.log("Access token is the same");
+                }
+                done(1);
+            });
+
+        }
+    });
+}
+*/
 
 function addCollection(user, collection, done){
     console.log("adding collection to database");
@@ -86,7 +163,12 @@ function addCollection(user, collection, done){
                     uid: track.user.id
                 },
             }, function(err, results){
-                //console.log("added track");
+                if (err){
+                    console.log(err);
+                }
+                else {
+                    //console.log(results);
+                }
             });
 
         } 
@@ -109,14 +191,17 @@ function getCollection(user, done){
         },
     }, function(err, results){
         if (err){
-            console.log("error when getting collection from database");
+            console.log(err);
         }
-        // No collection found for the user
-        if (results.length == 0) {
-            console.log("no collection found for this user");
-            done(results);
-        // If match found, do nothing
-        } else {
+        else {
+            //console.log(results);
+            // No collection found for the user
+            if (results.length == 0) {
+                console.log("no collection found for this user");
+            // If match found, do nothing
+            } else {
+
+            }
             done(results);
         }
     });
@@ -125,6 +210,7 @@ function getCollection(user, done){
 
 module.exports = {
     addUser: addUser,
+    findUser: findUser,
     addCollection: addCollection,
     getCollection: getCollection
 }     
