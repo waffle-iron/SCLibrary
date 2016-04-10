@@ -1,0 +1,15 @@
+
+<table>
+	<thead>
+		<tr>
+			<td>Name</td>
+			<td>Genre</td>
+		</tr>
+</thead>
+	<tbody class="list" ng-controller="LibraryController as ctlr">
+			<tr ng-repeat="track in ctlr.data">
+  			<td class="name">{{track.t.properties.name}}</td>
+  			<td class="genre">{{track.t.properties.genre}}</td>
+			</tr>
+	</tbody>
+</table>
