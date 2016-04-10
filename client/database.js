@@ -134,10 +134,8 @@ function addTracks(user, collection, index, done){
         
         checkExistence(user, track, function(found){
             //user to track relationship already exists in database; done.
-            if (found){
-                done();
-            }
-            //relationship does not yet exist; create it.
+            if (found) done();
+            //otherwise relationship does not yet exist; create it.
             else {
                 var query = 'MATCH (user:Channel {name: {name}}) ' + 
                             'MERGE (t:Track { name: {title}, genre: {genre}, duration: {duration}, scid: {tid}, ' +
