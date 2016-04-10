@@ -11,7 +11,10 @@
 </thead>
 	<tbody class="list">
 			<tr ng-repeat="track in ctlr.data">
-	  			<td class="name">{{track.t.properties.name}}</td>
+	  			<td class="name">
+					<a href="{{track.t.properties.url}}">
+						{{track.t.properties.name}}</td>
+					</a>
 	  			<td class="genre">{{track.t.properties.genre}}</td>
 	  			<td class="created hidden">{{track.t.properties.created_at}}</td>
 	  			<td class="duration">{{ctlr.convertTime(track.t.properties.duration)}}</td>

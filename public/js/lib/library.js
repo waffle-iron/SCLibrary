@@ -1,9 +1,3 @@
-console.log("loaded js");
-
-
-
-
-
 angular.module("Library", [])
     .factory("libraryLoader", ["$http", function ($http) {
         function load(done) {
@@ -27,25 +21,25 @@ angular.module("Library", [])
             restrict: 'E',
             templateUrl: 'http://localhost:3000/views/library.html',
             controller: ["libraryLoader", "$q", '$http', function (libraryLoader, $q, $http) {
-                console.log("in directive controller");
                 var ctlr = this;
+
                 ctlr.convertTime = function(time){
                     var min_sec = time / 1000 / 60;
                     var minutes = Math.floor(min_sec);
                     var seconds = ("00" + Math.floor((min_sec % 1) * 60)).slice(-2);
                     return minutes + ":" + seconds;
                 }
+
                 libraryLoader.load(function (err, result) {
                     if (err) {
                         ctlr.isLoaded = false;
                     }
                     else {
                         ctlr.data = result;
-                        console.log(ctlr.data);
                         ctlr.isLoaded = true;
+                        //TODO: Fix this shite code. The function doesn't work
+                        //      when called immediately.
                         setTimeout(function() { createList(); }, 1000);
-
-
                     }
                 });
             }],
@@ -59,6 +53,6 @@ var options = {
 };
 
 function createList(){
-    console.log("cretae list");
+    console.log("create list");
     new List('library', options);
 }

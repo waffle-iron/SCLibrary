@@ -35,6 +35,9 @@ router.get('/player/', requiresUser, function(req, res, next) {
 /* GET home page. */
 router.get('/home/', function(req, res, next) {
 
+  if (req.session.user)
+    res.redirect('/library/');
+
   var code = req.query.code;
   console.log("acquired code from SC");
 
@@ -52,7 +55,7 @@ router.get('/home/', function(req, res, next) {
         if (found){
           deferred.resolve(user);
         }
-        //could not find user based on access token
+        //could not find user based on access token; must request from SC
         else {
           soundcloud.getLoggedInUser(accessToken, function(user){
             console.log("done getting user from SC");
