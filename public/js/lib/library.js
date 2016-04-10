@@ -31,7 +31,8 @@ angular.module("Library", [])
                 }
 
                 ctlr.playSong = function(track){
-                    console.log(track);
+                    var properties = track.t.properties;
+                    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
                 }
 
                 libraryLoader.load(function (err, result) {
