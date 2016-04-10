@@ -6,7 +6,8 @@ var soundcloud = require('../client/soundcloud');
 var db = require('../client/database');
 var Q = require('q');
 
-var requiresUser = require('./requiresUser');
+var requiresUser = require('./middleware/requiresUser');
+var ensureLoggedOut = require('./middleware/ensureLoggedOut');
 
 /* GET index page. */
 router.get('/', function(req, res, next) {
@@ -33,10 +34,7 @@ router.get('/player/', requiresUser, function(req, res, next) {
 
 
 /* GET home page. */
-router.get('/home/', function(req, res, next) {
-
-  if (req.session.user)
-    res.redirect('/library/');
+router.get('/home/', ensureLoggedOut, function(req, res, next) {
 
   var code = req.query.code;
   console.log("acquired code from SC");
@@ -87,7 +85,6 @@ router.get('/home/', function(req, res, next) {
 });
 
 router.get('/library/', requiresUser, function(req, res, next) {
-
   var user = req.session.user;
   res.render('library', { user: user });
 
