@@ -3,9 +3,18 @@ var config = require('../config.js');
 
 //used for get requests to soundcloud API
 function getRequest(href, done){
-    requestify.get(href).then(function(response){
-        done(response.getBody());
-    })
+    console.log(href);
+    requestify.get(href).then(
+        function(response){
+            if (response) console.log("response)");
+            //console.log(response.getBody());
+            done(response.getBody());
+        },
+        function(error){
+            if (error) console.log("error");
+            console.log(error);
+        }
+    );
 }
 
 //get a user's data
@@ -32,12 +41,11 @@ function getLoggedInUser(accessToken, done){
 
 //get a user's collection 
 function getCollection(user, done){
-    console.log("here");
 
     var href = 'https://api.soundcloud.com/users/' + user.id 
         + '/favorites?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
 
-
+    getCollectionRecurse([], href, done);
 
     // This code is asynchronous. It doesn't work. Going to keep recursion for now.
     /*
@@ -56,7 +64,6 @@ function getCollection(user, done){
     done(collection);
     */
     
-    getCollectionRecurse([], href, done);
 }
 
 function getCollectionRecurse(collection, next_href, done){
