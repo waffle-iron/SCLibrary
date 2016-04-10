@@ -48,9 +48,12 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
 app.use(session({secret: config.session_secret}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+
 
 // Make our SC middleware accessible to our router
 app.use(function(req,res,next){
+    req.user = req.session.user;
     req.SC = SC;
     next();
 });

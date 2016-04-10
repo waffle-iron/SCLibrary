@@ -5,8 +5,13 @@ var config = require('../config.js');
 var soundcloud = require('../client/soundcloud');
 var db = require('../client/database');
 
+var requiresUser = require('./requiresUser');
+
 /* GET index page. */
 router.get('/', function(req, res, next) {
+  if(req.session.oauth_token){
+    res.redirect('/library/');
+  }
   var connect_url = req.SC.getConnectUrl();
   res.render('index', { title: 'Express', connect_url: connect_url });
 });
@@ -19,7 +24,7 @@ Credit SoundCloud as the source by including one of the logos found here
 Link to the SoundCloud URL containing the work
 If the sound is private link to the profile of the creator
 */
-router.get('/player/', function(req, res, next) {
+router.get('/player/', requiresUser, function(req, res, next) {
   var connect_url = req.SC.getConnectUrl();
   var accessToken = req.session.oauth_token;
   res.render('player', { token: accessToken, test: "ateststringtojsfile", client_id: config.auth.client_id});
@@ -63,7 +68,7 @@ router.get('/home/', function(req, res, next) {
 
 });
 
-router.get('/library/', function(req, res, next) {
+router.get('/library/', requiresUser, function(req, res, next) {
 
   var user = req.session.user;
   db.getCollection(user, function(collection){
