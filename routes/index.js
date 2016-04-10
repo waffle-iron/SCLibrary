@@ -86,10 +86,15 @@ router.get('/home/', function(req, res, next) {
 router.get('/library/', requiresUser, function(req, res, next) {
 
   var user = req.session.user;
-  db.getCollection(user, function(collection){
-    res.render('library', { user: user, collection: collection });
-  });
+  res.render('library', { user: user });
 
 });
+
+router.get('/logout/', requiresUser, function(req, res, next){
+  req.session.destroy(function(err){
+    console.log(err);
+  })
+  res.redirect('/');
+})
 
 module.exports = router;
