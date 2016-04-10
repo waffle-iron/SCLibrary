@@ -35,7 +35,7 @@ var app = express();
 //create session manager using a redis store
 app.use(session({
     store: new RedisStore(),
-    secret: 'keyboard cat'
+    secret: config.redis_secret
 }));
 
 // view engine setup
