@@ -10,10 +10,7 @@ var requiresUser = require('./middleware/requiresUser');
 var ensureLoggedOut = require('./middleware/ensureLoggedOut');
 
 /* GET index page. */
-router.get('/', function(req, res, next) {
-  if(req.session.oauth_token){
-    res.redirect('/library/');
-  }
+router.get('/', ensureLoggedOut, function(req, res, next) {
   var connect_url = req.SC.getConnectUrl();
   res.render('index', { title: 'Express', connect_url: connect_url });
 });
