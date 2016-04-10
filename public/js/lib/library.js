@@ -30,6 +30,10 @@ angular.module("Library", [])
                     return minutes + ":" + seconds;
                 }
 
+                ctlr.playSong = function(track){
+                    console.log(track);
+                }
+
                 libraryLoader.load(function (err, result) {
                     if (err) {
                         ctlr.isLoaded = false;
