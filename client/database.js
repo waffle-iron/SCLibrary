@@ -125,61 +125,105 @@ function findUser(user, accessToken, done){
 
 function addCollection(user, collection, done){
     console.log("adding collection to database");
-    var index = 0;
-    while (index < collection.length - 1){
-        track = collection[index];
-        if (track.kind == 'track'){
-            var scquery = 'MATCH (user:Channel {name: {name}}) ' + 
-                        'MERGE (t:Track { name: {title}, genre: {genre}, duration: {duration}, scid: {tid}, ' +
-                        'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
-            if (track.purchase_url != null)
-                scquery += 'purchase_url: {purchase_url}, ';
-            if (track.artwork_url != null)
-                scquery += 'artwork_url: {artwork_url}, ';
-            scquery = scquery + 'waveform_url: {waveform_url} }) ' +
-                        'MERGE (c:Channel { name: {channel} }) ' + 
-                        'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
-                        'CREATE (user)-[r1:LIKES_TRACK]->(t) ' +
-                        'CREATE (c)-[r2:UPLOADED]->(t) ' +
-                        'RETURN user, r1, c, r2, t';
+    addTracks(user, collection, 0, done);
+}
 
-            db.cypher({ 
-                query: scquery,
-                params: {
-                    name: user.username,
-                    title: track.title,
-                    duration: track.duration,
-                    genre: track.genre,
-                    tid: track.id,
-                    url: track.permalink_url,
-                    purchase_url: track.purchase_url,
-                    tag_list: track.tag_list,
-                    artwork_url: track.artwork_url,
-                    created_at: track.created_at,
-                    waveform_url: track.waveform_url,
-                    channel: track.user.username,
-                    channel_url: track.user.permalink_url,
-                    avatar_url: track.user.avatar_url,
-                    uid: track.user.id
-                },
-            }, function(err, results){
-                if (err){
-                    console.log(err);
-                }
-                else {
-                    //console.log(results);
-                }
-            });
+function addTracks(user, collection, index, done){
+    track = collection[index];
+    if (track.kind == 'track'){
+        
+        checkExistence(user, track, function(found){
+            //user to track relationship already exists in database; done.
+            if (found){
+                done();
+            }
+            //relationship does not yet exist; create it.
+            else {
+                var query = 'MATCH (user:Channel {name: {name}}) ' + 
+                            'MERGE (t:Track { name: {title}, genre: {genre}, duration: {duration}, scid: {tid}, ' +
+                            'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
+                if (track.purchase_url != null)
+                    query += 'purchase_url: {purchase_url}, ';
+                if (track.artwork_url != null)
+                    query += 'artwork_url: {artwork_url}, ';
+                query = query + 'waveform_url: {waveform_url} }) ' +
+                            'MERGE (c:Channel { name: {channel} }) ' + 
+                            'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
+                            'CREATE (user)-[r1:LIKES_TRACK]->(t) ' +
+                            'CREATE (c)-[r2:UPLOADED]->(t) ' +
+                            'RETURN user, r1, c, r2, t';
 
-        } 
-        else {
-            console.log("attempted to add playlist");
-            //TODO: Add tracks from this playlist 
-        }
+                db.cypher({ 
+                    query: query,
+                    params: {
+                        name: user.username,
+                        title: track.title,
+                        duration: track.duration,
+                        genre: track.genre,
+                        tid: track.id,
+                        url: track.permalink_url,
+                        purchase_url: track.purchase_url,
+                        tag_list: track.tag_list,
+                        artwork_url: track.artwork_url,
+                        created_at: track.created_at,
+                        waveform_url: track.waveform_url,
+                        channel: track.user.username,
+                        channel_url: track.user.permalink_url,
+                        avatar_url: track.user.avatar_url,
+                        uid: track.user.id
+                    },
+                }, function(err, results){
+                    if (err){
+                        console.log(err);
+                    }
+                    else {
+                        console.log("Track added!");
+                        index++;
+                        if (index < collection.length - 1) 
+                            addTracks(user, collection, index, done);
+                        else
+                            done();
+                    }
+                });
+
+            }
+
+        })
+
+    } 
+    else {
+        console.log("attempted to add playlist");
+        //TODO: Add tracks from this playlist 
         index++;
+        addTracks(user, collection, index, done);
     }
 
-    done();
+}
+
+function checkExistence(user, track, done){
+    var query = 'MATCH (user:Channel {name: "' + user.username + '"}), (t:Track {scid:' 
+                + track.id + '} ), (user)-[:LIKES_TRACK]->(t) return user, t';
+
+    db.cypher({ 
+        query: query
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            console.log(results);
+            // If no match, create an entry for the user
+            if (results.length == 0) {
+                console.log("No relationship found.");
+                done(false);
+                //TODO: Update access token
+            }
+            else {
+                console.log("Relationship already exists.");
+                done(true);
+            }
+        }
+    });
 }
 
 function getCollection(user, done){
