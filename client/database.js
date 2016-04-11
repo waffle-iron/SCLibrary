@@ -4,7 +4,7 @@ var db = new neo4j.GraphDatabase(config.neo4j_href);
 
 function addUser(user, accessToken, done){
     // Search the database to find a match
-    /*
+    
     db.cypher({ 
         query: 'MATCH (user:Channel {name: {name}}) RETURN user',
         params: {
@@ -18,7 +18,7 @@ function addUser(user, accessToken, done){
         if (results.length == 0) {
             console.log('User not found. Going to create user ' + user.username + '.');
             // Create an entry for the user
-            */
+            
             var query = 'CREATE (user:Channel {name: {name}, scuid: {scuid},' +
                                     'permalink: {permalink}, avatar_url: {avatar_url},' +
                                     'country: {country}, token: {token} }) RETURN user';
@@ -42,18 +42,16 @@ function addUser(user, accessToken, done){
                     done();
                 }
             });
-            /*
+            
         // If match found, do nothing
         } else {
             console.log("User already in database");
             done();
         }
     });
-*/
 }
 
 function findUser(accessToken, done){
-    console.log(accessToken);
     var query = 'MATCH (user:Channel { token: "1-232387-12073749-07655e048b589a" }) RETURN user';
 
     db.cypher({ 
@@ -63,7 +61,6 @@ function findUser(accessToken, done){
             console.log(err);
         }
         else {      
-            console.log(results);
             // If no match, create an entry for the user
             if (results.length == 0) {
                 console.log("No user found with this access token.");
@@ -77,51 +74,6 @@ function findUser(accessToken, done){
         }
     });
 }
-/*
-function findUser(user, accessToken, done){
-    db.cypher({ 
-        query: 'MATCH (user:Channel {name: {name}}) RETURN user',
-        params: {
-            name: user.username
-        },
-    }, function(err, results){
-        if (err){
-            res.json({"error":"error"});
-        }
-        // If no match, create an entry for the user
-        if (results.length == 0) {
-            console.log('User not found.');
-            done(0);
-        // If match found, do nothing
-        } else {
-            console.log("User already in database");
-
-
-            db.cypher({ 
-                query: 'MATCH (user:Channel {name: {name}, token: {token} }) RETURN user',
-                params: {
-                    name: user.username,
-                    token: accessToken
-                },
-            }, function(err, results){
-                if (err){
-                    res.json({"error":"error"});
-                }
-                // If no match, create an entry for the user
-                if (results.length == 0) {
-                    console.log("Access token has changed");
-                    //TODO: Update access token
-                }
-                else {
-                    console.log("Access token is the same");
-                }
-                done(1);
-            });
-
-        }
-    });
-}
-*/
 
 function addCollection(user, collection, done){
     console.log("adding collection to database");
@@ -211,7 +163,7 @@ function checkExistence(user, track, done){
             console.log(err);
         }
         else {      
-            console.log(results);
+            //console.log(results);
             // If no match, create an entry for the user
             if (results.length == 0) {
                 console.log("No relationship found.");
@@ -260,5 +212,6 @@ module.exports = {
     addUser: addUser,
     findUser: findUser,
     addCollection: addCollection,
-    getCollection: getCollection
+    getCollection: getCollection,
+    checkExistence: checkExistence
 }     
