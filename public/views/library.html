@@ -7,15 +7,17 @@
 			<td> Play </td>
 			<td class="sort" data-sort="channel">Channel</td>
 			<td class="sort" data-sort="name">Name</td>
+			<td class-"sort" data-sort="date">Date</td>
 			<td class="sort" data-sort="genre">Genre</td>
 			<td class="sort" data-sort="duration">Duration</td>
 		</tr>
 </thead>
 	<tbody class="list">
 		<tr ng-repeat="track in ctlr.data">
-			<td class="play" ng-click="ctlr.playSong(track)">x</td>
+			<td ng-click="ctlr.playSong(track)">x</td>
 			<td class="channel">{{track.c.properties.name}}</td>
   			<td class="name">{{track.t.properties.name}}</td>
+  			<td class="date">{{ctlr.formatDate(track.t.properties.created_at)}}</td>
   			<td class="genre">{{track.t.properties.genre}}</td>
   			<td class="duration">{{ctlr.convertTime(track.t.properties.duration)}}</td>
 		</tr>

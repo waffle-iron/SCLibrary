@@ -30,6 +30,10 @@ angular.module("Library", [])
                     return minutes + ":" + seconds;
                 }
 
+                ctlr.formatDate = function(date){
+                    return date.substring(0, 10);
+                }
+
                 ctlr.playSong = function(track){
                     var properties = track.t.properties;
                     loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
@@ -54,10 +58,12 @@ angular.module("Library", [])
 
 
 var options = {
-    valueNames: ['channel', 'name', 'genre', 'duration']
+    valueNames: ['channel', 'name', 'genre', 'duration', 'date']
 };
 
 function createList(){
     console.log("create list");
     new List('library', options);
 }
+
+//TODO: Sort by date. list.js only seems to sort alphanumeric strings.
