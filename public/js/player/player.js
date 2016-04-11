@@ -30,8 +30,10 @@ var lastPlayer;
 function loadSong(trackid, durationms, artworkurl, waveformurl){
   //Reset all remnants of the last song player
   if(lastPlayer){
-    if(lastPlayer.isPlaying())
-      lastPlayer.pause();
+    if(lastPlayer.isPlaying()){ 
+      lastPlayer.pause(); 
+      isPlaying = false;
+    }
     lastPlayer.dispose();
     //$(lastPlayer).unbind('time');
     //$(lastPlayer).unbind('play');
@@ -54,23 +56,21 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     //Tie our pauseplay button to the "play" and "pause" events from the player
     player.on('play', function(){
         $('#pauseplay').attr('src', '../../images/pausebutton.png');
-        isPlaying = true;
     });
     player.on('pause', function(){
         $('#pauseplay').attr('src', '../../images/playbutton.png');
-        isPlaying = false;
     });
     
     //Auto play song
-    player.play();
+    player.play(); isPlaying = true;
     //Tie out pause/play button to the "player" objects pause / play functions
     $('#pauseplaywrapper').unbind('click').click(function(e){
     	console.log('pauseplay clicked');
-    	if(isPlaying){
-    		player.pause();
+    	if(isPlaying && player.isPlaying()){
+    		player.pause(); isPlaying = false;
     	}
     	else{
-    		player.play();
+    		player.play(); isPlaying = true;
     	}
     });
 
