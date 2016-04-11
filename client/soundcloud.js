@@ -1,9 +1,11 @@
 var requestify = require('requestify');
 var config = require('../config.js');
 
+var database = require('./database.js');
+
 //used for get requests to soundcloud API
 function getRequest(href, done){
-    console.log(href);
+    //console.log(href);
     requestify.get(href).then(
         function(response){
             if (response)
@@ -43,15 +45,21 @@ function getLoggedInUser(accessToken, done){
 function getCollection(user, done){
     var href = 'https://api.soundcloud.com/users/' + user.id 
         + '/favorites?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
-    getCollectionRecurse([], href, done);
+    getCollectionRecurse(user, [], href, done);
 }
 
-function getCollectionRecurse(collection, next_href, done){
+function getCollectionRecurse(user, collection, next_href, done){
     getRequest(next_href, function(response){
+        console.log(response.next_href);
         var updatedCollection = collection.concat(response.collection);
-        if (next_href && updatedCollection.length < 100){ 
+        if (response.next_href){ 
             var href = response.next_href;
-            getCollectionRecurse(updatedCollection, href, done);
+            database.checkExistence(user, response.collection[0], function(found){
+                if (found)
+                    done(updatedCollection);
+                else
+                    getCollectionRecurse(user, updatedCollection, href, done);
+            });
         }
         else {
             console.log("done grabbing collection");
