@@ -3,16 +3,18 @@ SCLibrary is a library interface for SoundCloud, making use of the SoundCloud AP
 
 ## Dependencies
 
-Download and install the following applications with their default settings.
+Download and install the following software:
 
 1. [Git](https://git-scm.com/downloads)
 2. [Node.js](https://nodejs.org/en/download/)
 3. [Neo4j Server](http://neo4j.com/)
 4. Redis Server
-⋅⋅1. [Windows](https://github.com/MSOpenTech/redis/releases/tag/win-2.8.2400)
-⋅⋅2. [Mac & Linux](http://redis.io/download)
+  *. [Windows](https://github.com/MSOpenTech/redis/releases/tag/win-2.8.2400)
+  *. [Mac & Linux](http://redis.io/download)
 
 ## Setup
+
+Sign up for a [SoundCloud API key](http://soundcloud.com/you/apps).
 
 Download the project:
 
@@ -27,11 +29,9 @@ $ bower install
 $ npm install
 ```
 
-Launch the Neo4j desktop application and click Start. Navigate to the URL given (usually http://localhost:7474) and follow the instructions to configure the server.
+Launch the Neo4j desktop application and click Start. Navigate to the URL given (http://localhost:7474) and follow the instructions to configure the server.
 
-[Sign up for a SoundCloud API key.](http://soundcloud.com/you/apps)
-
-Create a config folder in the main directory. Inside, create the file "local.js"
+Create a config folder in the main directory. Inside, create the file "local.js".
 Copy and paste this code and fill in the necessary info.
 
 
@@ -48,7 +48,7 @@ var config = {
 module.exports = config;
 ```
 
-Once this has all been setup, navigate to the directory SCLibrary and start the program.
+Navigate to the home directory and start the program:
 
 ```bash
 $ nodemon
