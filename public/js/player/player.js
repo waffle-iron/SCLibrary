@@ -30,10 +30,12 @@ var lastPlayer;
 function loadSong(trackid, durationms, artworkurl, waveformurl){
   //Reset all remnants of the last song player
   if(lastPlayer){
-    lastPlayer.pause();
-    $(lastPlayer).unbind('time');
-    $(lastPlayer).unbind('play');
-    $(lastPlayer).unbind('pause');
+    if(lastPlayer.isPlaying())
+      lastPlayer.pause();
+    lastPlayer.dispose();
+    //$(lastPlayer).unbind('time');
+    //$(lastPlayer).unbind('play');
+    //$(lastPlayer).unbind('pause');
 }
   //Reset isPlaying boolean, change the 
   isPlaying = false;
@@ -49,6 +51,18 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     lastPlayer = player;
     var duration = durationms;
 
+    //Tie our pauseplay button to the "play" and "pause" events from the player
+    player.on('play', function(){
+        $('#pauseplay').attr('src', '../../images/pausebutton.png');
+        isPlaying = true;
+    });
+    player.on('pause', function(){
+        $('#pauseplay').attr('src', '../../images/playbutton.png');
+        isPlaying = false;
+    });
+    
+    //Auto play song
+    player.play();
     //Tie out pause/play button to the "player" objects pause / play functions
     $('#pauseplaywrapper').unbind('click').click(function(e){
     	console.log('pauseplay clicked');
@@ -58,16 +72,6 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     	else{
     		player.play();
     	}
-    });
-
-    //Tie our pauseplay button to the "play" and "pause" events from the player
-    player.on('play', function(){
-    		$('#pauseplay').attr('src', '../../images/pausebutton.png');
-    		isPlaying = true;
-    });
-    player.on('pause', function(){
-    		$('#pauseplay').attr('src', '../../images/playbutton.png');
-    		isPlaying = false;
     });
 
     $('#seekbarwrapper').unbind('click').click(function(e){
