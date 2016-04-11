@@ -82,9 +82,10 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
 });
 
 router.get('/library/', requiresUser, function(req, res, next) {
+  var connect_url = req.SC.getConnectUrl();
+  var accessToken = req.session.oauth_token;
   var user = req.session.user;
-  res.render('library', { user: user });
-
+  res.render('library', { user: user, client_id: config.auth.client_id});
 });
 
 router.get('/logout/', requiresUser, function(req, res, next){
