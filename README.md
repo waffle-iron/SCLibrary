@@ -25,8 +25,8 @@ $ git clone https://github.com/mimen/SCLibrary.git SCLibrary
 Install dependencies:
 
 ```bash
-$ bower install
 $ npm install
+$ bower install
 ```
 
 Launch the Neo4j desktop application and click Start. Navigate to the URL given (http://localhost:7474) and follow the instructions to configure the server.
