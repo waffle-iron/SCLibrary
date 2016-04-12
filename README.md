@@ -56,5 +56,5 @@ $ nodemon
 ```
 Or alternatively
 ```bash
-$ nodejs app.js
+$ npm start
 ```
