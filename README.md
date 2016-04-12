@@ -12,6 +12,7 @@ Download and install the following software:
   - [Windows](https://github.com/MSOpenTech/redis/releases/tag/win-2.8.2400)
   - [Mac & Linux](http://redis.io/download)
   - Ubuntu - sudo apt-get install redis-server
+  - 
 ## Setup
 
 Sign up for a [SoundCloud API key](http://soundcloud.com/you/apps).
