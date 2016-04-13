@@ -12,6 +12,7 @@
 body {
     padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-image: url('../images/confectionary.png');
 }
 a {
     color: #00B7FF;
@@ -62,16 +63,40 @@ input.search {
     font-family: 'Oxygen', sans-serif;
     font-weight: 300;
 }
-tr.ng-scope:nth-of-type(2n) {
-    background-color: #ebebeb;
+table {
+    width: 100%;
 }
+
 tbody.list td {
     padding: 3px 2px;
 }
 
 /*Header*/
-
-thead > tr {}
+*:hover > a.dark,
+*:hover > a.dark {
+    color: #00B7FF;
+}
+a.dark {
+    color: #333;
+}
+/*alternating colors*/
+tr.ng-scope:nth-of-type(2n) {
+    background-color: #ebebeb;
+}
+tr.ng-scope:nth-of-type(2n+1) {
+    background-color: #fff;
+}
+tbody tr > td {
+    border-right: 1px solid #e3e3e3;
+}
+tbody tr > td:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+tbody tr > td:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
 thead > tr {
     padding: 4px 6px;
     text-align: center;
@@ -98,8 +123,13 @@ thead > tr > td {
 div#back-div {
     position: absolute;
     top: 0;
-    height: 52%;
-    background-color: orangered;
+    height: 100%;
+    background-color: #00B7FF;
     z-index: -1;
-    border: 2px solid #fff;
+}
+
+#seekbarwrapper {
+    background: #333;
+    z-index: -2;
+    max-width: 694px;
 }

@@ -42,12 +42,28 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
   //Reset isPlaying boolean, change the 
   isPlaying = false;
   $('#pauseplay').attr('src', '../../images/playbutton.png');
-  $('#seekicon').css("left", "0%");
+  //$('#seekicon').css("left", "0%");
 
   //Load artwork image to DOM
   $('#artworkimg').attr('src', artworkurl);
   //Load waveform image to DOM
   $('#waveformimg').attr('src', waveformurl);
+  $('#waveformimg').on('load', function(){
+      var tempH =  $('#waveformimg').height();
+      var tempW =  $('#waveformimg').width();
+      $('#seekbarwrapper').css('height', tempH.toString() + "px");
+      $('#seekbarwrapper').css('width', tempW.toString() + "px");
+  });
+    
+// resize function to keep the waveform
+// stuck to the loading background
+$(window).on('resize', function(){
+    var thisH = $('#waveformimg').height();
+    var thisW = $('#waveformimg').width();
+    $('#seekbarwrapper').css('height', thisH.toString() + "px");
+    $('#seekbarwrapper').css('width', thisW.toString() + "px");
+});
+    
   SC.stream('/tracks/' + trackid, smOptions).then(function(player){
         console.log(player);
     lastPlayer = player;
@@ -74,16 +90,16 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     	}
     });
 
-    $('#seekbarwrapper').unbind('click').click(function(e){
+    $('#player').unbind('click').click( function(e){
     	//how offset the current element is from the x=0 axis
     	var offset = $(this).offset();
-    	var width = $('#seekbarwrapper').width();
+    	var width = $('#waveformimg').width();
     	//relativeOffset = how far into the div's width you clicked in pixels
     	var relativeOffset = e.pageX - offset.left;
       console.log(e.pageX - offset.left + "x");
       //how far you clicked into the div's width by percent. 1.0 is to cast to double
       var relativePercent = relativeOffset/(width*1.0);
-      console.log(relativePercent*100+"%");
+      //console.log(relativePercent*100+"%");
       //position in miliseconds of total song
       var seekPosition = Math.round(duration * relativePercent);
       console.log("seekpos: " + seekPosition);
@@ -98,7 +114,7 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
           console.log(percentPlayed + "% played");
           // added back div to make waveform orange.
           $('#back-div').css("width", percentPlayed.toString() + "%");
-          $('#seekicon').css("left", percentPlayed.toString() + "%");
+          //$('#seekicon').css("left", percentPlayed.toString() + "%");
     });
 
     //player.on('time', function(){console.log("pos: " : this.position);});
