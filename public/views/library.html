@@ -14,7 +14,7 @@ jQuery(document).on('load', function () {
 </script-->
 <table cellpadding="0" cellspacing="0" id="lib-view" style="clear:both;">
     <colgroup>
-        <col />
+        <!--col /-->
         <col />
         <col />
         <col />
@@ -23,7 +23,7 @@ jQuery(document).on('load', function () {
     </colgroup>
     <thead>
         <tr>
-            <td> Play </td>
+            <!--td> Play </td-->
             <td class="sort" data-sort="channel">Channel</td>
             <td class="sort" data-sort="name">Name</td>
             <td class="sort" data-sort="date">Date</td>
@@ -32,8 +32,8 @@ jQuery(document).on('load', function () {
         </tr>
     </thead>
     <tbody class="list">
-        <tr ng-repeat="track in ctlr.data">
-            <td ng-click="ctlr.playSong(track)">x</td>
+        <tr ng-repeat="track in ctlr.data" ng-click="ctlr.playSong(track)">
+            <!--td >x</td-->
             <td class="channel">{{track.c.properties.name}}</td>
             <td class="name">{{track.t.properties.name}}</td>
             <td class="date">{{ctlr.formatDate(track.t.properties.created_at)}}</td>
