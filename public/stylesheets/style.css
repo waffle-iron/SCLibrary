@@ -10,29 +10,76 @@
 /*@import url(http://www.ita.es/jquery/jquery.kiketable.colsizable.css);*/
 
 body {
-    padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     background-image: url('../images/confectionary.png');
+    margin: 0;
 }
-a {
-    color: #00B7FF;
+/*Delete if we use bootstrap*/
+div.container {
+    padding: 50px;
+}
+.pull-left {
+    display: block;
+    float: left;
+}
+.pull-right {
+    display: block;
+    float: right;
 }
 .hidden {
     display: none;
 }
-
-a.btn.btn-search {
+/*End bootstrap delete*/
+a.btn:hover,
+a.btn:focus {
+    color: #fff;
+    border-color: #fff;
+    margin-top: -2px;
+    margin-left: -1px;
+    box-shadow: 1px 2px 3px rgba(23,23,23,0.4);
+}
+a.btn:active {
+    
+}
+a.btn {
+    transition: all .2s ease;
+    border: #555 solid 2px;
     border-radius: 5px;
-    width: 30px;
-    height: 30px;
     position: relative;
     display: table-cell;
-    vertical-align: center;
-    background-color: #00B7FF;
-    color: #fff;
-    margin-right: 7px;
-    padding: 6px 8px;
+    vertical-align: middle;
+    background-image: url(../images/banner-red-poly.svg);
+    background-color: #FFA0A0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #333;
     box-sizing: border-box;
+    padding: 4px 6px;
+    text-decoration: none;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+}
+h1.logo + small {
+    font-family: 'Source Code Pro', sans-serif;
+    color: #555;
+}
+h1.logo {
+    font-family: 'Source Code Pro', sans-serif;
+    font-size: 150%;
+    color: #232323;
+    margin-left: 15px;
+}
+.top-wrapper a.btn {
+    top: 14px;
+    right: 15px;
+}
+a {
+    color: #00B7FF;
+}
+a.btn.btn-search {
+    width: 30px;
+    height: 30px;
+    margin-right: 7px;
 }
 
 .search-wrapper {
@@ -68,7 +115,8 @@ table {
 }
 
 tbody.list td {
-    padding: 3px 2px;
+    padding: 4px 6px;
+    border-bottom: #e3e3e3 solid 1px;
 }
 
 /*Header*/
@@ -81,7 +129,7 @@ a.dark {
 }
 /*alternating colors*/
 tr.ng-scope:nth-of-type(2n) {
-    background-color: #ebebeb;
+    background-color: #F6F6F6;
 }
 tr.ng-scope:nth-of-type(2n+1) {
     background-color: #fff;
@@ -104,6 +152,7 @@ thead > tr {
 thead > tr > td {
     border-radius: 5px;
     border: 1px solid #e3e3e3;
+    border-bottom: #afafaf 1px solid;
     color: #333;
     padding: 4px 3px;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f5f6f6+0,dbdce2+21,b8bac6+49,dddfe3+80,f5f6f6+100;Grey+Pipe */
@@ -119,6 +168,22 @@ thead > tr > td {
     /* IE6-9 */
 }
 /* Player styles */
+@keyframes colorChange {
+    0% {
+        background-color: initial;
+    }   20% {
+        background-color: #10ef16
+    }   40% {
+        background-color: rebeccapurple;
+    }   60% {
+        background-color: firebrick;
+    }   80% {
+        background-color: aliceblue;
+    }   100% {
+        background-color: #333;
+    }
+}
+
 
 div#back-div {
     position: absolute;
@@ -126,10 +191,22 @@ div#back-div {
     height: 100%;
     background-color: #00B7FF;
     z-index: -1;
+    animation: colorChange 20s infinite ease both;
+    animation-play-state: running;
 }
 
 #seekbarwrapper {
     background: #333;
     z-index: -2;
     max-width: 694px;
+}
+
+/* Top bar */
+.top-wrapper {
+    height: 60px;
+    width: 100%;
+    background-image: url(../images/banner-white-poly.svg);
+    background-color: #D6D6D6;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
