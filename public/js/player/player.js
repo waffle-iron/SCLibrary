@@ -43,6 +43,7 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
   isPlaying = false;
   $('#pauseplay').attr('src', '../../images/playbutton.png');
   //$('#seekicon').css("left", "0%");
+  $('#seekicon').css("width", "0%");
 
   //Load artwork image to DOM
   $('#artworkimg').attr('src', artworkurl);
@@ -95,7 +96,7 @@ $(window).on('resize', function(){
     	var offset = $(this).offset();
     	var width = $('#waveformimg').width();
     	//relativeOffset = how far into the div's width you clicked in pixels
-    	var relativeOffset = e.pageX - offset.left;
+    	var relativeOffset = e.pageX - offset.left - 30;
       console.log(e.pageX - offset.left + "x");
       //how far you clicked into the div's width by percent. 1.0 is to cast to double
       var relativePercent = relativeOffset/(width*1.0);
