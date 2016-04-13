@@ -2,7 +2,7 @@ var config = require('../config.js');
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(config.neo4j_href);
 
-function addUser(user, accessToken, done){
+function addUser(user, done){
     // Search the database to find a match
     
     db.cypher({ 
@@ -29,8 +29,7 @@ function addUser(user, accessToken, done){
                     scuid: user.id,
                     permalink: user.permalink,
                     avatar_url: user.avatar_url,
-                    country: user.country,
-                    token: accessToken
+                    country: user.country
                 },
             }, function(err, results){
                 if (err){

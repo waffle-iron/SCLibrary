@@ -44,27 +44,12 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
       req.session.oauth_token = accessToken;
       // Client is now authorized and able to make API calls
       //res.render('home', { token: accessToken });
-      db.findUser(accessToken, function(found, user){
-        var deferred = Q.defer();
-        //found user based on access token
-        if (found){
-          deferred.resolve(user);
-        }
-        //could not find user based on access token; must request from SC
-        else {
-          soundcloud.getLoggedInUser(accessToken, function(user){
-            console.log("done getting user from SC");
+      soundcloud.getLoggedInUser(accessToken, function(user){
+        console.log("done getting user from SC");
 
-            db.addUser(user, accessToken, function(){
-              console.log("done adding user");
+        db.addUser(user, function(){
+          console.log("done adding user");
 
-              deferred.resolve(user);
-
-            });
-          });
-        }
-
-        deferred.promise.done(function(user){
           req.session.user = user;
           soundcloud.getCollection(user, function(collection){
             console.log("done getting collection from SC");
@@ -74,8 +59,9 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
               res.redirect('/library/');
             });
           });
-        })
-      })
+
+        });
+      });
     }
   });
 
