@@ -93,3 +93,13 @@ thead > tr > td {
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6', GradientType=0);
     /* IE6-9 */
 }
+/* Player styles */
+
+div#back-div {
+    position: absolute;
+    top: 0;
+    height: 50%;
+    background-color: orangered;
+    z-index: -1;
+    border: 2px solid #fff;
+}

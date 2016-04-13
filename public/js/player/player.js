@@ -96,6 +96,8 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
           //Get rid of all decimal points except first 2
           var percentPlayed = Math.floor((player.currentTime()/duration) * 10000)/100;
           console.log(percentPlayed + "% played");
+          // added back div to make waveform orange.
+          $('#back-div').css("width", percentPlayed.toString() + "%");
           $('#seekicon').css("left", percentPlayed.toString() + "%");
     });
 
