@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
 
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 
-  </head>
-  <body>
-  	<a href="/logout/">Logout</a>
+</head>
 
-    {{{body}}}
-  </body>
+<body>
+    <div class="top-wrapper">
+        <h1 class="logo pull-left">SCLibrary</h1><small>beta</small>
+        <a class="btn btn-default pull-right" href="/logout/">Logout</a>
+    </div>
+    <div class="container">
+
+        {{{body}}}
+    </div>
+</body>
+
 </html>
