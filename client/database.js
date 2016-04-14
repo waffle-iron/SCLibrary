@@ -6,9 +6,9 @@ function addUser(user, done){
     // Search the database to find a match
     
     db.cypher({ 
-        query: 'MATCH (user:Channel {name: {name}}) RETURN user',
+        query: 'MATCH (user:Channel {scuid: {scuid}}) RETURN user',
         params: {
-            name: user.username
+            scuid: user.id
         },
     }, function(err, results){
         if (err){
@@ -21,7 +21,7 @@ function addUser(user, done){
             
             var query = 'CREATE (user:Channel {name: {name}, scuid: {scuid},' +
                                     'permalink: {permalink}, avatar_url: {avatar_url},' +
-                                    'country: {country}, token: {token} }) RETURN user';
+                                    'country: {country} }) RETURN user';
             db.cypher({ 
                 query: query,
                 params: {
@@ -50,11 +50,13 @@ function addUser(user, done){
     });
 }
 
-function findUser(accessToken, done){
-    var query = 'MATCH (user:Channel { token: "1-232387-12073749-07655e048b589a" }) RETURN user';
+function findUser(user, done){
 
     db.cypher({ 
-        query: query
+        query: 'MATCH (user:Channel { scuid: {scuid} }) RETURN user',
+        params: {
+            scuid: user.id
+        },
     }, function(err, results){
         if (err){
             console.log(err);
@@ -62,12 +64,12 @@ function findUser(accessToken, done){
         else {      
             // If no match, create an entry for the user
             if (results.length == 0) {
-                console.log("No user found with this access token.");
+                console.log("No user found.");
                 done(false, null);
                 //TODO: Update access token
             }
             else {
-                console.log("User was found with this access token.");
+                console.log("User was found.");
                 done(true, results);
             }
         }
@@ -152,11 +154,14 @@ function addTracks(user, collection, index, done){
 }
 
 function checkExistence(user, track, done){
-    var query = 'MATCH (user:Channel {name: "' + user.username + '"}), (t:Track {scid:' 
-                + track.id + '} ), (user)-[:LIKES_TRACK]->(t) return user, t';
 
     db.cypher({ 
-        query: query
+        query: 'MATCH (user:Channel {scuid: {scuid} }), (t:Track {scid: {scid} } ), (user)-[:LIKES_TRACK]->(t) return user, t',
+        params: {
+            scuid: user.id,
+            scid: track.id
+        },
+
     }, function(err, results){
         if (err){
             console.log(err);
@@ -178,15 +183,12 @@ function checkExistence(user, track, done){
 }
 
 function getCollection(user, done){
-//MATCH (currUser:Channel { name: "miladmaaan"}),(currUser)-[:LIKES_TRACK]->(t) RETURN t;
-
-    var query = 'MATCH (currUser:Channel { name: {name}}),(currUser)-[:LIKES_TRACK]->(t)'
-                + '<-[:UPLOADED]-(c) RETURN t, c';
 
     db.cypher({ 
-        query: query,
+        query: 'MATCH (currUser:Channel { scuid: {scuid}}),(currUser)-[:LIKES_TRACK]->(t)'
+                + '<-[:UPLOADED]-(c) RETURN t, c',
         params: {
-            name: user.username
+            scuid: user.id
         },
     }, function(err, results){
         if (err){
