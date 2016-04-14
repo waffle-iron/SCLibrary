@@ -16,7 +16,7 @@ body {
 }
 /*Delete if we use bootstrap*/
 div.container {
-    padding: 50px;
+    padding: 0 50px;
 }
 .pull-left {
     display: block;
@@ -184,21 +184,54 @@ thead > tr > td {
     }
 }
 
+#player {
+    display: inline-block;
+    max-height: 0px;
+    transition: max-height .5s ease;
+}
+#player.playing {
+    /* Ridiculous max height for transiton */
+    max-height: 300px;
+}
 
 div#back-div {
     position: absolute;
     top: 0;
     height: 100%;
-    background-color: #00B7FF;
+    background-color: #FFA0A0;
     z-index: -1;
-    animation: colorChange 20s infinite ease both;
-    animation-play-state: running;
+    /*animation: colorChange 20s infinite ease both;*/
+    /*animation-play-state: running;*/
+    background-image: url(../images/banner-red-poly.svg);
+    background-size: cover;
+    background-position: right center;
 }
 
 #seekbarwrapper {
     background: #333;
     z-index: -2;
     max-width: 694px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    overflow: hidden;
+}
+
+#artworkimg {
+    background-position: 50% 50%;
+    background-size: cover;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+}
+
+/*  */
+
+aside {
+    margin-left: -50px;
+    margin-right: -50px;
+    background-color: #232323;
+    padding: 12px 30px;
+    color: #e3e3e3;
 }
 
 /* Top bar */
