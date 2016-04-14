@@ -208,24 +208,87 @@ function getCollection(user, done){
     });
 }
 
-function createPlaylist(name, user, done){
-    
+function createPlaylist(name, uid, done){
+    db.cypher({ 
+        query: "",
+        params: {
+            playlist_name: name,
+            uid: uid
+        }
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            done();
+        }
+    });
 }
 
-function deletePlaylist(playlist, done){
-    
+function deletePlaylist(pid, done){
+    db.cypher({ 
+        query: "",
+        params: {
+            pid: playlist.id
+        }
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            done();
+        }
+    });    
 }
 
-function addTrackToPlaylist(track, playlist, done){
-    
+function addTrackToPlaylist(tid, pid, done){
+    db.cypher({ 
+        query: "",
+        params: {
+            tid: track.id,
+            pid: playlist.id
+        }
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            //console.log(results);
+            done();
+        }
+    });
 }
 
-function removeTrackFromPlaylist(name, user, done){
-    
-}
+function removeTrackFromPlaylist(tid, pid, done){
+    db.cypher({ 
+        query: "",
+        params: {
+            tid: tid,
+            pid: pid
+        }
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            done();
+        }
+    });}
 
-function getPlaylistTracks(playlist, done){
-
+function getPlaylist(pid, done){
+    db.cypher({ 
+        query: "",
+        params: {
+            pid: pid
+        }
+    }, function(err, results){
+        if (err){
+            console.log(err);
+        }
+        else {      
+            done();
+        }
+    });
 }
 
 module.exports = {
@@ -233,5 +296,10 @@ module.exports = {
     findUser: findUser,
     addCollection: addCollection,
     getCollection: getCollection,
-    checkExistence: checkExistence
+    checkExistence: checkExistence,
+    createPlaylist: createPlaylist,
+    deletePlaylist: deletePlaylist,
+    getPlaylist: getPlaylist,
+    addTrackToPlaylist: addTrackToPlaylist,
+    removeTrackFromPlaylist: removeTrackFromPlaylist
 }     
