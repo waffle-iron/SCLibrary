@@ -229,7 +229,7 @@ function deletePlaylist(pid, done){
     db.cypher({ 
         query: "",
         params: {
-            pid: playlist.id
+            pid: pid
         }
     }, function(err, results){
         if (err){
@@ -245,8 +245,8 @@ function addTrackToPlaylist(tid, pid, done){
     db.cypher({ 
         query: "",
         params: {
-            tid: track.id,
-            pid: playlist.id
+            tid: tid,
+            pid: pid
         }
     }, function(err, results){
         if (err){
