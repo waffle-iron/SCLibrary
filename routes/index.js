@@ -46,11 +46,11 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
       //res.render('home', { token: accessToken });
       soundcloud.getLoggedInUser(accessToken, function(user){
         console.log("done getting user from SC");
+        req.session.user = user;
 
         db.addUser(user, function(){
           console.log("done adding user");
 
-          req.session.user = user;
           soundcloud.getCollection(user, function(collection){
             console.log("done getting collection from SC");
 
@@ -68,8 +68,6 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
 });
 
 router.get('/library/', requiresUser, function(req, res, next) {
-  var connect_url = req.SC.getConnectUrl();
-  var accessToken = req.session.oauth_token;
   var user = req.session.user;
   res.render('library', { user: user, client_id: config.auth.client_id});
 });
