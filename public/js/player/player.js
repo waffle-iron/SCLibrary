@@ -28,46 +28,46 @@ var lastPlayer;
 //for waveform stuff check out:
 //http://www.waveformjs.org/#examples
 function loadSong(trackid, durationms, artworkurl, waveformurl){
-  //Reset all remnants of the last song player
-  if(lastPlayer){
-    if(lastPlayer.isPlaying()){ 
-      lastPlayer.pause(); 
-      isPlaying = false;
-    }
-    lastPlayer.dispose();
-    //$(lastPlayer).unbind('time');
-    //$(lastPlayer).unbind('play');
-    //$(lastPlayer).unbind('pause');
-}
-  //Reset isPlaying boolean, change the 
-  isPlaying = false;
-  $('#pauseplay').attr('src', '../../images/playbutton.png');
-  //$('#seekicon').css("left", "0%");
-  $('#seekicon').css("width", "0%");
 
-  //Load artwork image to DOM
-  $('#artworkimg').attr('src', artworkurl);
-  //Load waveform image to DOM
-  $('#waveformimg').attr('src', waveformurl);
-  $('#waveformimg').on('load', function(){
-      var tempH =  $('#waveformimg').height();
-      var tempW =  $('#waveformimg').width();
-      $('#seekbarwrapper').css('height', tempH.toString() + "px");
-      $('#seekbarwrapper').css('width', tempW.toString() + "px");
-  });
-    
-// resize function to keep the waveform
-// stuck to the loading background
-$(window).on('resize', function(){
-    var thisH = $('#waveformimg').height();
-    var thisW = $('#waveformimg').width();
-    $('#seekbarwrapper').css('height', thisH.toString() + "px");
-    $('#seekbarwrapper').css('width', thisW.toString() + "px");
-});
-    
   SC.stream('/tracks/' + trackid, smOptions).then(function(player){
-        console.log(player);
+
+    //Reset all remnants of the last song player
+    if(lastPlayer){
+      //console.log(lastPlayer._isPlaying);
+      if(lastPlayer.isPlaying()){ 
+        lastPlayer.pause(); 
+        isPlaying = false;
+        lastPlayer.dispose();
+      }
+    }
+    //Reset isPlaying boolean, change the 
+    isPlaying = false;
+    $('#pauseplay').attr('src', '../../images/playbutton.png');
+    //$('#seekicon').css("left", "0%");
+    $('#seekicon').css("width", "0%");
+
+    //Load artwork image to DOM
+    $('#artworkimg').attr('src', artworkurl);
+    //Load waveform image to DOM
+    $('#waveformimg').attr('src', waveformurl);
+    $('#waveformimg').on('load', function(){
+        var tempH =  $('#waveformimg').height();
+        var tempW =  $('#waveformimg').width();
+        $('#seekbarwrapper').css('height', tempH.toString() + "px");
+        $('#seekbarwrapper').css('width', tempW.toString() + "px");
+    });
+      
+    // resize function to keep the waveform
+    // stuck to the loading background
+    $(window).on('resize', function(){
+        var thisH = $('#waveformimg').height();
+        var thisW = $('#waveformimg').width();
+        $('#seekbarwrapper').css('height', thisH.toString() + "px");
+        $('#seekbarwrapper').css('width', thisW.toString() + "px");
+    });
+
     lastPlayer = player;
+    //console.log(lastPlayer);
     var duration = durationms;
 
     //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -79,15 +79,18 @@ $(window).on('resize', function(){
     });
     
     //Auto play song
-    player.play(); isPlaying = true;
+    player.play(); 
+    isPlaying = true;
     //Tie out pause/play button to the "player" objects pause / play functions
     $('#pauseplaywrapper').unbind('click').click(function(e){
     	console.log('pauseplay clicked');
     	if(isPlaying && player.isPlaying()){
-    		player.pause(); isPlaying = false;
+    		player.pause(); 
+        isPlaying = false;
     	}
     	else{
-    		player.play(); isPlaying = true;
+    		player.play(); 
+        isPlaying = true;
     	}
     });
 
@@ -107,12 +110,12 @@ $(window).on('resize', function(){
       player.seek(seekPosition);
     });
 
-        //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
+    //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
     //TODO (sames) grab the waveform url from backend like above
     player.on('time', function () {
           //Get rid of all decimal points except first 2
           var percentPlayed = Math.floor((player.currentTime()/duration) * 10000)/100;
-          console.log(percentPlayed + "% played");
+          //console.log(percentPlayed + "% played");
           // added back div to make waveform orange.
           $('#back-div').css("width", percentPlayed.toString() + "%");
           //$('#seekicon').css("left", percentPlayed.toString() + "%");
@@ -122,5 +125,9 @@ $(window).on('resize', function(){
     //soundPlayer = sound;
       //html5Audio = sound._player._html5Audio;
       //html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
+  },
+  function(reason){
+    console.log(reason);
+    console.log(player);
   });
 }
