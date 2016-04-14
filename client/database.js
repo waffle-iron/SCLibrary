@@ -208,6 +208,25 @@ function getCollection(user, done){
     });
 }
 
+function createPlaylist(name, user, done){
+    
+}
+
+function deletePlaylist(playlist, done){
+    
+}
+
+function addTrackToPlaylist(track, playlist, done){
+    
+}
+
+function removeTrackFromPlaylist(name, user, done){
+    
+}
+
+function getPlaylistTracks(playlist, done){
+
+}
 
 module.exports = {
     addUser: addUser,
