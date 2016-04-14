@@ -26,7 +26,6 @@ SC.init({
   uri: config.auth.redirect_uri
 });
 
-
 var routes = require('./routes/index');
 var api = require('./routes/api');
 
