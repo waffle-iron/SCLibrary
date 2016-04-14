@@ -47,14 +47,18 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     $('#seekicon').css("width", "0%");
 
     //Load artwork image to DOM
-    $('#artworkimg').attr('src', artworkurl);
+    $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
     //Load waveform image to DOM
     $('#waveformimg').attr('src', waveformurl);
     $('#waveformimg').on('load', function(){
+        $('#player').addClass('playing');
         var tempH =  $('#waveformimg').height();
         var tempW =  $('#waveformimg').width();
         $('#seekbarwrapper').css('height', tempH.toString() + "px");
         $('#seekbarwrapper').css('width', tempW.toString() + "px");
+        // make artwork square
+        $('#artworkimg').css('height', tempH.toString() + "px");
+        $('#artworkimg').css('width', tempH.toString() + "px");
     });
       
     // resize function to keep the waveform
@@ -64,6 +68,9 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
         var thisW = $('#waveformimg').width();
         $('#seekbarwrapper').css('height', thisH.toString() + "px");
         $('#seekbarwrapper').css('width', thisW.toString() + "px");
+        // make the album artwork a square
+        $('#artworkimg').css('height', thisH.toString() + "px");
+        $('#artworkimg').css('width', thisH.toString() + "px");
     });
 
     lastPlayer = player;
