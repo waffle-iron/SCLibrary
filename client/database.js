@@ -193,6 +193,7 @@ function getCollection(user, done){
     }, function(err, results){
         if (err){
             console.log(err);
+            done(null, err);
         }
         else {
             //console.log(results);
@@ -218,6 +219,7 @@ function createPlaylist(name, uid, done){
     }, function(err, results){
         if (err){
             console.log(err);
+            done(err);
         }
         else {      
             done();
@@ -234,6 +236,7 @@ function deletePlaylist(pid, done){
     }, function(err, results){
         if (err){
             console.log(err);
+            done(err);
         }
         else {      
             done();
@@ -251,9 +254,9 @@ function addTrackToPlaylist(tid, pid, done){
     }, function(err, results){
         if (err){
             console.log(err);
+            done(err);
         }
         else {      
-            //console.log(results);
             done();
         }
     });
@@ -269,6 +272,7 @@ function removeTrackFromPlaylist(tid, pid, done){
     }, function(err, results){
         if (err){
             console.log(err);
+            done(err);
         }
         else {      
             done();
@@ -284,6 +288,7 @@ function getPlaylist(pid, done){
     }, function(err, results){
         if (err){
             console.log(err);
+            done(err);
         }
         else {      
             done();
