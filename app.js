@@ -1,5 +1,7 @@
+// Set the environment to local. This will make config.js load the configuration settings from the proper file.
 process.env.ENV = "local";
 
+// Require our node packages for use in the application.
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -10,38 +12,40 @@ var SC = require('node-soundcloud');
 var config = require('./config.js');
 var hbs = require('hbs');
 
-//Redis Store Session
+// Require routes javascript files for use in application routing.
+var routes = require('./routes/index');
+var api = require('./routes/api');
+
+// Redis Store Session
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 
-//Allows us to pass JSON from server side (express? i think) to a client JS file via the HTML file. Look in player.js at the bottom for an example
+// Allows us to pass JSON from server side (express? i think) to a client JS file via the HTML file. Look in player.js at the bottom for an example
  hbs.registerHelper('json', function(context) {
     return JSON.stringify(context);
  });
 
-// Initialize client
+// Initialize Soundcloud client
 SC.init({
   id: config.auth.client_id,
   secret: config.auth.client_secret,
   uri: config.auth.redirect_uri
 });
 
-var routes = require('./routes/index');
-var api = require('./routes/api');
-
+// Initialize the express application.
 var app = express();
 
-//create session manager using a redis store
+// Create session manager using a Redis store.
 app.use(session({
     store: new RedisStore(),
     secret: config.redis_secret
 }));
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// set the environment variable
+// Set the environment variable
 app.set('env', 'dev');
 
 // uncomment after placing your favicon in /public
@@ -49,12 +53,15 @@ app.set('env', 'dev');
 app.use(logger('dev'));
 app.use(bodyParser.text({type : 'application/text-enriched', limit: '10mb'}));
 
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+// Setup bodyParser and cookieParser middlewares.
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Expose contents of 'public' folder on the top level domain
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Allow access to bower_components
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
 // Make our SC middleware accessible to our router
@@ -63,10 +70,11 @@ app.use(function(req,res,next){
     next();
 });
 
+// Route requests to their corresponding route files.
 app.use('/', routes);
 app.use('/api/', api);
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
