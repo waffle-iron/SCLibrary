@@ -5,18 +5,13 @@ SCLibrary is a library interface for SoundCloud, making use of the SoundCloud AP
 
 Download and install the following software:
 
+
 1. [Git](https://git-scm.com/downloads)
-
 2. [Node.js](https://nodejs.org/en/download/)
-
 3. [Neo4j Server](http://neo4j.com/)
-
 4. Redis Server
-
     - [Windows](https://github.com/MSOpenTech/redis/releases/tag/win-2.8.2400)
-
-    - [Mac & Linux](http://redis.io/download)
-    
+    - [Mac](http://redis.io/download)
     - Ubuntu   
             ```bash
             sudo apt-get install redis-server
