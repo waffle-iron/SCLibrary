@@ -1,7 +1,7 @@
+<aside class="user-wrapper"><span>You are logged in as <a href="#" class="username">{{user.username}}</a>.</span></aside>
 
-
-<div id="player" style="width: 100%; height:200px;"> 
-
+<div id="player" style="width: 100%;"> 
+    
 	<div id="pauseplaywrapper" style="display:inline-block; float: left; height:100%;">
 		<img src="../images/playbutton.png" id="pauseplay" alt="" style="display: inline-block;"/>
 	</div>
@@ -13,13 +13,10 @@
         <div id="back-div"></div>
 	</div>
 	<div id="artwrapper" style="display:inline-block; float: left;">
-		<img id="artworkimg" />
+		<div id="artworkimg"></div>
 	</div>
 </div>
 
-
-You are logged in as {{user.username}}.
-<br><br>
 
 <div id="library" ng-app="Library">
 	<library>
