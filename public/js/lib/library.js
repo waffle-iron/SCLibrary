@@ -1,3 +1,6 @@
+var queue = new Queue();
+//how to use: http://code.stephenmorley.org/javascript/queues/
+
 angular.module("Library", [])
     .factory("libraryLoader", ["$http", function ($http) {
         function load(done) {
@@ -34,7 +37,23 @@ angular.module("Library", [])
                     return date.substring(0, 10);
                 }
 
-                ctlr.playSong = function(track){
+                ctlr.playSong = function(track, element){
+
+                    queue = new Queue();
+                    var i = 0;
+                    while (element.$$nextSibling && i < 20){
+                        var properties = element.$$nextSibling.track.t.properties;
+                        var options = { 
+                            scid: properties.id,
+                            duration: properties.duration,
+                            artwork_url: properties.artwork_url,
+                            waveform_url: properties.waveform_url
+                        }
+                        queue.enqueue(options);
+                        element = element.$$nextSibling;
+                        i++;
+                    }
+
                     var properties = track.t.properties;
                     loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
                 }

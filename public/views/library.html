@@ -32,7 +32,7 @@ jQuery(document).on('load', function () {
         </tr>
     </thead>
     <tbody class="list">
-        <tr ng-repeat="track in ctlr.data" ng-click="ctlr.playSong(track)">
+        <tr ng-repeat="track in ctlr.data" ng-click="ctlr.playSong(track, this)">
             <!--td >x</td-->
             <td class="channel">{{track.c.properties.name}}</td>
             <td class="name">{{track.t.properties.name}}</td>
