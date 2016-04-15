@@ -1,7 +1,6 @@
-<div class = "search-wrapper">
-    <input class="search" placeholder="Search" style="float: right;"/>
-    <a href="" class="btn btn-search" style="float: right;"><i class="fa fa-search"></i>&nbsp</a>
-</div>
+<!--div class = "search-wrapper">
+
+</div-->
 <!--script>
 // TODO: Potential Table sizing thing 
 jQuery(document).on('load', function () {
@@ -12,6 +11,7 @@ jQuery(document).on('load', function () {
         .end();
 });
 </script-->
+<<<<<<< Updated upstream
 <table cellpadding="0" cellspacing="0" id="lib-view" style="clear:both;">
     <colgroup>
         <!--col /-->
@@ -42,3 +42,49 @@ jQuery(document).on('load', function () {
         </tr>
     </tbody>
 </table>
+=======
+<div class="left-side-wrapper">
+    <ul>
+        <li>Library</li>
+        <li>
+            <ul>
+                <li>Songs</li>
+                <li>Channels</li>
+                <li>Genres</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div class="library-wrapper">
+    <table cellpadding="0" cellspacing="0" id="lib-view" style="clear:both;">
+        <colgroup>
+            <!--col /-->
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+        </colgroup>
+        <thead>
+            <tr>
+                <!--td> Play </td-->
+                <td class="sort" data-sort="channel"><a class="dark">Channel</a></td>
+                <td class="sort" data-sort="name"><a class="dark">Title</a></td>
+                <td class="sort" data-sort="date"><a class="dark">Date</a></td>
+                <td class="sort" data-sort="genre"><a class="dark">Genre</a></td>
+                <td class="sort" data-sort="duration"><a class="dark">Duration</a></td>
+            </tr>
+        </thead>
+        <tbody class="list">
+            <tr ng-repeat="track in ctlr.data" ng-click="ctlr.playSong(track)">
+                <!--td >x</td-->
+                <td class="channel">{{track.c.properties.name}}</td>
+                <td class="name">{{track.t.properties.name}}</td>
+                <td class="date">{{ctlr.formatDate(track.t.properties.created_at)}}</td>
+                <td class="genre">{{track.t.properties.genre}}</td>
+                <td class="duration">{{ctlr.convertTime(track.t.properties.duration)}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+>>>>>>> Stashed changes

@@ -13,11 +13,10 @@ body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     background-image: url('../images/confectionary.png');
     margin: 0;
+    overflow: hidden
 }
 /*Delete if we use bootstrap*/
-div.container {
-    padding: 0 50px;
-}
+
 .pull-left {
     display: block;
     float: left;
@@ -28,6 +27,13 @@ div.container {
 }
 .hidden {
     display: none;
+}
+aside {
+    /*margin-left: -50px;
+    margin-right: -50px;*/
+    background-color: #232323;
+    padding: 12px 30px;
+    color: #e3e3e3;
 }
 /*End bootstrap delete*/
 a.btn:hover,
@@ -106,6 +112,19 @@ input.search {
 
 /*Library table styles*/
 
+.left-side-wrapper {
+    width: 20%;
+    float:left;
+    height: 100vh;
+    display: inline-block;
+    background-color: #e3e3e3;
+}
+.library-wrapper {
+    width:80%;
+    float: left;
+    clear: none;
+}
+
 * {
     font-family: 'Oxygen', sans-serif;
     font-weight: 300;
@@ -137,20 +156,19 @@ tr.ng-scope:nth-of-type(2n+1) {
 tbody tr > td {
     border-right: 1px solid #e3e3e3;
 }
-tbody tr > td:first-of-type {
+/*tbody tr > td:first-of-type {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
 tbody tr > td:last-of-type {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-}
+}*/
 thead > tr {
     padding: 4px 6px;
     text-align: center;
 }
 thead > tr > td {
-    border-radius: 5px;
     border: 1px solid #e3e3e3;
     border-bottom: #afafaf 1px solid;
     color: #333;
@@ -184,10 +202,19 @@ thead > tr > td {
     }
 }
 
+#left-bar {
+    
+}
 #player {
     display: inline-block;
     max-height: 0px;
-    transition: max-height .5s ease;
+    transition: max-height 1s ease;
+}
+#player #playpausewrapper {
+    display: none;
+}
+#player.playing {
+    display: block;
 }
 #player.playing {
     /* Ridiculous max height for transiton */
@@ -211,28 +238,17 @@ div#back-div {
     background: #333;
     z-index: -2;
     max-width: 694px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    
     overflow: hidden;
 }
 
 #artworkimg {
     background-position: 50% 50%;
     background-size: cover;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
     overflow: hidden;
 }
 
 /*  */
-
-aside {
-    margin-left: -50px;
-    margin-right: -50px;
-    background-color: #232323;
-    padding: 12px 30px;
-    color: #e3e3e3;
-}
 
 /* Top bar */
 .top-wrapper {
