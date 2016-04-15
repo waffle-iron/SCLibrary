@@ -1,29 +1,30 @@
+/* database.js
+ * A client used to interface with the neo4j database to retrieve and store information.
+ */
+
 var config = require('../config.js');
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(config.neo4j_href);
 
+// Add a user to the database if they do not already exist.
 function addUser(user, done){
     // Search the database to find a match
-    
     db.cypher({ 
         query: 'MATCH (user:Channel {scuid: {scuid}}) RETURN user',
         params: {
             scuid: user.id
         },
-    }, function(err, results){
-        if (err){
-            res.json({"error":"error"});
+    }, function(error, results){
+        if (error){
+            done(error);
         }
         // If no match, create an entry for the user
         if (results.length == 0) {
             console.log('User not found. Going to create user ' + user.username + '.');
             // Create an entry for the user
-            
-            var query = 'CREATE (user:Channel {name: {name}, scuid: {scuid},' +
-                                    'permalink: {permalink}, avatar_url: {avatar_url},' +
-                                    'country: {country} }) RETURN user';
             db.cypher({ 
-                query: query,
+                query: 'CREATE (user:Channel {name: {name}, scuid: {scuid}, permalink: {permalink}, '
+                        + 'avatar_url: {avatar_url}, country: {country} }) RETURN user',
                 params: {
                     name: user.username,
                     scuid: user.id,
@@ -31,13 +32,11 @@ function addUser(user, done){
                     avatar_url: user.avatar_url,
                     country: user.country
                 },
-            }, function(err, results){
-                if (err){
-                    console.log(err);
+            }, function(error, results){
+                if (error){
+                    done(error);
                 } else {
-                    //console.log(results);
-                    console.log("User added to database");
-                    // Request the users soundcloud ID from the server
+                    // User was added to the database.
                     done();
                 }
             });
@@ -50,16 +49,16 @@ function addUser(user, done){
     });
 }
 
-function findUser(user, done){
-
+// Find a user from the database given their scuid.
+function findUser(scuid, done){
     db.cypher({ 
         query: 'MATCH (user:Channel { scuid: {scuid} }) RETURN user',
         params: {
-            scuid: user.id
+            scuid: scuid
         },
-    }, function(err, results){
-        if (err){
-            console.log(err);
+    }, function(error, results){
+        if (error){
+            done(null, null, error);
         }
         else {      
             // If no match, create an entry for the user
@@ -76,18 +75,25 @@ function findUser(user, done){
     });
 }
 
+// Given a collection of tracks and a user, create [:LIKES] relationships
+// between each track and the user if they do not already exist, while adding
+// tracks to the database that do not yet exist.
 function addCollection(user, collection, done){
     console.log("adding collection to database");
     addTracks(user, collection, 0, done);
 }
 
+// Recursive helper function for addCollection.
 function addTracks(user, collection, index, done){
     track = collection[index];
     if (track.kind == 'track'){
         
-        checkExistence(user, track, function(found){
+        checkExistence(user, track, function(found, error){
+            if (error)
+                done(error);
             //user to track relationship already exists in database; done.
-            if (found) done();
+            if (found) 
+                done();
             //otherwise relationship does not yet exist; create it.
             else {
                 var query = 'MATCH (user:Channel {name: {name}}) ' + 
@@ -125,9 +131,9 @@ function addTracks(user, collection, index, done){
                         avatar_url: track.user.avatar_url,
                         uid: track.user.id
                     },
-                }, function(err, results){
-                    if (err){
-                        console.log(err);
+                }, function(error, results){
+                    if (error){
+                        done(error);
                     }
                     else {
                         console.log("Track added!");
@@ -148,11 +154,16 @@ function addTracks(user, collection, index, done){
         console.log("attempted to add playlist");
         //TODO: Add tracks from this playlist 
         index++;
-        addTracks(user, collection, index, done);
+        if (index < collection.length - 1) 
+            addTracks(user, collection, index, done);
+        else
+            done();
     }
 
 }
 
+// Check for the existence of a [:LIKES] relationship between a channel and a track. 
+// Return true if it exists, false if it does not. 
 function checkExistence(user, track, done){
 
     db.cypher({ 
@@ -162,9 +173,9 @@ function checkExistence(user, track, done){
             scid: track.id
         },
 
-    }, function(err, results){
-        if (err){
-            console.log(err);
+    }, function(error, results){
+        if (error){
+            done(null, error);
         }
         else {      
             //console.log(results);
@@ -182,6 +193,8 @@ function checkExistence(user, track, done){
     });
 }
 
+// Given a user, find and return their entire collection of songs, along with the channels
+// that uploaded them.
 function getCollection(user, done){
 
     db.cypher({ 
@@ -190,10 +203,10 @@ function getCollection(user, done){
         params: {
             scuid: user.id
         },
-    }, function(err, results){
-        if (err){
-            console.log(err);
-            done(null, err);
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(null, error);
         }
         else {
             //console.log(results);
@@ -209,6 +222,8 @@ function getCollection(user, done){
     });
 }
 
+// Given a playlist name and a user id, create a playlist and assign 
+// ownership to the user.
 function createPlaylist(name, uid, done){
     db.cypher({ 
         query: "",
@@ -216,10 +231,10 @@ function createPlaylist(name, uid, done){
             playlist_name: name,
             uid: uid
         }
-    }, function(err, results){
-        if (err){
-            console.log(err);
-            done(err);
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(error);
         }
         else {      
             done();
@@ -227,16 +242,17 @@ function createPlaylist(name, uid, done){
     });
 }
 
+// Given a playlist id, remove that playlist from the database.
 function deletePlaylist(pid, done){
     db.cypher({ 
         query: "",
         params: {
             pid: pid
         }
-    }, function(err, results){
-        if (err){
-            console.log(err);
-            done(err);
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(error);
         }
         else {      
             done();
@@ -244,6 +260,7 @@ function deletePlaylist(pid, done){
     });    
 }
 
+// Given a track id and a playlist id, create a playlist contains track relationship.
 function addTrackToPlaylist(tid, pid, done){
     db.cypher({ 
         query: "",
@@ -251,10 +268,10 @@ function addTrackToPlaylist(tid, pid, done){
             tid: tid,
             pid: pid
         }
-    }, function(err, results){
-        if (err){
-            console.log(err);
-            done(err);
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(error);
         }
         else {      
             done();
@@ -262,6 +279,7 @@ function addTrackToPlaylist(tid, pid, done){
     });
 }
 
+// Given a track id and a playlist id, remove any playlist contains track relationship between them.
 function removeTrackFromPlaylist(tid, pid, done){
     db.cypher({ 
         query: "",
@@ -269,26 +287,27 @@ function removeTrackFromPlaylist(tid, pid, done){
             tid: tid,
             pid: pid
         }
-    }, function(err, results){
-        if (err){
-            console.log(err);
-            done(err);
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(error);
         }
         else {      
             done();
         }
     });}
 
+// Given a playlist id, return the list of all tracks contained by the playlist.
 function getPlaylist(pid, done){
     db.cypher({ 
         query: "",
         params: {
             pid: pid
         }
-    }, function(err, results){
-        if (err){
-            console.log(err);
-            done(err);
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(error);
         }
         else {      
             done();
