@@ -13,7 +13,6 @@ body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     background-image: url('../images/confectionary.png');
     margin: 0;
-    overflow: hidden
 }
 /*Delete if we use bootstrap*/
 
