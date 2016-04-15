@@ -29,6 +29,7 @@ var lastPlayer;
 //http://www.waveformjs.org/#examples
 function loadSong(trackid, durationms, artworkurl, waveformurl){
 
+                    console.log(queue.getLength());
   SC.stream('/tracks/' + trackid, smOptions).then(function(player){
 
     //Reset all remnants of the last song player
