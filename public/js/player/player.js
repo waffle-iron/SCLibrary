@@ -29,7 +29,6 @@ var lastPlayer;
 //http://www.waveformjs.org/#examples
 function loadSong(trackid, durationms, artworkurl, waveformurl){
 
-                    console.log(queue.getLength());
   SC.stream('/tracks/' + trackid, smOptions).then(function(player){
 
     //Reset all remnants of the last song player
@@ -127,8 +126,7 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
       //html5Audio = sound._player._html5Audio;
       //html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
   },
-  function(reason){
-    console.log(reason);
-    console.log(player);
+  function(error){
+    console.log(error);
   });
 }
