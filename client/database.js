@@ -50,7 +50,7 @@ function addUser(user, done){
 }
 
 // Find a user from the database given their scuid.
-function findUser(scuid, done){
+function getUser(scuid, done){
     db.cypher({ 
         query: 'MATCH (user:Channel { scuid: {scuid} }) RETURN user',
         params: {
@@ -58,18 +58,18 @@ function findUser(scuid, done){
         },
     }, function(error, results){
         if (error){
-            done(null, null, error);
+            done(null, error);
         }
         else {      
             // If no match, create an entry for the user
             if (results.length == 0) {
                 console.log("No user found.");
-                done(false, null);
+                done(null);
                 //TODO: Update access token
             }
             else {
                 console.log("User was found.");
-                done(true, results);
+                done(results);
             }
         }
     });
@@ -225,8 +225,11 @@ function getCollection(user, done){
 // Given a playlist name and a user id, create a playlist and assign 
 // ownership to the user.
 function createPlaylist(name, uid, done){
+    //TODO: Make sure playlists are not created w/ duplicate names
     db.cypher({ 
-        query: "",
+        query: "MATCH (user:Channel {scuid: {uid} }) " + 
+               "CREATE (playlist:Playlist {name: {playlist_name} })<-[r:OWNS]-(user) " +
+               "RETURN user, r, playlist",
         params: {
             playlist_name: name,
             uid: uid
@@ -237,6 +240,7 @@ function createPlaylist(name, uid, done){
             done(error);
         }
         else {      
+            console.log(results);
             done();
         }
     });
@@ -245,7 +249,7 @@ function createPlaylist(name, uid, done){
 // Given a playlist id, remove that playlist from the database.
 function deletePlaylist(pid, done){
     db.cypher({ 
-        query: "",
+        query: "MATCH (playlist:Playlist) WHERE id(playlist) = {pid} DETACH DELETE playlist",
         params: {
             pid: pid
         }
@@ -255,6 +259,7 @@ function deletePlaylist(pid, done){
             done(error);
         }
         else {      
+            console.log(results);
             done();
         }
     });    
@@ -263,7 +268,10 @@ function deletePlaylist(pid, done){
 // Given a track id and a playlist id, create a playlist contains track relationship.
 function addTrackToPlaylist(tid, pid, done){
     db.cypher({ 
-        query: "",
+        query: "MATCH (track:Track {scid: {tid} }), (playlist:Playlist) " + 
+               "WHERE id(playlist) = {pid} " +
+               "CREATE (playlist)-[r:CONTAINS]->(track) " +
+               "RETURN playlist, r, track",
         params: {
             tid: tid,
             pid: pid
@@ -274,15 +282,18 @@ function addTrackToPlaylist(tid, pid, done){
             done(error);
         }
         else {      
+            console.log(results);
             done();
         }
     });
-}
+}255784032
 
 // Given a track id and a playlist id, remove any playlist contains track relationship between them.
 function removeTrackFromPlaylist(tid, pid, done){
     db.cypher({ 
-        query: "",
+        query: "MATCH (Track {scid: {tid} })<-[r:CONTAINS]-(playlist:Playlist) " + 
+               "WHERE id(playlist) = 7108 " +
+               "DELETE r",
         params: {
             tid: tid,
             pid: pid
@@ -293,6 +304,7 @@ function removeTrackFromPlaylist(tid, pid, done){
             done(error);
         }
         else {      
+            console.log(results);
             done();
         }
     });}
@@ -300,7 +312,9 @@ function removeTrackFromPlaylist(tid, pid, done){
 // Given a playlist id, return the list of all tracks contained by the playlist.
 function getPlaylist(pid, done){
     db.cypher({ 
-        query: "",
+        query: "MATCH (playlist:Playlist)-[:CONTAINS]->(track:Track) " +
+               "WHERE id(playlist) = {pid}" +
+               "RETURN track",
         params: {
             pid: pid
         }
@@ -310,6 +324,27 @@ function getPlaylist(pid, done){
             done(error);
         }
         else {      
+            console.log(results);
+            done();
+        }
+    });
+}
+
+// Given a user, return the list of all playlists owned by the user.
+function getPlaylists(uid, done){
+    db.cypher({ 
+        query: "MATCH (Channel {scuid: {uid} })-[:OWNS]->(playlist:Playlist) " +
+               "RETURN playlist",
+        params: {
+            pid: pid
+        }
+    }, function(error, results){
+        if (error){
+            console.log(error);
+            done(error);
+        }
+        else {      
+            console.log(results);
             done();
         }
     });
@@ -317,13 +352,14 @@ function getPlaylist(pid, done){
 
 module.exports = {
     addUser: addUser,
-    findUser: findUser,
+    getUser: getUser,
     addCollection: addCollection,
     getCollection: getCollection,
     checkExistence: checkExistence,
     createPlaylist: createPlaylist,
     deletePlaylist: deletePlaylist,
     getPlaylist: getPlaylist,
+    getPlaylists: getPlaylists,
     addTrackToPlaylist: addTrackToPlaylist,
     removeTrackFromPlaylist: removeTrackFromPlaylist
 }     
