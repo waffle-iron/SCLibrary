@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var db = require('../client/database');
 
-var playlist = require('./api/playlist.js');
+var users = require('./api/users.js');
+var playlists = require('./api/playlists.js');
 
-router.use('/playlist/', playlist);
+router.use('/users/', users);
+router.use('/playlists/', playlists);
 
 /* GET API index. */
 router.get('/', function(req, res, next) {
