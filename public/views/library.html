@@ -11,9 +11,10 @@ jQuery(document).on('load', function () {
         .end();
 });
 </script-->
-<input class="search" placeholder="Search" style="float: right;" />
 
 <div class="left-side-wrapper">
+
+    <input type="text" placeholder="Search" ng-model="ctlr.searchTerm"/>
     <ul>
         <li>Library</li>
             <ul>
@@ -69,7 +70,7 @@ jQuery(document).on('load', function () {
             </tr>
         </thead>
         <tbody class="list">
-            <tr ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse" ng-click="ctlr.playSong(track, this)">
+            <tr ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)">
                 <!--td >x</td-->
                 <td class="channel">{{track.c.properties.name}}</td>
                 <td class="name">{{track.t.properties.name}}</td>

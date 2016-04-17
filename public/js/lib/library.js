@@ -65,6 +65,7 @@ angular.module("Library", [])
 
                 ctlr.sortType = 'name';
                 ctlr.sortReverse = false;
+                ctlr.searchTerm = '';
 
                 ctlr.convertTime = function(time){
                     var min_sec = time / 1000 / 60;
