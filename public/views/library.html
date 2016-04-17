@@ -48,7 +48,6 @@ jQuery(document).on('load', function () {
         </colgroup>
         <thead>
             <tr>
-                <!--td> Play </td-->
                 <td ng-click="ctlr.updateSort('c.properties.name')">
                     <a class="dark">Channel</a>
                     <span ng-show="ctlr.sortType == 'c.properties.name' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
@@ -77,7 +76,7 @@ jQuery(document).on('load', function () {
             </tr>
         </thead>
         <tbody class="list">
-            <tr ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)">
+            <tr class="track-row" ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)">
                 <!--td >x</td-->
                 <td class="channel">{{track.c.properties.name}}</td>
                 <td class="name">{{track.t.properties.name}}</td>
