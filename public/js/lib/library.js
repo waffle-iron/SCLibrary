@@ -10,9 +10,46 @@ angular.module("Library", [])
                 })
                 .error(function(data, status, headers, config){
                     console.log(status);
-                    var ordersErr = new Error(data);
-                    ordersErr.code = status;
-                    done(ordersErr);
+                    var libraryErr = new Error(data);
+                    libraryErr.code = status;
+                    done(libraryErr);
+                });
+        }
+        return {
+            load: load
+        };
+    }])
+    .factory("playlistsLoader", ["$http", function ($http) {
+        function load(done) {
+            $http.get('http://localhost:3000/api/myplaylists')
+                .success(function(data, status, headers, config){
+                    done(null, data);
+                })
+                .error(function(data, status, headers, config){
+                    console.log(status);
+                    var playlistErr = new Error(data);
+                    playlistErr.code = status;
+                    done(playlistErr);
+                });
+        }
+        return {
+            load: load
+        };
+    }])
+    .factory("playlistLoader", ["$http", function ($http) {
+        function load(pid, done) {
+            console.log(pid);
+            var url = 'http://localhost:3000/api/playlists/' + pid;
+            console.log(url);
+            $http.get(url)
+                .success(function(data, status, headers, config){
+                    done(null, data);
+                })
+                .error(function(data, status, headers, config){
+                    console.log(status);
+                    var playlistErr = new Error(data);
+                    playlistErr.code = status;
+                    done(playlistErr);
                 });
         }
         return {
@@ -23,7 +60,7 @@ angular.module("Library", [])
         return {
             restrict: 'E',
             templateUrl: 'http://localhost:3000/views/library.html',
-            controller: ["libraryLoader", "$q", '$http', function (libraryLoader, $q, $http) {
+            controller: ["libraryLoader", "playlistsLoader", "playlistLoader", "$q", '$http', function (libraryLoader, playlistsLoader, playlistLoader, $q, $http) {
                 var ctlr = this;
 
                 ctlr.convertTime = function(time){
@@ -58,31 +95,44 @@ angular.module("Library", [])
                     loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
                 }
 
+                ctlr.loadPlaylist = function(playlist){
+                    playlistLoader.load(playlist.p._id, function(err, result){
+                        if (err)
+                            console.log(err);
+                        else {
+                            console.log(result);
+                            ctlr.display = result;
+                        }
+                    })
+                }
+
+                ctlr.displaySongs = function(){
+                    ctlr.display = ctlr.collection;
+                }
+
                 libraryLoader.load(function (err, result) {
                     if (err) {
-                        ctlr.isLoaded = false;
+                        console.log(err);
                     }
                     else {
-                        ctlr.data = result;
-                        ctlr.isLoaded = true;
-                        //TODO: Fix this shite code. The function doesn't work
-                        //      when called immediately.
-                        setTimeout(function() { createList(); }, 1000);
+                        console.log(result);
+                        ctlr.collection = result;
+                        ctlr.display = result;
                     }
                 });
+
+                playlistsLoader.load(function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(result);
+                        ctlr.playlists = result;
+                    }
+                });
+
             }],
             controllerAs: "ctlr"
         };
     }]);
 
-
-var options = {
-    valueNames: ['channel', 'name', 'genre', 'duration', 'date']
-};
-
-function createList(){
-    console.log("create list");
-    new List('library', options);
-}
-
-//TODO: Sort by date. list.js only seems to sort alphanumeric strings.

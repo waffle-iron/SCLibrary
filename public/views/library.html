@@ -11,50 +11,21 @@ jQuery(document).on('load', function () {
         .end();
 });
 </script-->
-<<<<<<< Updated upstream
-                      <input class="search" placeholder="Search" style="float: right;" />
+<input class="search" placeholder="Search" style="float: right;" />
 
-<table cellpadding="0" cellspacing="0" id="lib-view" style="clear:both;">
-    <colgroup>
-        <!--col /-->
-        <col />
-        <col />
-        <col />
-        <col />
-        <col />
-    </colgroup>
-    <thead>
-        <tr>
-            <!--td> Play </td-->
-            <td class="sort" data-sort="channel"><a class="dark">Channel</a></td>
-            <td class="sort" data-sort="name"><a class="dark">Title</a></td>
-            <td class="sort" data-sort="date"><a class="dark">Date</a></td>
-            <td class="sort" data-sort="genre"><a class="dark">Genre</a></td>
-            <td class="sort" data-sort="duration"><a class="dark">Duration</a></td>
-        </tr>
-    </thead>
-    <tbody class="list">
-        <tr ng-repeat="track in ctlr.data" ng-click="ctlr.playSong(track, this)">
-            <!--td >x</td-->
-            <td class="channel">{{track.c.properties.name}}</td>
-            <td class="name">{{track.t.properties.name}}</td>
-            <td class="date">{{ctlr.formatDate(track.t.properties.created_at)}}</td>
-            <td class="genre">{{track.t.properties.genre}}</td>
-            <td class="duration">{{ctlr.convertTime(track.t.properties.duration)}}</td>
-        </tr>
-    </tbody>
-</table>
-=======
 <div class="left-side-wrapper">
     <ul>
         <li>Library</li>
-        <li>
             <ul>
-                <li>Songs</li>
+                <li ng-click="ctlr.displaySongs()">Songs</li>
                 <li>Channels</li>
                 <li>Genres</li>
             </ul>
-        </li>
+
+        <li>Playlists</li>
+            <ul ng-repeat="playlist in ctlr.playlists">
+                <li ng-click="ctlr.loadPlaylist(playlist)">{{playlist.p.properties.name}}</li>
+            </ul>
     </ul>
 </div>
 <div class="library-wrapper">
@@ -70,15 +41,15 @@ jQuery(document).on('load', function () {
         <thead>
             <tr>
                 <!--td> Play </td-->
-                <td class="sort" data-sort="channel"><a class="dark">Channel</a></td>
-                <td class="sort" data-sort="name"><a class="dark">Title</a></td>
-                <td class="sort" data-sort="date"><a class="dark">Date</a></td>
-                <td class="sort" data-sort="genre"><a class="dark">Genre</a></td>
-                <td class="sort" data-sort="duration"><a class="dark">Duration</a></td>
+                <td data-sort="channel"><a class="dark">Channel</a></td>
+                <td data-sort="name"><a class="dark">Title</a></td>
+                <td data-sort="date"><a class="dark">Date</a></td>
+                <td data-sort="genre"><a class="dark">Genre</a></td>
+                <td data-sort="duration"><a class="dark">Duration</a></td>
             </tr>
         </thead>
         <tbody class="list">
-            <tr ng-repeat="track in ctlr.data" ng-click="ctlr.playSong(track)">
+            <tr ng-repeat="track in ctlr.display" ng-click="ctlr.playSong(track, this)">
                 <!--td >x</td-->
                 <td class="channel">{{track.c.properties.name}}</td>
                 <td class="name">{{track.t.properties.name}}</td>
@@ -89,4 +60,3 @@ jQuery(document).on('load', function () {
         </tbody>
     </table>
 </div>
->>>>>>> Stashed changes
