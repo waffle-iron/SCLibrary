@@ -2,34 +2,17 @@ var queue = new Queue();
 //how to use: http://code.stephenmorley.org/javascript/queues/
 
 angular.module("Library", [])
-    .factory("libraryLoader", ["$http", function ($http) {
-        function load(done) {
-            $http.get('http://localhost:3000/api/mycollection')
+    .factory("httpLoader", ["$http", function ($http) {
+        function load(href, done) {
+            $http.get(href)
                 .success(function(data, status, headers, config){
                     done(null, data);
                 })
                 .error(function(data, status, headers, config){
                     console.log(status);
-                    var libraryErr = new Error(data);
-                    libraryErr.code = status;
-                    done(libraryErr);
-                });
-        }
-        return {
-            load: load
-        };
-    }])
-    .factory("playlistsLoader", ["$http", function ($http) {
-        function load(done) {
-            $http.get('http://localhost:3000/api/myplaylists')
-                .success(function(data, status, headers, config){
-                    done(null, data);
-                })
-                .error(function(data, status, headers, config){
-                    console.log(status);
-                    var playlistErr = new Error(data);
-                    playlistErr.code = status;
-                    done(playlistErr);
+                    var err = new Error(data);
+                    err.code = status;
+                    done(err);
                 });
         }
         return {
@@ -60,7 +43,7 @@ angular.module("Library", [])
         return {
             restrict: 'E',
             templateUrl: 'http://localhost:3000/views/library.html',
-            controller: ["libraryLoader", "playlistsLoader", "playlistLoader", "$q", '$http', function (libraryLoader, playlistsLoader, playlistLoader, $q, $http) {
+            controller: ["httpLoader", "$q", '$http', function (httpLoader, $q, $http) {
                 var ctlr = this;
 
                 ctlr.sortType = 'name';
@@ -108,11 +91,11 @@ angular.module("Library", [])
                 }
 
                 ctlr.loadPlaylist = function(playlist){
-                    playlistLoader.load(playlist.p._id, function(err, result){
+                    var url = 'http://localhost:3000/api/playlists/' + playlist.p._id;
+                    httpLoader.load(url, function(err, result){
                         if (err)
                             console.log(err);
                         else {
-                            console.log(result);
                             ctlr.display = result;
                         }
                     })
@@ -122,23 +105,21 @@ angular.module("Library", [])
                     ctlr.display = ctlr.collection;
                 }
 
-                libraryLoader.load(function (err, result) {
+                httpLoader.load('http://localhost:3000/api/mycollection', function (err, result) {
                     if (err) {
                         console.log(err);
                     }
                     else {
-                        console.log(result);
                         ctlr.collection = result;
                         ctlr.display = result;
                     }
                 });
 
-                playlistsLoader.load(function (err, result) {
+                httpLoader.load('http://localhost:3000/api/myplaylists', function (err, result) {
                     if (err) {
                         console.log(err);
                     }
                     else {
-                        console.log(result);
                         ctlr.playlists = result;
                     }
                 });
