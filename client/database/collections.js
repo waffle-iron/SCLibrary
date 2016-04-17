@@ -24,7 +24,7 @@ module.exports = function(db){
                     done();
                 //otherwise relationship does not yet exist; create it.
                 else {
-                    var query = 'MATCH (user:Channel {name: {name}}) ' + 
+                    var query = 'MATCH (u:Channel {name: {name}}) ' + 
                                 'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
                                 'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
                     if(track.genre != null)
@@ -36,9 +36,9 @@ module.exports = function(db){
                     query = query + 'waveform_url: {waveform_url} }) ' +
                                 'MERGE (c:Channel { name: {channel} }) ' + 
                                 'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
-                                'CREATE (user)-[r1:LIKES_TRACK]->(t) ' +
+                                'CREATE (u)-[r1:LIKES_TRACK]->(t) ' +
                                 'CREATE (c)-[r2:UPLOADED]->(t) ' +
-                                'RETURN user, r1, c, r2, t';
+                                'RETURN u, r1, c, r2, t';
 
                     db.cypher({ 
                         query: query,
@@ -95,7 +95,7 @@ module.exports = function(db){
     module.checkExistence = function(user, track, done){
 
         db.cypher({ 
-            query: 'MATCH (user:Channel {scuid: {scuid} }), (t:Track {scid: {scid} } ), (user)-[:LIKES_TRACK]->(t) return user, t',
+            query: 'MATCH (u:Channel {scuid: {scuid} }), (t:Track {scid: {scid} } ), (u)-[:LIKES_TRACK]->(t) return u, t',
             params: {
                 scuid: user.id,
                 scid: track.id
@@ -125,7 +125,7 @@ module.exports = function(db){
     // that uploaded them.
     module.getCollection = function(uid, done){
         db.cypher({ 
-            query: 'MATCH (currUser:Channel { scuid: {scuid}}),(currUser)-[:LIKES_TRACK]->(t)'
+            query: 'MATCH (u:Channel { scuid: {scuid}}),(u)-[:LIKES_TRACK]->(t)'
                     + '<-[:UPLOADED]-(c) RETURN t, c',
             params: {
                 scuid: uid
