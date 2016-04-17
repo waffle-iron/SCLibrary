@@ -28,7 +28,7 @@ router.post('/', function(req, res, next){
 });
 
 /* DELETE playlist */
-router.post('/:id', function(req, res, next){
+router.delete('/:id', function(req, res, next){
 	db.deletePlaylist(req.params.id, function(error){
 		if (error)
 			res.json({"error":"failed"});

@@ -32,7 +32,7 @@ jQuery(document).on('load', function () {
 
             <!-- Why is this not sorting? -->
             <ul ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name" >
-                <li ng-click="ctlr.loadPlaylist(playlist)">{{playlist.p.properties.name}}</li>
+                <li ng-click="ctlr.loadPlaylist(playlist)">{{playlist.p.properties.name}}</li><span ng-click="ctlr.deletePlaylist(playlist)">X</span>
             </ul>
     </ul>
 </div>

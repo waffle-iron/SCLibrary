@@ -95,6 +95,7 @@ app.directive("library", [function (){
                 }); 
 
                 $('.playlistForm').hide();
+                ctlr.playlistInput = '';
             }
 
 
@@ -106,13 +107,35 @@ app.directive("library", [function (){
                         console.log(err);
                     else {
                         ctlr.display = result;
+                        ctlr.currPlaylist = playlist.p._id;
                     }
                 })
+            }
+
+            // Delete playlist with permission from the user.
+            ctlr.deletePlaylist = function(playlist){
+                if (confirm("Are you sure you want to delete?") == true){
+                    var id = playlist.p._id;
+                    var url = 'http://localhost:3000/api/playlists/' + id;
+                    $http.delete(url).then(function(response){
+                        console.log(response);
+                        if (ctlr.currPlaylist == id){
+                            ctlr.displaySongs();
+                        }
+                        ctlr.loadPlaylists();
+                    }, function(error){
+                        console.log(error);
+                    })
+                }
+                else {
+
+                }
             }
 
             // Update the view with the user's collection
             ctlr.displaySongs = function(){
                 ctlr.display = ctlr.collection;
+                ctlr.currPlaylist = null;
             }
 
             // Populate the list of songs
