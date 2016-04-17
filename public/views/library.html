@@ -41,11 +41,31 @@ jQuery(document).on('load', function () {
         <thead>
             <tr>
                 <!--td> Play </td-->
-                <td ng-click="ctlr.updateSort('c.properties.name')"><a class="dark">Channel</a></td>
-                <td ng-click="ctlr.updateSort('t.properties.name')"><a class="dark">Title</a></td>
-                <td ng-click="ctlr.updateSort('t.properties.created_at')"><a class="dark">Date</a></td>
-                <td ng-click="ctlr.updateSort('t.properties.genre')"><a class="dark">Genre</a></td>
-                <td ng-click="ctlr.updateSort('t.properties.duration')"><a class="dark">Duration</a></td>
+                <td ng-click="ctlr.updateSort('c.properties.name')">
+                    <a class="dark">Channel</a>
+                    <span ng-show="ctlr.sortType == 'c.properties.name' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="ctlr.sortType == 'c.properties.name' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                </td>
+                <td ng-click="ctlr.updateSort('t.properties.name')">
+                    <a class="dark">Title</a>
+                    <span ng-show="ctlr.sortType == 't.properties.name' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="ctlr.sortType == 't.properties.name' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                </td>
+                <td ng-click="ctlr.updateSort('t.properties.created_at')">
+                    <a class="dark">Date</a>
+                    <span ng-show="ctlr.sortType == 't.properties.created_at' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="ctlr.sortType == 't.properties.created_at' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                </td>
+                <td ng-click="ctlr.updateSort('t.properties.genre')">
+                    <a class="dark">Genre</a>
+                    <span ng-show="ctlr.sortType == 't.properties.genre' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="ctlr.sortType == 't.properties.genre' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                </td>
+                <td ng-click="ctlr.updateSort('t.properties.duration')">
+                    <a class="dark">Duration</a>
+                    <span ng-show="ctlr.sortType == 't.properties.duration' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="ctlr.sortType == 't.properties.duration' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                </td>
             </tr>
         </thead>
         <tbody class="list">
