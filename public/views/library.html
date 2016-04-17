@@ -41,15 +41,15 @@ jQuery(document).on('load', function () {
         <thead>
             <tr>
                 <!--td> Play </td-->
-                <td data-sort="channel"><a class="dark">Channel</a></td>
-                <td data-sort="name"><a class="dark">Title</a></td>
-                <td data-sort="date"><a class="dark">Date</a></td>
-                <td data-sort="genre"><a class="dark">Genre</a></td>
-                <td data-sort="duration"><a class="dark">Duration</a></td>
+                <td ng-click="ctlr.updateSort('c.properties.name')"><a class="dark">Channel</a></td>
+                <td ng-click="ctlr.updateSort('t.properties.name')"><a class="dark">Title</a></td>
+                <td ng-click="ctlr.updateSort('t.properties.created_at')"><a class="dark">Date</a></td>
+                <td ng-click="ctlr.updateSort('t.properties.genre')"><a class="dark">Genre</a></td>
+                <td ng-click="ctlr.updateSort('t.properties.duration')"><a class="dark">Duration</a></td>
             </tr>
         </thead>
         <tbody class="list">
-            <tr ng-repeat="track in ctlr.display" ng-click="ctlr.playSong(track, this)">
+            <tr ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse" ng-click="ctlr.playSong(track, this)">
                 <!--td >x</td-->
                 <td class="channel">{{track.c.properties.name}}</td>
                 <td class="name">{{track.t.properties.name}}</td>
