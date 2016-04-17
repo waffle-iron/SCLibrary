@@ -113,10 +113,10 @@ module.exports = function(db){
     // Given a user, return the list of all playlists owned by the user.
     module.getPlaylists = function(uid, done){
         db.cypher({ 
-            query: "MATCH (Channel {scuid: {uid} })-[:OWNS]->(playlist:Playlist) " +
+            query: "MATCH (Channel {scuid: {scuid} })-[:OWNS]->(playlist:Playlist) " +
                    "RETURN playlist",
             params: {
-                pid: pid
+                scuid: uid
             }
         }, function(error, results){
             if (error){
@@ -125,7 +125,7 @@ module.exports = function(db){
             }
             else {      
                 console.log(results);
-                done();
+                done(results);
             }
         });
     }

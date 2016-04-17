@@ -123,12 +123,12 @@ module.exports = function(db){
 
     // Given a user, find and return their entire collection of songs, along with the channels
     // that uploaded them.
-    module.getCollection = function(user, done){
+    module.getCollection = function(uid, done){
         db.cypher({ 
             query: 'MATCH (currUser:Channel { scuid: {scuid}}),(currUser)-[:LIKES_TRACK]->(t)'
                     + '<-[:UPLOADED]-(c) RETURN t, c',
             params: {
-                scuid: user.id
+                scuid: uid
             },
         }, function(error, results){
             if (error){

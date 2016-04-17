@@ -46,12 +46,13 @@ module.exports = function(db){
     }
 
     // Find a user from the database given their scuid.
-    module.getUser = function(scuid, done){
+    module.getUser = function(uid, done){
+        console.log(uid);
         db.cypher({ 
-            query: 'MATCH (user:Channel { scuid: {scuid} }) RETURN user',
+            query: 'MATCH (user:Channel { scuid: ' + uid + ' }) RETURN user',
             params: {
-                scuid: scuid
-            },
+                scuid: uid
+            }
         }, function(error, results){
             if (error){
                 done(null, error);
@@ -60,13 +61,11 @@ module.exports = function(db){
                 // If no match, create an entry for the user
                 if (results.length == 0) {
                     console.log("No user found.");
-                    done(null);
-                    //TODO: Update access token
                 }
                 else {
                     console.log("User was found.");
-                    done(results);
                 }
+                done(results);
             }
         });
     }
