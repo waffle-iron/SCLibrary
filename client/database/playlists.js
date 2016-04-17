@@ -29,7 +29,7 @@ module.exports = function(db){
     // Given a playlist id, remove that playlist from the database.
     module.deletePlaylist = function(pid, done){
         db.cypher({ 
-            query: "MATCH (p:Playlist) WHERE id(p) = {pid} DETACH DELETE p",
+            query: "MATCH (p:Playlist) WHERE id(p) = " + pid + " DETACH DELETE p",
             params: {
                 pid: pid
             }
