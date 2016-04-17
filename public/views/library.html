@@ -24,7 +24,14 @@ jQuery(document).on('load', function () {
             </ul>
 
         <li>Playlists</li>
-            <ul ng-repeat="playlist in ctlr.playlists">
+            <span class="addPlaylist">+ Add Playlist</span>
+            <form ng-submit="ctlr.createPlaylist()" class="playlistForm">
+                <input type="text" ng-model="ctlr.playlistInput" name="text" />
+                <!--<input type="submit" id="submit" value="Submit" />-->
+            </form>
+
+            <!-- Why is this not sorting? -->
+            <ul ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name" >
                 <li ng-click="ctlr.loadPlaylist(playlist)">{{playlist.p.properties.name}}</li>
             </ul>
     </ul>
