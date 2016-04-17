@@ -63,11 +63,22 @@ angular.module("Library", [])
             controller: ["libraryLoader", "playlistsLoader", "playlistLoader", "$q", '$http', function (libraryLoader, playlistsLoader, playlistLoader, $q, $http) {
                 var ctlr = this;
 
+                ctlr.sortType = 'name';
+                ctlr.sortReverse = false;
+
                 ctlr.convertTime = function(time){
                     var min_sec = time / 1000 / 60;
                     var minutes = Math.floor(min_sec);
                     var seconds = ("00" + Math.floor((min_sec % 1) * 60)).slice(-2);
                     return minutes + ":" + seconds;
+                }
+
+                ctlr.updateSort = function(sortBy){
+                    if (ctlr.sortType == sortBy)
+                        ctlr.sortReverse = !ctlr.sortReverse; 
+                    else
+                        ctlr.sortReverse = false;
+                    ctlr.sortType = sortBy;
                 }
 
                 ctlr.formatDate = function(date){
