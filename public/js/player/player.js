@@ -15,6 +15,9 @@ var isPlaying = false;
 
 var lastPlayer;
 
+var playIcon = 'url(../../images/sc_icons/play.svg)';
+var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
+
 //$('#artwrapper').append('<img src="https://i1.sndcdn.com/artworks-000147686094-b317ov-large.jpg"/>');
 
 //to use the extendable player library put this in the html
@@ -42,7 +45,7 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     }
     //Reset isPlaying boolean, change the 
     isPlaying = false;
-    $('#pauseplay').attr('src', '../../images/playbutton.png');
+    $('#pauseplay').css('background-image', playIcon);
     //$('#seekicon').css("left", "0%");
     $('#seekicon').css("width", "0%");
 
@@ -50,27 +53,25 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
     $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
     //Load waveform image to DOM
     $('#waveformimg').attr('src', waveformurl);
-    $('#waveformimg').on('load', function(){
-        $('#player').addClass('playing');
-        var tempH =  $('#waveformimg').height();
-        var tempW =  $('#waveformimg').width();
-        $('#seekbarwrapper').css('height', tempH.toString() + "px");
-        $('#seekbarwrapper').css('width', tempW.toString() + "px");
-        // make artwork square
-        $('#artworkimg').css('height', tempH.toString() + "px");
-        $('#artworkimg').css('width', tempH.toString() + "px");
-    });
       
-    // resize function to keep the waveform
-    // stuck to the loading background
-    $(window).on('resize', function(){
+    //expand the player 
+    $('#player').addClass('playing');
+      
+    $('#waveformimg').on('load', function(){
         var thisH = $('#waveformimg').height();
-        var thisW = $('#waveformimg').width();
-        $('#seekbarwrapper').css('height', thisH.toString() + "px");
-        $('#seekbarwrapper').css('width', thisW.toString() + "px");
-        // make the album artwork a square
+        var thisM = thisH + 60;
         $('#artworkimg').css('height', thisH.toString() + "px");
         $('#artworkimg').css('width', thisH.toString() + "px");
+        $('#library').css('margin-top', thisM.toString() + "px");
+    });
+      
+    // resize function to keep the artwork square
+    $(window).on('resize', function(){
+        var thisH = $('#waveformimg').height();
+        var thisM = thisH + 60;
+        $('#artworkimg').css('height', thisH.toString() + "px");
+        $('#artworkimg').css('width', thisH.toString() + "px");
+        $('#library').css('margin-top', thisM.toString() + "px");
     });
 
     lastPlayer = player;
@@ -79,17 +80,17 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
 
     //Tie our pauseplay button to the "play" and "pause" events from the player
     player.on('play', function(){
-        $('#pauseplay').attr('src', '../../images/pausebutton.png');
+        $('#pauseplay').css('background-image', pauseIcon);
     });
     player.on('pause', function(){
-        $('#pauseplay').attr('src', '../../images/playbutton.png');
+        $('#pauseplay').css('background-image', playIcon);
     });
     
     //Auto play song
     player.play(); 
     isPlaying = true;
     //Tie out pause/play button to the "player" objects pause / play functions
-    $('#pauseplaywrapper').unbind('click').click(function(e){
+    $('#pauseplay').unbind('click').click(function(e){
     	console.log('pauseplay clicked');
     	if(isPlaying && player.isPlaying()){
     		player.pause(); 
@@ -103,11 +104,11 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
 
     $('#player').unbind('click').click( function(e){
     	//how offset the current element is from the x=0 axis
-    	var offset = $(this).offset();
+    	var offset = $('#artworkimg').width();
     	var width = $('#waveformimg').width();
     	//relativeOffset = how far into the div's width you clicked in pixels
-    	var relativeOffset = e.pageX - offset.left - 30;
-      console.log(e.pageX - offset.left + "x");
+    	var relativeOffset = e.pageX - offset;
+      console.log(e.pageX - offset + "x");
       //how far you clicked into the div's width by percent. 1.0 is to cast to double
       var relativePercent = relativeOffset/(width*1.0);
       //console.log(relativePercent*100+"%");
