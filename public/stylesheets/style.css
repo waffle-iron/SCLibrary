@@ -1,7 +1,6 @@
 /*Google font collection*/
 
 @import url(https://fonts.googleapis.com/css?family=Source+Code+Pro:300|Oxygen:400,300);
-
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css);
 
 /*Table js solution CSS*/
@@ -11,9 +10,10 @@
 
 body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background-image: url('../images/confectionary.png');
     margin: 0;
+    background-color: #232323;
 }
+
 /*Delete if we use bootstrap*/
 
 .pull-left {
@@ -34,18 +34,18 @@ aside {
     padding: 12px 30px;
     color: #e3e3e3;
 }
+
 /*End bootstrap delete*/
+
 a.btn:hover,
 a.btn:focus {
     color: #fff;
     border-color: #fff;
     margin-top: -2px;
     margin-left: -1px;
-    box-shadow: 1px 2px 3px rgba(23,23,23,0.4);
+    box-shadow: 1px 2px 3px rgba(23, 23, 23, 0.4);
 }
-a.btn:active {
-    
-}
+a.btn:active {}
 a.btn {
     transition: all .2s ease;
     border: #555 solid 2px;
@@ -86,17 +86,19 @@ a.btn.btn-search {
     height: 30px;
     margin-right: 7px;
 }
-
 .search-wrapper {
     width: 100%;
     height: 30px;
-    display: table;
+    width: 100%;
+    height: 30px;
+    TEXT-ALIGN: center;
+    margin-bottom: 7px;
+    padding: 6px;
     margin-bottom: 7px;
 }
-
 input.search:focus {
     border: 1px solid #afafaf;
-    box-shadow: 1px 2px 3px rgba(23,23,23,0.4);
+    box-shadow: 1px 2px 3px rgba(23, 23, 23, 0.4);
     transition: .2s ease;
 }
 input.search {
@@ -112,18 +114,19 @@ input.search {
 /*Library table styles*/
 
 .left-side-wrapper {
-    width: 20%;
-    float:left;
+    width: 300px;
+    float: left;
     height: 100vh;
     display: inline-block;
     background-color: #e3e3e3;
+    position: fixed;
+    overflow-y: scroll;
 }
 .library-wrapper {
-    width:80%;
-    float: left;
+    width: calc(100vw - 300px);
+    float: right;
     clear: none;
 }
-
 * {
     font-family: 'Oxygen', sans-serif;
     font-weight: 300;
@@ -131,13 +134,13 @@ input.search {
 table {
     width: 100%;
 }
-
 tbody.list td {
     padding: 4px 6px;
     border-bottom: #e3e3e3 solid 1px;
 }
 
 /*Header*/
+
 *:hover > a.dark,
 *:hover > a.dark {
     color: #00B7FF;
@@ -145,29 +148,45 @@ tbody.list td {
 a.dark {
     color: #333;
 }
+
 /*alternating colors*/
-tr.ng-scope:nth-of-type(2n) {
+
+li.track-row:nth-of-type(2n) {
     background-color: #F6F6F6;
 }
-tr.ng-scope:nth-of-type(2n+1) {
+li.track-row:nth-of-type(2n+1) {
     background-color: #fff;
 }
-tbody tr > td {
+ul.list > li,
+ul.header > li {
+    width: 100%;
+}
+ul > li,
+ul > li > ol > li {
+    display: block;
+    float: left;
+}
+ul.list,
+ul.header,
+ul.header,
+li > ol,
+ul.list li > ol {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+}
+ul.header li > ol > li,
+ul.list li > ol > li {
+    width: 20%;
+    margin: 0;
+}
+ul.list li > ol > li {
     border-right: 1px solid #e3e3e3;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: .1em .2em;
 }
-/*tbody tr > td:first-of-type {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-tbody tr > td:last-of-type {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}*/
-thead > tr {
-    padding: 4px 6px;
-    text-align: center;
-}
-thead > tr > td {
+ul.header ol > li {
     border: 1px solid #e3e3e3;
     border-bottom: #afafaf 1px solid;
     color: #333;
@@ -184,42 +203,73 @@ thead > tr > td {
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6', GradientType=0);
     /* IE6-9 */
 }
+
 /* Player styles */
+
 @keyframes colorChange {
     0% {
         background-color: initial;
-    }   20% {
+    }
+    20% {
         background-color: #10ef16
-    }   40% {
+    }
+    40% {
         background-color: rebeccapurple;
-    }   60% {
+    }
+    60% {
         background-color: firebrick;
-    }   80% {
+    }
+    80% {
         background-color: aliceblue;
-    }   100% {
+    }
+    100% {
         background-color: #333;
     }
 }
-
-#left-bar {
-    
+#pauseplay {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+}
+#waveformimg {
+    position: relative;
+    width: 100%;
+}
+#player:not(.playing) * {
+    max-height: 0;
+    transition: all .3s ease;
+    opacity: 0.0;
+}
+#player + div#library {
+    margin-top: 60px;
+}
+#player.playing + div#library {
+    transition: all .2s ease;
+}
+#player.playing * {
+    max-height: none;
+    opacity: 1.0;
+    transition: all .3s ease;
 }
 #player {
     display: inline-block;
     max-height: 0px;
     transition: max-height 1s ease;
+    position: fixed;
+    top: 60px;
+    background-color: #444;
 }
 #player #playpausewrapper {
     display: none;
 }
 #player.playing {
-    display: block;
-}
-#player.playing {
     /* Ridiculous max height for transiton */
     max-height: 300px;
+    display: inline-block;
 }
-
 div#back-div {
     position: absolute;
     top: 0;
@@ -232,24 +282,41 @@ div#back-div {
     background-size: cover;
     background-position: right center;
 }
-
 #seekbarwrapper {
     background: #333;
     z-index: -2;
-    max-width: 694px;
-    
     overflow: hidden;
 }
-
 #artworkimg {
     background-position: 50% 50%;
     background-size: cover;
     overflow: hidden;
 }
+#artworkimg #pauseplay {
+    opacity: 0.0;
+    transition: all .2s ease;
+}
+#artworkimg:hover #pauseplay {
+    opacity: 0.6;
+}
+#artworkimg:active #pauseplay {
+    opacity: 1.0;
+    -webkit-filter: drop-shadow(10px, 12px, 6px, black));
+    ;
+}
+ul.side > li,
+ul.sub > li {
+    display: inline-block;
+    width: 100%;
+    float: left;
+    clear: both;
+}
 
 /*  */
 
+
 /* Top bar */
+
 .top-wrapper {
     height: 60px;
     width: 100%;
@@ -257,4 +324,6 @@ div#back-div {
     background-color: #D6D6D6;
     background-repeat: no-repeat;
     background-size: cover;
+    position: fixed;
+    top: 0;
 }
