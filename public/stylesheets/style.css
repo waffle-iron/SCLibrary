@@ -291,6 +291,7 @@ div#back-div {
     background-position: 50% 50%;
     background-size: cover;
     overflow: hidden;
+    padding: 14px;
 }
 #artworkimg #pauseplay {
     opacity: 0.0;
