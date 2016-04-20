@@ -97,17 +97,24 @@ function loadSong(trackid, durationms, artworkurl, waveformurl){
         isPlaying = false;
     	}
     	else{
-    		player.play(); 
-        isPlaying = true;
+            // TODO stop reseting pos on play somehow
+            var pos = $('#back-div').width();
+            var width = $('#waveformimg').width();
+            var relativePercent = pos/(width*1.0);
+            var seekPosition = Math.round(duration * relativePercent);
+            /*alert(seekPosition);
+            player.seek(seekPosition);*/
+            player.play();
+            isPlaying = true;
     	}
     });
 
     $('#player').unbind('click').click( function(e){
-    	//how offset the current element is from the x=0 axis
-    	var offset = $('#artworkimg').width();
-    	var width = $('#waveformimg').width();
-    	//relativeOffset = how far into the div's width you clicked in pixels
-    	var relativeOffset = e.pageX - offset;
+        //how offset the current element is from the x=0 axis
+        var offset = $('#artworkimg').width();
+        var width = $('#waveformimg').width();
+        //relativeOffset = how far into the div's width you clicked in pixels
+        var relativeOffset = e.pageX - offset;
       console.log(e.pageX - offset + "x");
       //how far you clicked into the div's width by percent. 1.0 is to cast to double
       var relativePercent = relativeOffset/(width*1.0);
