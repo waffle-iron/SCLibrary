@@ -16,6 +16,9 @@ var hbs = require('hbs');
 var routes = require('./routes/index');
 var api = require('./routes/api');
 
+// Require DB status check middleware
+var checkDBStatus = require('./routes/middleware/checkDBStatus');
+
 // Redis Store Session
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
@@ -34,6 +37,9 @@ SC.init({
 
 // Initialize the express application.
 var app = express();
+
+// Make sure that the database is accessible
+app.use(checkDBStatus);
 
 // Create session manager using a Redis store.
 app.use(session({
