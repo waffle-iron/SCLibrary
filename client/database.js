@@ -11,6 +11,7 @@ var collections = require('./database/collections.js')(db);
 var playlists = require('./database/playlists.js')(db);
 
 module.exports = {
+    instance: db,
     addUser: users.addUser,
     getUser: users.getUser,
     addCollection: collections.addCollection,
