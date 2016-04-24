@@ -193,6 +193,7 @@ ul.list li > ol > li {
     white-space: nowrap;
     overflow: hidden;
     padding: .1em .2em;
+    height: 1.4em !important;
 }
 ul.header ol > li {
     border: 1px solid #e3e3e3;
