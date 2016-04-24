@@ -131,6 +131,14 @@ input.search {
     font-family: 'Oxygen', sans-serif;
     font-weight: 300;
 }
+ul.header {
+    /* Fix header row */
+    position: fixed;
+    width: calc(100vw - 300px) !important;
+}
+ul.list {
+    margin-top: 30px;
+}
 table {
     width: 100%;
 }
