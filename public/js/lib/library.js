@@ -162,8 +162,13 @@ app.directive("library", [function (){
                     }
                 });
             }
-
+            
+            // Draggable handles for the columns
+            ctlr.colSizeable = function() { 
+                attachColHandles();
+            }
             ctlr.loadLibrary();
+            ctlr.colSizeable();
             ctlr.loadPlaylists();
 
             $('.playlistForm').hide();
