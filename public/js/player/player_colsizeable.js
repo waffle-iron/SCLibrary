@@ -147,34 +147,6 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
 
 var left = false;
 
-function snapToPercents(parentEl) {
-  var parWid = parentEl.width();
-  var colCt = parentEl.children().length;
-  var catchAdd = 0;
-  var j = 0;
-  console.log(parWid + " - " + colCt);
-  parentEl.children().each(function () {
-    // iterate through li + siblings
-    var eachC = "." + $(this).find('a').text().toLowerCase();
-    if (j == colCt - 1) {
-      // force clearing
-      var catchAll = 100.0 - catchAdd;
-      console.log(catchAdd + " + " + catchAll);
-      $(this).css('width', catchAll.toString() + "%");
-    } else {
-      var perW = ($(this).width()/parWid) * 100;
-      $(this).css('width', perW.toString() + "%");
-      console.log(j + " - " + perW.toString() + "%");
-      catchAdd += perW;
-    }
-    // resize col's below
-    $(eachC).each(function () {
-        $(this).css('width', perW.toString() + "%");
-    });
-    j++;
-  });
-}
-
 function attachColHandles() {
     $('.col-sizeable').each(function () {
         // multiple loops and class vs id
@@ -229,7 +201,7 @@ function attachColHandles() {
                         cumW += $(this).width();
                         $(this).nextAll().each(function () {
                             // set decreased width to other headers
-                            $(this).width(((headerW - cumW) / colCount) - 5);
+                            $(this).width((headerW - cumW) / colCount);
                         });
                     } else {
                         // left-side drag
@@ -262,7 +234,27 @@ function attachColHandles() {
             // bind a function to update lower widths
             $(this).on('resizestop', function () {
               left = false; // reset global hack for dir
-              snapToPercents($(this).parent());
+                var parWid = $(this).parent.width();
+                var colCt = $(this).parent().children().length;
+                var catchAdd = 0;
+                var j = 0;
+                $(this).parent().children().each(function () {
+                  // iterate through li + siblings
+                  if (j == colCt) {
+                    // force clearing
+                    var catchAll = 100.0 - catchAdd;
+                    console.log(catchAdd + " + " + catchAll);
+                    $(this).css('width', catchAll);
+                  } else {
+                    var perW = Math.round(($(this).width()/parWid 1.0));
+                    catchAdd += perW;
+                    var eachC = "." + $(this).find('a').text().toLowerCase();
+                    $(eachC).each(function () {
+                        $(this).css('width', perW.toString() + "%");
+                    });
+                  }
+                  j++;
+                });
             });
         });
 
