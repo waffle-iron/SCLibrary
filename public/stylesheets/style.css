@@ -64,6 +64,9 @@ a.btn {
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
 }
+.ui-shadow {
+    box-shadow: 2px 2px 3px rgba(23, 23, 23, 0.4);
+}
 h1.logo + small {
     font-family: 'Source Code Pro', sans-serif;
     color: #555;
@@ -130,6 +133,16 @@ input.search {
 * {
     font-family: 'Oxygen', sans-serif;
     font-weight: 300;
+}
+ul.header > li > ol > li.ui-resizable:last-of-type {
+  position: absolute;
+    top: 0;
+    float: none;
+    transform: translate(calc(100vw - 300px - 100%), 0);
+}
+ul.header > li {
+
+    left: 0 !important;
 }
 ul.header {
     /* Fix header row */
@@ -211,6 +224,7 @@ ul.header ol > li {
     /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6', GradientType=0);
     /* IE6-9 */
+    left: 0 !important;
 }
 
 /* Player styles */
