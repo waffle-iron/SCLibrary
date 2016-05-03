@@ -145,6 +145,7 @@ app.directive("library", [function (){
                         console.log(err);
                     }
                     else {
+                        console.log("loaded");
                         ctlr.collection = result;
                         ctlr.displaySongs();
                     }
@@ -163,10 +164,31 @@ app.directive("library", [function (){
                 });
             }
 
+            ctlr.initDrag = function(){
+                $('.logo').draggable({ opacity: 0.7, helper: "clone"});
+                $('.track-row').draggable({ opacity: 0.7, helper: "clone"});
+                $(".btn").droppable({
+                    drop: function( event, ui ){
+                        console.log(event);
+                        console.log(ui);
+                    }
+                });
+            }
+
+            ctlr.initDrop = function(){
+                $(".playlist-row").droppable({
+                    drop: function( event, ui ){
+                        console.log(event);
+                        console.log(ui);
+                    }
+                });
+            }
+
             ctlr.loadLibrary();
             ctlr.loadPlaylists();
 
             $('.playlistForm').hide();
+
             $('.addPlaylist').click(function(){
                 $('.playlistForm').show();
             });

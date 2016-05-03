@@ -16,7 +16,6 @@ router.get('/', ensureLoggedOut, function(req, res, next) {
   res.render('index', { title: 'Express', connect_url: connect_url });
 });
 
-
 /* GET home page. */
 router.get('/home/', ensureLoggedOut, function(req, res, next) {
   // Save the code returned by soundcloud in the query string. This code will be used to
