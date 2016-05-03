@@ -153,23 +153,27 @@ function snapToPercents(parentEl) {
   var catchAdd = 0;
   var j = 0;
   console.log(parWid + " - " + colCt);
-  parentEl.children().each(function () {
+  parentEl.children('li').each(function () {
     // iterate through li + siblings
     var eachC = "." + $(this).find('a').text().toLowerCase();
     if (j == colCt - 1) {
       // force clearing
       var catchAll = 100.0 - catchAdd;
-      console.log(catchAdd + " + " + catchAll);
+      //console.log(catchAdd + " + " + catchAll);
       $(this).css('width', catchAll.toString() + "%");
     } else {
       var perW = ($(this).width()/parWid) * 100;
       $(this).css('width', perW.toString() + "%");
-      console.log(j + " - " + perW.toString() + "%");
+      //console.log(j + " - " + perW.toString() + "%");
       catchAdd += perW;
     }
     // resize col's below
     $(eachC).each(function () {
+      if (j == colCt - 1) {
+        $(this).css('width', catchAll.toString() + "%");
+      } else {
         $(this).css('width', perW.toString() + "%");
+      }
     });
     j++;
   });
@@ -196,12 +200,9 @@ function attachColHandles() {
             $(this).resizable({
                 handles: handles,
                 autoHide: true,
-                //minWidth: 100,
-                //containment: "parent",
                 minHeight: 30,
                 maxHeight: 30,
-                // make the other li's in the column resize
-                //alsoResize: thisClass,
+                
                 resize: function (event, ui) {
                     // hack to determine resize dir
                     var srcEl = event.originalEvent.originalEvent.path[0].className;
