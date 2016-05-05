@@ -39,7 +39,7 @@ app.directive("library", [function (){
             // Update sort variables
             ctlr.updateSort = function(sortBy){
                 if (ctlr.sortType == sortBy)
-                    ctlr.sortReverse = !ctlr.sortReverse; 
+                    ctlr.sortReverse = !ctlr.sortReverse;
                 else
                     ctlr.sortReverse = false;
                 ctlr.sortType = sortBy;
@@ -65,7 +65,7 @@ app.directive("library", [function (){
                 var i = 0;
                 while (element.$$nextSibling && i < 20){
                     var properties = element.$$nextSibling.track.t.properties;
-                    var options = { 
+                    var options = {
                         scid: properties.id,
                         duration: properties.duration,
                         artwork_url: properties.artwork_url,
@@ -92,10 +92,11 @@ app.directive("library", [function (){
                     ctlr.loadPlaylists();
                 }, function(error){
                     console.log(error);
-                }); 
+                });
 
                 $('.playlistForm').hide();
                 ctlr.playlistInput = '';
+
             }
 
 
@@ -166,22 +167,37 @@ app.directive("library", [function (){
 
             ctlr.initDrag = function(){
                 $('.logo').draggable({ opacity: 0.7, helper: "clone"});
-                $('.track-row').draggable({ opacity: 0.7, helper: "clone"});
-                $(".btn").droppable({
+                $('.track-row').draggable({
+                  opacity: 0.7,
+                  helper: "clone",
+                  scroll: false
+                  //containment: 'window'
+                });
+                /*$(".btn").droppable({
+                    accept: '.track-row',
                     drop: function( event, ui ){
                         console.log(event);
                         console.log(ui);
                     }
-                });
+                });*/
             }
 
             ctlr.initDrop = function(){
-                $(".playlist-row").droppable({
-                    drop: function( event, ui ){
-                        console.log(event);
-                        console.log(ui);
-                    }
-                });
+              // fix droppables here
+              $(".playlist-row").droppable({
+                  accept: '.track-row',
+                  activeClass: "ui-state-hover",
+                  hoverClass: "ui-state-active",
+                  intersect: "pointer",
+                  activate: function( event, ui) {
+                    console.log('Active!');
+                  },
+                  drop: function( event, ui ){
+                    console.log("Dropped");
+                      console.log(event);
+                      console.log(ui);
+                  }
+              });
             }
 
             ctlr.loadLibrary();

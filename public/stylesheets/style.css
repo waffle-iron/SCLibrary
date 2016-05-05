@@ -157,13 +157,18 @@ li.track-row:nth-of-type(2n) {
 li.track-row:nth-of-type(2n+1) {
     background-color: #fff;
 }
+li.playlist-row {
+  display: inline-block;
+  width: 90%;
+  border: 1px solid #e3e3e3;
+}
 ul.list > li,
 ul.header > li {
     width: 100%;
 }
 ul > li,
 ul > li > ol > li {
-    display: block;
+    display: inline-block;;
     float: left;
 }
 ul.list,
@@ -310,6 +315,11 @@ ul.sub > li {
     width: 100%;
     float: left;
     clear: both;
+}
+
+li.playlist-row.ui-state-hover {
+  background-color: blue;
+  border-radius: 5px;
 }
 
 /*  */
