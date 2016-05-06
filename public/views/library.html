@@ -27,7 +27,7 @@
     <table cellpadding="0" cellspacing="0" id="lib-view" style="clear:both;">
         <ul class="header">
             <li>
-                <ol>
+                <ol class="col-sizeable">
                     <li class="text-center" ng-click="ctlr.updateSort('c.properties.name')">
                         <a class="dark">Channel</a>
                         <span ng-show="ctlr.sortType == 'c.properties.name' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
@@ -61,7 +61,7 @@
                 <!--td >x</td-->
                 <ol>
                     <li class="channel">{{track.c.properties.name}}</li>
-                    <li class="name">{{track.t.properties.name}}</li>
+                    <li class="title">{{track.t.properties.name}}</li>
                     <li class="date">{{ctlr.formatDate(track.t.properties.created_at)}}</li>
                     <li class="genre">{{track.t.properties.genre}}</li>
                     <li class="duration">{{ctlr.convertTime(track.t.properties.duration)}}</li>

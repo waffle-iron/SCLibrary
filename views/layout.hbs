@@ -5,7 +5,8 @@
 
     <title>{{title}}</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/sandstone/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/sandstone/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
 
 
 </head>
@@ -13,11 +14,18 @@
 <body>
     <div class="top-wrapper">
         <h1 class="logo pull-left">SCLibrary</h1><small>beta</small>
-        <a class="btn btn-default pull-right" href="/logout/">Logout</a>
-        <a href="#" class="pull-right">{{user.username}}</a>
+        <div class="user-area pull-right">
+            <div class="user">
+                <a class="btn btn-default pull-right" href="/logout/">Logout</a>
+                <a class="user-img" style="background-image: url({{user.avatar_url}})"></a>
+                <a href="user.permalink" class="pull-right username">{{user.username}}</a>
+            </div>
+            <div class="mobile">
+            </div>
+        </div>
     </div>
 
-        {{{body}}}
+    {{{body}}}
 </body>
 
 </html>
