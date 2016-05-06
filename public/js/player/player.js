@@ -128,9 +128,7 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
                 //Get rid of all decimal points except first 2
                 var percentPlayed = Math.floor((player.currentTime() / duration) * 10000) / 100;
                 //console.log(percentPlayed + "% played");
-                // added back div to make waveform orange.
                 $('#back-div').css("width", percentPlayed.toString() + "%");
-                //$('#seekicon').css("left", percentPlayed.toString() + "%");
             });
 
             //player.on('time', function(){console.log("pos: " : this.position);});
@@ -202,7 +200,7 @@ function attachColHandles() {
                 autoHide: true,
                 minHeight: 30,
                 maxHeight: 30,
-                
+
                 resize: function (event, ui) {
                     // hack to determine resize dir
                     var srcEl = event.originalEvent.originalEvent.path[0].className;
@@ -268,4 +266,30 @@ function attachColHandles() {
         });
 
     });
+}
+
+function nextListener() {
+  // autoplay!
+  // hack to detect when song is over:
+  // listen for the width of the progress bar
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutationRecord) {
+      //console.log(mutationRecord.target.style.width);
+      var completionPer = mutationRecord.target.style.width;
+        if( completionPer == "100%") {
+          console.log('NEXT');
+          //TODO Yo Milad how is this supposed to work
+
+          var nextTrack = queue.dequeue();
+          console.log(nextTrack); // look, no scid
+
+          loadSong(nextTrack.scid,
+            nextTrack.duration, nextTrack.artwork_url,
+            nextTrack.waveformurl);
+        }
+    });
+  });
+
+  var target = document.getElementById('back-div');
+  observer.observe(target, { attributes : true, attributeFilter : ['style'] });
 }

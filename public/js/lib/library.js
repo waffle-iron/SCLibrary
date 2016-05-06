@@ -164,11 +164,9 @@ app.directive("library", [function (){
             }
 
             // Draggable handles for the columns
-            ctlr.colSizeable = function() {
-                attachColHandles();
-            }
+            ctlr.colSizeable = attachColHandles();
+            ctlr.playNext = nextListener();
             ctlr.loadLibrary();
-            ctlr.colSizeable();
             ctlr.loadPlaylists();
 
             ctlr.init = function(){
@@ -185,6 +183,13 @@ app.directive("library", [function (){
                     items: {
                         copy: {
                             name: "Copy",
+                            callback: function(key, opt){
+                                var track = JSON.parse(opt.$trigger[0].dataset.track);
+                                console.log(track.t.properties.scid);
+                            }
+                        },
+                        queue: {
+                            name: "Add to Queue",
                             callback: function(key, opt){
                                 var track = JSON.parse(opt.$trigger[0].dataset.track);
                                 console.log(track.t.properties.scid);
