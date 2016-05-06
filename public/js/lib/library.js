@@ -173,9 +173,12 @@ app.directive("library", [function (){
                 attachColHandles();
             }
 
+            // Draggable handles for the columns
+            ctlr.colSizeable = attachColHandles();
+            ctlr.playNext = nextListener();
             ctlr.loadLibrary();
-            ctlr.colSizeable();
             ctlr.loadPlaylists();
+
 
             ctlr.init = function(){
 
@@ -189,6 +192,13 @@ app.directive("library", [function (){
                         playlist: {
                             name: "Add to playlist...",
                             items: ctlr.playlist_menu
+                        },
+                        queue: {
+                            name: "Add to Queue",
+                            callback: function(key, opt){
+                                var track = JSON.parse(opt.$trigger[0].dataset.track);
+                                console.log(track.t.properties.scid);
+                            }
                         }
                     };
 
@@ -196,7 +206,15 @@ app.directive("library", [function (){
                 //console.log(ctlr.playlist_menu);
                 $.contextMenu({
                     selector: '.track-row',
-                    items: items
+                    items: items,
+                    reposition: true,
+                    autoHide: true,
+                    determinePosition: function($menu){
+                      // Position using jQuery.ui.position
+                      // http://api.jqueryui.com/position/
+                      $menu.css('display', 'block')
+                          .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
+                    },
                 })
             }
 
