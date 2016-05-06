@@ -71,14 +71,8 @@ app.directive("library", [function (){
                 autoqueue = new Queue();
                 var i = 0;
                 while (element.$$nextSibling && i < 20){
-                    var properties = element.$$nextSibling.track.t.properties;
-                    var options = {
-                        scid: properties.scid,
-                        duration: properties.duration,
-                        artwork_url: properties.artwork_url,
-                        waveform_url: properties.waveform_url
-                    }
-                    autoqueue.enqueue(options);
+                    var t = element.$$nextSibling.track;
+                    autoqueue.enqueue(t);
                     element = element.$$nextSibling;
                     i++;
                 }
@@ -183,65 +177,30 @@ app.directive("library", [function (){
             ctlr.updateMenu = function(){
 
                 $.contextMenu( 'destroy' );
-                var items = {};
-
-                if (ctlr.context == 'songs'){
-                    items = {
-                        copy: {
-                            name: "Copy",
-                            callback: function(key, opt){
-                            }
-                        },
-                        add_playlist: {
-                            name: "Add to playlist...",
-                            items: ctlr.playlist_menu
-                        },
-                        queue: {
-                            name: "Add to Queue",
-                            callback: function(key, opt){
-                                var properties = JSON.parse(opt.$trigger[0].dataset.track).t.properties;
-                                var options = {
-                                    scid: properties.scid,
-                                    duration: properties.duration,
-                                    artwork_url: properties.artwork_url,
-                                    waveform_url: properties.waveform_url
-                                }
-                                queue.enqueue(options);
-                            }
+                var items = {
+                    copy: {
+                        name: "Copy",
+                        callback: function(key, opt){
                         }
-                    };
-                }
-                else
+                    },
+                    add_playlist: {
+                        name: "Add to playlist...",
+                        items: ctlr.playlist_menu
+                    },
+                    queue: {
+                        name: "Add to Queue",
+                        callback: function(key, opt){
+                            var track = JSON.parse(opt.$trigger[0].dataset.track);
+                            queue.enqueue(track);
+                        }
+                    }
+                };
+
                 if (ctlr.context = 'playlists'){
-                    items = {
-                        copy: {
-                            name: "Copy",
-                            callback: function(key, opt){
-                            }
-                        },
-                        add_playlist: {
-                            name: "Add to playlist...",
-                            items: ctlr.playlist_menu
-                        },
-                        delete_playlist: {
+                    items.delete_playlist = {
                             name: "Delete from playlist...",
                             callback: ctlr.delete_func
-                        },
-                        queue: {
-                            name: "Add to Queue",
-                            callback: function(key, opt){
-                                var properties = JSON.parse(opt.$trigger[0].dataset.track).t.properties;
-                                var options = {
-                                    scid: properties.scid,
-                                    duration: properties.duration,
-                                    artwork_url: properties.artwork_url,
-                                    waveform_url: properties.waveform_url
-                                }
-                                queue.enqueue(options);
-                            }
-                        }
-                    };
-
+                        };
                 }
 
                 ctlr.initMenu(items);
