@@ -48,16 +48,18 @@ module.exports = function(db){
     // Given a track id and a playlist id, create a playlist contains track relationship.
     module.addTrackToPlaylist = function(tid, pid, done){
         db.cypher({ 
-            query: "MATCH (t:Track {scid: {tid} }), (p:Playlist) " + 
+            query: "MATCH (t:Track), (p:Playlist) " + 
                    "WHERE id(p) = {pid} " +
+                   "AND id(t) = {tid} " +
                    "CREATE (p)-[r:CONTAINS]->(t) " +
                    "RETURN p, r, t",
             params: {
-                tid: tid,
-                pid: pid
+                tid: parseInt(tid),
+                pid: parseInt(pid)
             }
         }, function(error, results){
             if (error){
+                console.log("hi");
                 console.log(error);
                 done(error);
             }
@@ -124,7 +126,7 @@ module.exports = function(db){
                 done(error);
             }
             else {      
-                console.log(results);
+                console.log(results[0].p.properties);
                 done(results);
             }
         });
