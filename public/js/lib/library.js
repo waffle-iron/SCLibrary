@@ -40,6 +40,8 @@ app.directive("library", [function (){
             ctlr.sortReverse = false;
             ctlr.searchTerm = '';
 
+            ctlr.context = 'songs';
+
             // Update sort variables
             ctlr.updateSort = function(sortBy){
                 if (ctlr.sortType == sortBy)
@@ -111,7 +113,9 @@ app.directive("library", [function (){
                         console.log(err);
                     else {
                         ctlr.display = result;
+                        ctlr.context = 'playlists';
                         ctlr.currPlaylist = playlist.p._id;
+                        ctlr.buildDeleteFromPlaylistMenu(playlist);
                     }
                 })
             }
@@ -139,6 +143,7 @@ app.directive("library", [function (){
             // Update the view with the user's collection
             ctlr.displaySongs = function(){
                 ctlr.display = ctlr.collection;
+                ctlr.context = 'songs';
                 ctlr.currPlaylist = null;
             }
 
@@ -163,7 +168,7 @@ app.directive("library", [function (){
                     }
                     else {
                         ctlr.playlists = result;
-                        ctlr.buildPlaylistMenu(result);
+                        ctlr.buildAddToPlaylistMenu(result);
                     }
                 });
             }
@@ -182,14 +187,17 @@ app.directive("library", [function (){
 
             ctlr.init = function(){
 
-                var items = {
+                $.contextMenu( 'destroy' );
+                var items = {};
+
+                if (ctlr.context == 'songs'){
+                    items = {
                         copy: {
                             name: "Copy",
                             callback: function(key, opt){
-
                             }
                         },
-                        playlist: {
+                        add_playlist: {
                             name: "Add to playlist...",
                             items: ctlr.playlist_menu
                         },
@@ -201,8 +209,38 @@ app.directive("library", [function (){
                             }
                         }
                     };
+                }
+                else
+                if (ctlr.context = 'playlists'){
+                    items = {
+                        copy: {
+                            name: "Copy",
+                            callback: function(key, opt){
+                            }
+                        },
+                        add_playlist: {
+                            name: "Add to playlist...",
+                            items: ctlr.playlist_menu
+                        },
+                        delete_playlist: {
+                            name: "Delete from playlist...",
+                            callback: ctlr.delete_func
+                        },
+                        queue: {
+                            name: "Add to Queue",
+                            callback: function(key, opt){
+                                var track = JSON.parse(opt.$trigger[0].dataset.track);
+                                console.log(track.t.properties.scid);
+                            }
+                        }
+                    };
 
+                }
 
+                ctlr.updateMenu(items);
+            }
+
+            ctlr.updateMenu = function(items){
                 //console.log(ctlr.playlist_menu);
                 $.contextMenu({
                     selector: '.track-row',
@@ -218,7 +256,7 @@ app.directive("library", [function (){
                 })
             }
 
-            ctlr.buildPlaylistMenu = function(result){
+            ctlr.buildAddToPlaylistMenu = function(result){
 
                 var playlist_menu = {};
 
@@ -243,6 +281,24 @@ app.directive("library", [function (){
 
                 ctlr.playlist_menu = playlist_menu;
 
+            }
+
+            ctlr.buildDeleteFromPlaylistMenu = function(playlist){
+
+                    var func =  function(key, opt){
+                        var pid = playlist.p._id;
+                        var tid = JSON.parse(opt.$trigger[0].dataset.track).t._id;
+                        var url = 'http://localhost:3000/api/playlists/' + pid + '/remove/' + tid;
+                        $http.delete(url).then(function(response){
+                            console.log(response);
+                            ctlr.loadPlaylist(playlist);
+                        }, function(error){
+                            console.log(error);
+                        })
+
+                    }
+
+                ctlr.delete_func = func;
 
             }
 
