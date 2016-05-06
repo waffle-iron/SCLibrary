@@ -16,7 +16,7 @@ module.exports = function(db){
         track = collection[index];
         if (track.kind == 'track'){
             
-            module.checkExistence(user, track, function(found, error){
+            module.checkExistence(user.properties.scuid, track, function(found, error){
                 if (error)
                     done(error);
                 //user to track relationship already exists in database; done.
@@ -43,7 +43,7 @@ module.exports = function(db){
                     db.cypher({ 
                         query: query,
                         params: {
-                            name: user.username,
+                            name: user.properties.name,
                             title: track.title,
                             duration: track.duration,
                             genre: track.genre,
@@ -92,12 +92,12 @@ module.exports = function(db){
 
     // Check for the existence of a [:LIKES] relationship between a channel and a track. 
     // Return true if it exists, false if it does not. 
-    module.checkExistence = function(user, track, done){
+    module.checkExistence = function(scuid, track, done){
 
         db.cypher({ 
             query: 'MATCH (u:Channel {scuid: {scuid} }), (t:Track {scid: {scid} } ), (u)-[:LIKES_TRACK]->(t) return u, t',
             params: {
-                scuid: user.id,
+                scuid: scuid,
                 scid: track.id
             },
 
@@ -124,11 +124,14 @@ module.exports = function(db){
     // Given a user, find and return their entire collection of songs, along with the channels
     // that uploaded them.
     module.getCollection = function(uid, done){
+        var query = 'MATCH (u:Channel), ' +
+                    '(u)-[:LIKES_TRACK]->(t)<-[:UPLOADED]-(c) ' +
+                    'WHERE id(u) = ' + uid + 
+                    ' RETURN t, c';
         db.cypher({ 
-            query: 'MATCH (u:Channel { scuid: {scuid}}),(u)-[:LIKES_TRACK]->(t)'
-                    + '<-[:UPLOADED]-(c) RETURN t, c',
+            query:  query,
             params: {
-                scuid: uid
+                uid: uid
             },
         }, function(error, results){
             if (error){

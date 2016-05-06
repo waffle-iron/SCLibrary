@@ -54,7 +54,7 @@ function getCollectionRecurse(user, collection, next_href, done){
         var updatedCollection = collection.concat(response.collection);
         if (response.next_href){ 
             var href = response.next_href;
-            database.checkExistence(user, response.collection[0], function(found, error){
+            database.checkExistence(user.id, response.collection[0], function(found, error){
                 if (error)
                     done(null, error);
                 if (found)

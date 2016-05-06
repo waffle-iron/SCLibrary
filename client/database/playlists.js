@@ -7,7 +7,8 @@ module.exports = function(db){
     module.createPlaylist = function(name, uid, done){
         //TODO: Make sure playlists are not created w/ duplicate names
         db.cypher({
-            query: "MATCH (u:Channel {scuid: {uid} }) " +
+            query: "MATCH (u:Channel) " +
+                   "WHERE id(u) = {uid} " + 
                    "CREATE (p:Playlist {name: {playlist_name} })<-[r:OWNS]-(u) " +
                    "RETURN u, r, p",
             params: {
@@ -29,7 +30,9 @@ module.exports = function(db){
     // Given a playlist id, remove that playlist from the database.
     module.deletePlaylist = function(pid, done){
         db.cypher({
-            query: "MATCH (p:Playlist) WHERE id(p) = " + pid + " DETACH DELETE p",
+            query: "MATCH (p:Playlist) " +
+                   "WHERE id(p) = " + pid + 
+                   " DETACH DELETE p",
             params: {
                 pid: pid
             }
@@ -75,13 +78,11 @@ module.exports = function(db){
     // Given a track id and a playlist id, remove any playlist contains track relationship between them.
     module.removeTrackFromPlaylist = function(tid, pid, done){
         var query = "MATCH (t:Track)<-[r:CONTAINS]-(p:Playlist) " + 
-                   "WHERE id(p) = " + pid +
-                   " AND id(t) = " + tid + 
-                   " DELETE r";
+                    "WHERE id(p) = " + pid +
+                    " AND id(t) = " + tid + 
+                    " DELETE r";
         db.cypher({
-            query: "MATCH (Track {scid: {tid} })<-[r:CONTAINS]-(p:Playlist) " +
-                   "WHERE id(p) = 7108 " +
-                   "DELETE r",
+            query: query,
             params: {
                 tid: parseInt(tid),
                 pid: parseInt(pid)
@@ -121,10 +122,11 @@ module.exports = function(db){
     // Given a user, return the list of all playlists owned by the user.
     module.getPlaylists = function(uid, done){
         db.cypher({
-            query: "MATCH (Channel {scuid: {scuid} })-[:OWNS]->(p:Playlist) " +
+            query: "MATCH (c:Channel)-[:OWNS]->(p:Playlist) " +
+                   "WHERE id(c) = {uid} " + 
                    "RETURN p",
             params: {
-                scuid: uid
+                uid: uid
             }
         }, function(error, results){
             if (error){

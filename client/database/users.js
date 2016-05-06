@@ -30,28 +30,29 @@ module.exports = function(db){
                     },
                 }, function(error, results){
                     if (error){
-                        done(error);
+                        done(null, error);
                     } else {
                         // User was added to the database.
-                        done();
+                        done(results[0].user);
                     }
                 });
                 
             // If match found, do nothing
             } else {
                 console.log("User already in database");
-                done();
+                done(results[0].user);
             }
         });
     }
 
     // Find a user from the database given their scuid.
     module.getUser = function(uid, done){
-        console.log(uid);
         db.cypher({ 
-            query: 'MATCH (user:Channel { scuid: ' + uid + ' }) RETURN user',
+            query: 'MATCH (user:Channel) ' + 
+                   'WHERE id(user) = {uid} ' +
+                   'RETURN user',
             params: {
-                scuid: uid
+                uid: uid
             }
         }, function(error, results){
             if (error){
