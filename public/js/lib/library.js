@@ -1,3 +1,4 @@
+var autoqueue = new Queue();
 var queue = new Queue();
 //how to use: http://code.stephenmorley.org/javascript/queues/
 
@@ -67,7 +68,7 @@ app.directive("library", [function (){
             // Send a song to the player and save the next 20 songs for an autoplay queue
             ctlr.playSong = function(track, element){
 
-                queue = new Queue();
+                autoqueue = new Queue();
                 var i = 0;
                 while (element.$$nextSibling && i < 20){
                     var properties = element.$$nextSibling.track.t.properties;
@@ -77,7 +78,7 @@ app.directive("library", [function (){
                         artwork_url: properties.artwork_url,
                         waveform_url: properties.waveform_url
                     }
-                    queue.enqueue(options);
+                    autoqueue.enqueue(options);
                     element = element.$$nextSibling;
                     i++;
                 }
@@ -174,18 +175,12 @@ app.directive("library", [function (){
             }
             
             // Draggable handles for the columns
-            ctlr.colSizeable = function() { 
-                attachColHandles();
-            }
-
-            // Draggable handles for the columns
             ctlr.colSizeable = attachColHandles();
             ctlr.playNext = nextListener();
             ctlr.loadLibrary();
             ctlr.loadPlaylists();
 
-
-            ctlr.init = function(){
+            ctlr.updateMenu = function(){
 
                 $.contextMenu( 'destroy' );
                 var items = {};
@@ -204,8 +199,14 @@ app.directive("library", [function (){
                         queue: {
                             name: "Add to Queue",
                             callback: function(key, opt){
-                                var track = JSON.parse(opt.$trigger[0].dataset.track);
-                                console.log(track.t.properties.scid);
+                                var properties = JSON.parse(opt.$trigger[0].dataset.track).t.properties;
+                                var options = {
+                                    scid: properties.scid,
+                                    duration: properties.duration,
+                                    artwork_url: properties.artwork_url,
+                                    waveform_url: properties.waveform_url
+                                }
+                                queue.enqueue(options);
                             }
                         }
                     };
@@ -229,18 +230,24 @@ app.directive("library", [function (){
                         queue: {
                             name: "Add to Queue",
                             callback: function(key, opt){
-                                var track = JSON.parse(opt.$trigger[0].dataset.track);
-                                console.log(track.t.properties.scid);
+                                var properties = JSON.parse(opt.$trigger[0].dataset.track).t.properties;
+                                var options = {
+                                    scid: properties.scid,
+                                    duration: properties.duration,
+                                    artwork_url: properties.artwork_url,
+                                    waveform_url: properties.waveform_url
+                                }
+                                queue.enqueue(options);
                             }
                         }
                     };
 
                 }
 
-                ctlr.updateMenu(items);
+                ctlr.initMenu(items);
             }
 
-            ctlr.updateMenu = function(items){
+            ctlr.initMenu = function(items){
                 //console.log(ctlr.playlist_menu);
                 $.contextMenu({
                     selector: '.track-row',
