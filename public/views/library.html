@@ -57,7 +57,7 @@
             </li>
         </ul>
         <ul class="list">
-            <li class="track-row" ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)">
+            <li class="track-row" ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)" ng-init="ctlr.init(this)" data-track="{{track}}">
                 <!--td >x</td-->
                 <ol>
                     <li class="channel">{{track.c.properties.name}}</li>

@@ -171,6 +171,22 @@ app.directive("library", [function (){
             ctlr.colSizeable();
             ctlr.loadPlaylists();
 
+            ctlr.init = function(){
+                $.contextMenu({
+                    selector: '.track-row',
+                    reposition: true,
+                    items: {
+                        copy: {
+                            name: "Copy",
+                            callback: function(key, opt){
+                                var track = JSON.parse(opt.$trigger[0].dataset.track);
+                                console.log(track.t.properties.scid);
+                            }
+                        }
+                    }
+                })
+            }
+
             $('.playlistForm').hide();
             $('.addPlaylist').click(function(){
                 $('.playlistForm').show();
@@ -180,3 +196,4 @@ app.directive("library", [function (){
         controllerAs: "ctlr"
     };
 }]);
+
