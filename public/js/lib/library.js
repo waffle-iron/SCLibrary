@@ -66,7 +66,7 @@ app.directive("library", [function (){
                 while (element.$$nextSibling && i < 20){
                     var properties = element.$$nextSibling.track.t.properties;
                     var options = {
-                        scid: properties.id,
+                        scid: properties.scid,
                         duration: properties.duration,
                         artwork_url: properties.artwork_url,
                         waveform_url: properties.waveform_url
