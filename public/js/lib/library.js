@@ -83,10 +83,11 @@ app.directive("library", [function (){
 
             // Add a playlist to the database and hide the new playlist form
             ctlr.createPlaylist = function(){
+                console.log(loggedinuser);
                 var url = 'http://localhost:3000/api/playlists/';
                 var data = {
                     name: ctlr.playlistInput,
-                    uid: loggedinuser.id
+                    uid: loggedinuser._id
                 }
                 $http.post(url, data).then(function(response){
                     console.log(response);

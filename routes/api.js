@@ -18,7 +18,7 @@ router.get('/mycollection/', function(req, res, next) {
 	// Retrieve the user data from the session.
 	var user = req.session.user;
 	// Get the collection from the database and render the json.
-	db.getCollection(user.id, function(collection){
+	db.getCollection(user._id, function(collection){
 		res.json(collection);
 	});
 })
@@ -28,7 +28,7 @@ router.get('/myplaylists/', function(req, res, next) {
 	// Retrieve the user data from the session.
 	var user = req.session.user;
 	// Get the collection from the database and render the json.
-	db.getPlaylists(user.id, function(playlists){
+	db.getPlaylists(user._id, function(playlists){
 		res.json(playlists);
 	});
 })

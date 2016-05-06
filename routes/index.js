@@ -32,24 +32,24 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
       // Save the accessToken in the user's session.
       req.session.oauth_token = accessToken;
       // Retreive the user's information from the Soundcloud API.
-      soundcloud.getLoggedInUser(accessToken, function(user, error){
+      soundcloud.getLoggedInUser(accessToken, function(sc_user, error){
         if (error){
           console.log(error);
         }
-        // Save the user's information in the user's session.
-        req.session.user = user;
         // Add the user to the database.
-        db.addUser(user, function(error){
+        db.addUser(sc_user, function(db_user, error){
           if (error) {
             console.log(error);
           }
+          // Save the user's information in the user's session.
+          req.session.user = db_user;
           // Retrieve the user's favorites from the Soundcloud API.
-          soundcloud.getCollection(user, function(collection, error){
+          soundcloud.getCollection(sc_user, function(collection, error){
             if (error){
               console.log(error);
             }
             // Add the user's collection to the database.
-            db.addCollection(user, collection, function(error){
+            db.addCollection(db_user, collection, function(error){
               if (error) {
                 console.log(error);
               }
@@ -57,7 +57,6 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
               res.redirect('/library/');
             });
           });
-
         });
       });
     }
