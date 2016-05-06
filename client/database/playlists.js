@@ -51,7 +51,7 @@ module.exports = function(db){
             query: "MATCH (t:Track), (p:Playlist) " + 
                    "WHERE id(p) = {pid} " +
                    "AND id(t) = {tid} " +
-                   "CREATE (p)-[r:CONTAINS]->(t) " +
+                   "CREATE UNIQUE (p)-[r:CONTAINS]->(t) " +
                    "RETURN p, r, t",
             params: {
                 tid: parseInt(tid),
