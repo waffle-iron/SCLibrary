@@ -18,13 +18,8 @@
         </form>
 
         <!-- Why is this not sorting? -->
-<<<<<<< HEAD
-        <ul  ng-init="ctlr.initDrop()" ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name">
-            <li class="playlist-row" ng-click="ctlr.loadPlaylist(playlist)">{{playlist.p.properties.name}}</li><span ng-click="ctlr.deletePlaylist(playlist)">X</span>
-=======
-        <ul ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name">
-            <li id="playlist{{$index}}" ng-click="ctlr.loadPlaylist(playlist)" data-playlist="{{playlist}}">{{playlist.p.properties.name}}</li><span ng-click="ctlr.deletePlaylist(playlist)" >X</span>
->>>>>>> master
+        <ul ng-init="ctlr.initDrop()" ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name">
+            <li class="playlist-row" id="playlist{{$index}}" ng-click="ctlr.loadPlaylist(playlist)" data-playlist="{{playlist}}">{{playlist.p.properties.name}}</li><span ng-click="ctlr.deletePlaylist(playlist)" >X</span>
         </ul>
     </ul>
 </div>
@@ -62,11 +57,7 @@
             </li>
         </ul>
         <ul class="list">
-<<<<<<< HEAD
-            <li class="track-row" ng-init="ctlr.initDrag()" ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)">
-=======
             <li class="track-row" ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="ctlr.playSong(track, this)" ng-init="ctlr.init(this)" data-track="{{track}}">
->>>>>>> master
                 <!--td >x</td-->
                 <ol>
                     <li class="channel">{{track.c.properties.name}}</li>

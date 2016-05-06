@@ -248,6 +248,7 @@ app.directive("library", [function (){
                           .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
                     },
                 })
+                ctlr.initDrag()
             }
 
             ctlr.buildPlaylistMenu = function(result){
