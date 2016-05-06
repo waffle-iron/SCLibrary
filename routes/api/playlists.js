@@ -47,9 +47,9 @@ router.post('/:pid/add/:tid', function(req, res, next){
 	});
 });
 
-/* DELETE track frpm playlist */
-router.post('/:pid/remove/:tid', function(req, res, next){
-	db.addTrackToPlaylist(req.params.tid, req.params.pid, function(error){
+/* DELETE track from playlist */
+router.delete('/:pid/remove/:tid', function(req, res, next){
+	db.removeTrackFromPlaylist(req.params.tid, req.params.pid, function(error){
 		if (error)
 			res.json({"error":"failed"});
 		else
