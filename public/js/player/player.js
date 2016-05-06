@@ -279,12 +279,12 @@ function nextListener() {
         if( completionPer == "100%") {
 
           if (queue.isEmpty()){
-            var nextTrack = autoqueue.dequeue();
-            loadSong(nextTrack.scid, nextTrack.duration, nextTrack.artwork_url, nextTrack.waveformurl);
+            var properties = autoqueue.dequeue().t.properties;
+            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
           }
           else {
-            var nextTrack = queue.dequeue();
-            loadSong(nextTrack.scid, nextTrack.duration, nextTrack.artwork_url, nextTrack.waveformurl);
+            var properties = queue.dequeue().t.properties;
+            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
           }
           
         }
