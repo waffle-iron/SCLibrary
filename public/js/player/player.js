@@ -277,15 +277,16 @@ function nextListener() {
       //console.log(mutationRecord.target.style.width);
       var completionPer = mutationRecord.target.style.width;
         if( completionPer == "100%") {
-          console.log('NEXT');
-          //TODO Yo Milad how is this supposed to work
 
-          var nextTrack = queue.dequeue();
-          console.log(nextTrack); // look, no scid
-
-          loadSong(nextTrack.scid,
-            nextTrack.duration, nextTrack.artwork_url,
-            nextTrack.waveformurl);
+          if (queue.isEmpty()){
+            var nextTrack = autoqueue.dequeue();
+            loadSong(nextTrack.scid, nextTrack.duration, nextTrack.artwork_url, nextTrack.waveformurl);
+          }
+          else {
+            var nextTrack = queue.dequeue();
+            loadSong(nextTrack.scid, nextTrack.duration, nextTrack.artwork_url, nextTrack.waveformurl);
+          }
+          
         }
     });
   });
