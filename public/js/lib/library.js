@@ -39,7 +39,7 @@ app.directive("library", [function (){
             // Update sort variables
             ctlr.updateSort = function(sortBy){
                 if (ctlr.sortType == sortBy)
-                    ctlr.sortReverse = !ctlr.sortReverse; 
+                    ctlr.sortReverse = !ctlr.sortReverse;
                 else
                     ctlr.sortReverse = false;
                 ctlr.sortType = sortBy;
@@ -65,7 +65,7 @@ app.directive("library", [function (){
                 var i = 0;
                 while (element.$$nextSibling && i < 20){
                     var properties = element.$$nextSibling.track.t.properties;
-                    var options = { 
+                    var options = {
                         scid: properties.id,
                         duration: properties.duration,
                         artwork_url: properties.artwork_url,
@@ -92,7 +92,7 @@ app.directive("library", [function (){
                     ctlr.loadPlaylists();
                 }, function(error){
                     console.log(error);
-                }); 
+                });
 
                 $('.playlistForm').hide();
                 ctlr.playlistInput = '';
@@ -162,9 +162,9 @@ app.directive("library", [function (){
                     }
                 });
             }
-            
+
             // Draggable handles for the columns
-            ctlr.colSizeable = function() { 
+            ctlr.colSizeable = function() {
                 attachColHandles();
             }
             ctlr.loadLibrary();
@@ -175,6 +175,13 @@ app.directive("library", [function (){
                 $.contextMenu({
                     selector: '.track-row',
                     reposition: true,
+                    autoHide: true,
+                    determinePosition: function($menu){
+                      // Position using jQuery.ui.position
+                      // http://api.jqueryui.com/position/
+                      $menu.css('display', 'block')
+                          .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
+                    },
                     items: {
                         copy: {
                             name: "Copy",
@@ -196,4 +203,3 @@ app.directive("library", [function (){
         controllerAs: "ctlr"
     };
 }]);
-
