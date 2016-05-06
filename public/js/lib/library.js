@@ -28,6 +28,10 @@ app.directive("library", [function (){
     return {
         restrict: 'E',
         templateUrl: 'http://localhost:3000/views/library.html',
+        link: function(scope, element, attr) {
+            console.log(scope);
+
+        },
         controller: ["httpLoader", "$q", '$http', '$timeout', function (httpLoader, $q, $http, $timeout) {
             var ctlr = this;
 
@@ -66,7 +70,7 @@ app.directive("library", [function (){
                 while (element.$$nextSibling && i < 20){
                     var properties = element.$$nextSibling.track.t.properties;
                     var options = {
-                        scid: properties.id,
+                        scid: properties.scid,
                         duration: properties.duration,
                         artwork_url: properties.artwork_url,
                         waveform_url: properties.waveform_url
@@ -161,6 +165,7 @@ app.directive("library", [function (){
                     }
                     else {
                         ctlr.playlists = result;
+                        ctlr.buildPlaylistMenu(result);
                     }
                 });
             }
@@ -200,8 +205,80 @@ app.directive("library", [function (){
               });
             }
 
+            // Draggable handles for the columns
+            ctlr.colSizeable = attachColHandles();
+            ctlr.playNext = nextListener();
             ctlr.loadLibrary();
             ctlr.loadPlaylists();
+
+
+            ctlr.init = function(){
+
+                var items = {
+                        copy: {
+                            name: "Copy",
+                            callback: function(key, opt){
+
+                            }
+                        },
+                        playlist: {
+                            name: "Add to playlist...",
+                            items: ctlr.playlist_menu
+                        },
+                        queue: {
+                            name: "Add to Queue",
+                            callback: function(key, opt){
+                                var track = JSON.parse(opt.$trigger[0].dataset.track);
+                                console.log(track.t.properties.scid);
+                            }
+                        }
+                    };
+
+
+                //console.log(ctlr.playlist_menu);
+                $.contextMenu({
+                    selector: '.track-row',
+                    items: items,
+                    reposition: true,
+                    autoHide: true,
+                    determinePosition: function($menu){
+                      // Position using jQuery.ui.position
+                      // http://api.jqueryui.com/position/
+                      $menu.css('display', 'block')
+                          .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
+                    },
+                })
+            }
+
+            ctlr.buildPlaylistMenu = function(result){
+
+                var playlist_menu = {};
+
+                for (var i = 0; i < result.length; i++){
+                    var playlist = result[i];
+                    var next =  {
+                        name: playlist.p.properties.name,
+                        callback: function(key, opt){
+                            var pid = JSON.parse($('#' + key).attr("data-playlist")).p._id;
+                            var tid = JSON.parse(opt.$trigger[0].dataset.track).t._id;
+                            var url = 'http://localhost:3000/api/playlists/' + pid + '/add/' + tid;
+                            $http.post(url, {}).then(function(response){
+                                console.log(response);
+                            }, function(error){
+                                console.log(error);
+                            })
+
+                        }
+                    }
+                    playlist_menu['playlist' + i] = next;
+                }
+
+                ctlr.playlist_menu = playlist_menu;
+
+
+            }
+
+
 
             $('.playlistForm').hide();
 

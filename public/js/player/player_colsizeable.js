@@ -128,7 +128,9 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
                 //Get rid of all decimal points except first 2
                 var percentPlayed = Math.floor((player.currentTime() / duration) * 10000) / 100;
                 //console.log(percentPlayed + "% played");
+                // added back div to make waveform orange.
                 $('#back-div').css("width", percentPlayed.toString() + "%");
+                //$('#seekicon').css("left", percentPlayed.toString() + "%");
             });
 
             //player.on('time', function(){console.log("pos: " : this.position);});
@@ -144,38 +146,6 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
 // used to track resize direction
 
 var left = false;
-
-function snapToPercents(parentEl) {
-  var parWid = parentEl.width();
-  var colCt = parentEl.children().length;
-  var catchAdd = 0;
-  var j = 0;
-  console.log(parWid + " - " + colCt);
-  parentEl.children('li').each(function () {
-    // iterate through li + siblings
-    var eachC = "." + $(this).find('a').text().toLowerCase();
-    if (j == colCt - 1) {
-      // force clearing
-      var catchAll = 100.0 - catchAdd;
-      //console.log(catchAdd + " + " + catchAll);
-      $(this).css('width', catchAll.toString() + "%");
-    } else {
-      var perW = ($(this).width()/parWid) * 100;
-      $(this).css('width', perW.toString() + "%");
-      //console.log(j + " - " + perW.toString() + "%");
-      catchAdd += perW;
-    }
-    // resize col's below
-    $(eachC).each(function () {
-      if (j == colCt - 1) {
-        $(this).css('width', catchAll.toString() + "%");
-      } else {
-        $(this).css('width', perW.toString() + "%");
-      }
-    });
-    j++;
-  });
-}
 
 function attachColHandles() {
     $('.col-sizeable').each(function () {
@@ -198,9 +168,12 @@ function attachColHandles() {
             $(this).resizable({
                 handles: handles,
                 autoHide: true,
+                //minWidth: 100,
+                //containment: "parent",
                 minHeight: 30,
                 maxHeight: 30,
-
+                // make the other li's in the column resize
+                //alsoResize: thisClass,
                 resize: function (event, ui) {
                     // hack to determine resize dir
                     var srcEl = event.originalEvent.originalEvent.path[0].className;
@@ -228,7 +201,7 @@ function attachColHandles() {
                         cumW += $(this).width();
                         $(this).nextAll().each(function () {
                             // set decreased width to other headers
-                            $(this).width(((headerW - cumW) / colCount) - 5);
+                            $(this).width((headerW - cumW) / colCount);
                         });
                     } else {
                         // left-side drag
@@ -261,35 +234,29 @@ function attachColHandles() {
             // bind a function to update lower widths
             $(this).on('resizestop', function () {
               left = false; // reset global hack for dir
-              snapToPercents($(this).parent());
+                var parWid = $(this).parent.width();
+                var colCt = $(this).parent().children().length;
+                var catchAdd = 0;
+                var j = 0;
+                $(this).parent().children().each(function () {
+                  // iterate through li + siblings
+                  if (j == colCt) {
+                    // force clearing
+                    var catchAll = 100.0 - catchAdd;
+                    console.log(catchAdd + " + " + catchAll);
+                    $(this).css('width', catchAll);
+                  } else {
+                    var perW = Math.round(($(this).width()/parWid 1.0));
+                    catchAdd += perW;
+                    var eachC = "." + $(this).find('a').text().toLowerCase();
+                    $(eachC).each(function () {
+                        $(this).css('width', perW.toString() + "%");
+                    });
+                  }
+                  j++;
+                });
             });
         });
 
     });
-}
-
-function nextListener() {
-  // autoplay!
-  // hack to detect when song is over:
-  // listen for the width of the progress bar
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutationRecord) {
-      //console.log(mutationRecord.target.style.width);
-      var completionPer = mutationRecord.target.style.width;
-        if( completionPer == "100%") {
-          console.log('NEXT');
-          //TODO Yo Milad how is this supposed to work
-
-          var nextTrack = queue.dequeue();
-          console.log(nextTrack); // look, no scid
-
-          loadSong(nextTrack.scid,
-            nextTrack.duration, nextTrack.artwork_url,
-            nextTrack.waveformurl);
-        }
-    });
-  });
-
-  var target = document.getElementById('back-div');
-  observer.observe(target, { attributes : true, attributeFilter : ['style'] });
 }

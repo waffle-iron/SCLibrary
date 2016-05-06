@@ -2,12 +2,12 @@ module.exports = function(db){
 
     var module = {};
 
-    // Given a playlist name and a user id, create a playlist and assign 
+    // Given a playlist name and a user id, create a playlist and assign
     // ownership to the user.
     module.createPlaylist = function(name, uid, done){
         //TODO: Make sure playlists are not created w/ duplicate names
-        db.cypher({ 
-            query: "MATCH (u:Channel {scuid: {uid} }) " + 
+        db.cypher({
+            query: "MATCH (u:Channel {scuid: {uid} }) " +
                    "CREATE (p:Playlist {name: {playlist_name} })<-[r:OWNS]-(u) " +
                    "RETURN u, r, p",
             params: {
@@ -19,7 +19,7 @@ module.exports = function(db){
                 console.log(error);
                 done(error);
             }
-            else {      
+            else {
                 console.log(results);
                 done();
             }
@@ -28,7 +28,7 @@ module.exports = function(db){
 
     // Given a playlist id, remove that playlist from the database.
     module.deletePlaylist = function(pid, done){
-        db.cypher({ 
+        db.cypher({
             query: "MATCH (p:Playlist) WHERE id(p) = " + pid + " DETACH DELETE p",
             params: {
                 pid: pid
@@ -38,30 +38,32 @@ module.exports = function(db){
                 console.log(error);
                 done(error);
             }
-            else {      
+            else {
                 console.log(results);
                 done();
             }
-        });    
+        });
     }
 
     // Given a track id and a playlist id, create a playlist contains track relationship.
     module.addTrackToPlaylist = function(tid, pid, done){
-        db.cypher({ 
-            query: "MATCH (t:Track {scid: {tid} }), (p:Playlist) " + 
+        db.cypher({
+            query: "MATCH (t:Track), (p:Playlist) " +
                    "WHERE id(p) = {pid} " +
+                   "AND id(t) = {tid} " +
                    "CREATE (p)-[r:CONTAINS]->(t) " +
                    "RETURN p, r, t",
             params: {
-                tid: tid,
-                pid: pid
+                tid: parseInt(tid),
+                pid: parseInt(pid)
             }
         }, function(error, results){
             if (error){
+                console.log("hi");
                 console.log(error);
                 done(error);
             }
-            else {      
+            else {
                 console.log(results);
                 done();
             }
@@ -70,8 +72,8 @@ module.exports = function(db){
 
     // Given a track id and a playlist id, remove any playlist contains track relationship between them.
     module.removeTrackFromPlaylist = function(tid, pid, done){
-        db.cypher({ 
-            query: "MATCH (Track {scid: {tid} })<-[r:CONTAINS]-(p:Playlist) " + 
+        db.cypher({
+            query: "MATCH (Track {scid: {tid} })<-[r:CONTAINS]-(p:Playlist) " +
                    "WHERE id(p) = 7108 " +
                    "DELETE r",
             params: {
@@ -83,7 +85,7 @@ module.exports = function(db){
                 console.log(error);
                 done(error);
             }
-            else {      
+            else {
                 console.log(results);
                 done();
             }
@@ -91,9 +93,9 @@ module.exports = function(db){
 
     // Given a playlist id, return the list of all tracks contained by the playlist.
     module.getPlaylist = function(pid, done){
-        db.cypher({ 
+        db.cypher({
             query: "MATCH (p:Playlist)-[:CONTAINS]->(t:Track)<-[:UPLOADED]-(c)  " +
-                   "WHERE id(p) = " + pid + " " + 
+                   "WHERE id(p) = " + pid + " " +
                    "RETURN t, c",
             params: {
                 id: pid
@@ -103,7 +105,7 @@ module.exports = function(db){
                 console.log(error);
                 done(error);
             }
-            else {      
+            else {
                 console.log(results);
                 done(results);
             }
@@ -112,7 +114,7 @@ module.exports = function(db){
 
     // Given a user, return the list of all playlists owned by the user.
     module.getPlaylists = function(uid, done){
-        db.cypher({ 
+        db.cypher({
             query: "MATCH (Channel {scuid: {scuid} })-[:OWNS]->(p:Playlist) " +
                    "RETURN p",
             params: {
@@ -123,8 +125,8 @@ module.exports = function(db){
                 console.log(error);
                 done(error);
             }
-            else {      
-                console.log(results);
+            else {
+                //console.log(results[0].p.properties);
                 done(results);
             }
         });

@@ -1,6 +1,7 @@
 <!--aside class="user-wrapper"><span>You are logged in as <a href="#" class="username"></a>.</span></aside-->
 
 <div id="player" style="width: 100%;"> 
+    <div class ="pull-left" id="prev"><i class="sc sc-caret-left"></i></div>
     <div id="artwrapper" style="display:inline-block; float: left;">
 		<div id="artworkimg">
         <div id="pauseplay" alt="" style="display: inline-block; background-image: url(../images/sc_icons/play.svg);">
@@ -13,6 +14,7 @@
 		<!--img src="../images/seekicon.png" id="seekicon" style="position:absolute;  top: 50%; transform: translateY(-50%);"-->
         <div id="back-div"></div>
 	</div>
+    <div class ="pull-right" id="next"><i class="sc sc-caret-right"></i></div>
 	
 </div>
 
@@ -27,6 +29,7 @@
 	var loggedinuser = JSON.parse('{{{json user}}}');
 </script>
 
+
 <script src="/bower_components/angular/angular.min.js"></script>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/bower_components/jquery-ui/ui/core.js"></script>
@@ -34,8 +37,14 @@
 <script src="/bower_components/jquery-ui/ui/mouse.js"></script>
 <script src="/bower_components/jquery-ui/ui/draggable.js"></script>
 <script src="/bower_components/jquery-ui/ui/droppable.js"></script>
+<script src="/bower_components/jquery-ui/ui/resizable.js"></script>
+
+<script src="/bower_components/jQuery-contextMenu/dist/jquery.ui.position.js"></script>
+<script src="/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.js"></script>
+
 <script src="/js/lib/Queue.js"></script>
 <script src="/js/lib/library.js"></script>
+
 
 <script src="../js/player/api.js"></script>
 <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
