@@ -1,6 +1,5 @@
-var autoqueue = new Queue();
-var queue = new Queue();
-//how to use: http://code.stephenmorley.org/javascript/queues/
+var autoqueue = [];
+var queue = [];
 
 var app = angular.module("Library", []);
 
@@ -24,24 +23,58 @@ app.factory("httpLoader", ["$http", function ($http) {
     };
 }]);
 
+app.controller("LibraryCtlr", function($scope){
+
+    $scope.context = 'songs';
+
+    // Send a song to the player and save the next 20 songs for an autoplay queue
+    $scope.playSong = function(track, element){
+
+        autoqueue = [];
+        var i = 0;
+        while (element.$$nextSibling && i < 20){
+            var t = element.$$nextSibling.track;
+            autoqueue.push(t);
+            element = element.$$nextSibling;
+            i++;
+        }
+
+        var properties = track.t.properties;
+        loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    }
+
+    $scope.$on('LastRepeaterElement', function(){console.log('good to go');});
+
+
+
+});
+
+
+app.directive('emitLastRepeaterElement', function() {
+
+});
+
 // Library directive - html Element
 app.directive("library", [function (){
     return {
         restrict: 'E',
         templateUrl: 'http://localhost:3000/views/library.html',
+        scope: false,
         link: function(scope, element, attr) {
-            console.log(scope);
+
+            $('.playlistForm').hide();
+            $('.addPlaylist').click(function(){
+                $('.playlistForm').show();
+            });
 
         },
-        controller: ["httpLoader", "$q", '$http', '$timeout', function (httpLoader, $q, $http, $timeout) {
+        controller: ["httpLoader", "$q", '$http', '$timeout', '$scope', function (httpLoader, $q, $http, $timeout, $scope) {
             var ctlr = this;
 
             // Variables used for sort and search functionality
             ctlr.sortType = '';
             ctlr.sortReverse = false;
             ctlr.searchTerm = '';
-
-            ctlr.context = 'songs';
 
             // Update sort variables
             ctlr.updateSort = function(sortBy){
@@ -65,24 +98,10 @@ app.directive("library", [function (){
                 return date.substring(0, 10);
             }
 
-            // Send a song to the player and save the next 20 songs for an autoplay queue
-            ctlr.playSong = function(track, element){
-
-                autoqueue = new Queue();
-                var i = 0;
-                while (element.$$nextSibling && i < 20){
-                    var t = element.$$nextSibling.track;
-                    autoqueue.enqueue(t);
-                    element = element.$$nextSibling;
-                    i++;
-                }
-
-                var properties = track.t.properties;
-                loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
-            }
 
             // Add a playlist to the database and hide the new playlist form
             ctlr.createPlaylist = function(){
+                console.log("[func] createPlaylist");
                 console.log(loggedinuser);
                 var url = 'http://localhost:3000/api/playlists/';
                 var data = {
@@ -103,13 +122,14 @@ app.directive("library", [function (){
 
             // Update the view with tracks from the selected playlist.
             ctlr.loadPlaylist = function(playlist){
+                console.log("[func] loadPlaylist");
                 var url = 'http://localhost:3000/api/playlists/' + playlist.p._id;
                 httpLoader.load(url, function(err, result){
                     if (err)
                         console.log(err);
                     else {
                         ctlr.display = result;
-                        ctlr.context = 'playlists';
+                        $scope.context = 'playlists';
                         ctlr.currPlaylist = playlist.p._id;
                         ctlr.buildDeleteFromPlaylistMenu(playlist);
                     }
@@ -118,6 +138,7 @@ app.directive("library", [function (){
 
             // Delete playlist with permission from the user.
             ctlr.deletePlaylist = function(playlist){
+                console.log("[func] deletePlaylist");
                 if (confirm("Are you sure you want to delete?") == true){
                     var id = playlist.p._id;
                     var url = 'http://localhost:3000/api/playlists/' + id;
@@ -138,13 +159,22 @@ app.directive("library", [function (){
 
             // Update the view with the user's collection
             ctlr.displaySongs = function(){
+                console.log("[func] displaySongs");
                 ctlr.display = ctlr.collection;
-                ctlr.context = 'songs';
+                $scope.context = 'songs';
+                ctlr.currPlaylist = null;
+            }
+
+            ctlr.displayQueue = function(){
+                console.log("[func] displayQueue");
+                ctlr.display = queue;
+                $scope.context = 'queue';
                 ctlr.currPlaylist = null;
             }
 
             // Populate the list of songs
             ctlr.loadLibrary = function(){
+                console.log("[func] loadLibrary");
                 httpLoader.load('http://localhost:3000/api/mycollection', function (err, result) {
                     if (err) {
                         console.log(err);
@@ -158,6 +188,7 @@ app.directive("library", [function (){
 
             // Populate the list of playlists
             ctlr.loadPlaylists = function(){
+                console.log("[func] loadPlaylists");
                 httpLoader.load('http://localhost:3000/api/myplaylists', function (err, result) {
                     if (err) {
                         console.log(err);
@@ -165,6 +196,7 @@ app.directive("library", [function (){
                     else {
                         ctlr.playlists = result;
                         ctlr.buildAddToPlaylistMenu(result);
+                        ctlr.updateMenu();
                     }
                 });
             }
@@ -176,39 +208,56 @@ app.directive("library", [function (){
             ctlr.loadPlaylists();
 
             ctlr.updateMenu = function(){
+                //console.log("[func] updateMenu");
 
+                //Destroy the current context menu
                 $.contextMenu( 'destroy' );
+
+                //These options belong in every context
                 var items = {
-                    copy: {
-                        name: "Copy",
-                        callback: function(key, opt){
-                        }
-                    },
                     add_playlist: {
                         name: "Add to playlist...",
                         items: ctlr.playlist_menu
-                    },
-                    queue: {
-                        name: "Add to Queue",
-                        callback: function(key, opt){
-                            var track = JSON.parse(opt.$trigger[0].dataset.track);
-                            queue.enqueue(track);
-                        }
                     }
                 };
 
-                if (ctlr.context = 'playlists'){
+                //Include delete_playlist option when in a playlist
+                if ($scope.context == 'playlists'){
                     items.delete_playlist = {
-                            name: "Delete from playlist...",
+                            name: "Delete from playlist",
                             callback: ctlr.delete_func
                         };
                 }
 
-                ctlr.initMenu(items);
-            }
+                //Include delete_queue when in a queue, add_queue when not inside a queue
+                if ($scope.context == 'queue'){
+                    items.delete_queue = {
+                            name: "Delete from queue",
+                            callback: function(key, opt){
+                                var track = JSON.parse(opt.$trigger[0].dataset.track);
+                                var i = 0;
+                                for (i = 0; i < queue.length; i++){
+                                    if (track.t._id == queue[i].t._id){
+                                        queue.splice(i, 1);
+                                        ctlr.display = queue.splice(i, 1);
+                                        break;
+                                    }
+                                }
 
-            ctlr.initMenu = function(items){
-                //console.log(ctlr.playlist_menu);
+                            }
+                        };
+                }
+                else {
+                    items.add_queue = {
+                        name: "Add to Queue",
+                        callback: function(key, opt){
+                            var track = JSON.parse(opt.$trigger[0].dataset.track);
+                            queue.push(track);
+                        }
+                    }
+                }
+
+                //Create the context menu
                 $.contextMenu({
                     selector: '.track-row',
                     items: items,
@@ -220,10 +269,12 @@ app.directive("library", [function (){
                       $menu.css('display', 'block')
                           .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
                     },
-                })
+                });
+
             }
 
             ctlr.buildAddToPlaylistMenu = function(result){
+                console.log("[func] buildAddToPlaylistMenu");
 
                 var playlist_menu = {};
 
@@ -251,6 +302,7 @@ app.directive("library", [function (){
             }
 
             ctlr.buildDeleteFromPlaylistMenu = function(playlist){
+                console.log("[func] buildDeleteFromPlaylistMenu");
 
                     var func =  function(key, opt){
                         var pid = playlist.p._id;
@@ -269,15 +321,7 @@ app.directive("library", [function (){
 
             }
 
-
-
-            $('.playlistForm').hide();
-            $('.addPlaylist').click(function(){
-                $('.playlistForm').show();
-            });
-
         }],
         controllerAs: "ctlr"
     };
 }]);
-
