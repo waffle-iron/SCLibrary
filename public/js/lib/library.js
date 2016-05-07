@@ -1,5 +1,6 @@
 var autoqueue = [];
 var queue = [];
+var backqueue = [];
 
 var app = angular.module("Library", []);
 
@@ -30,6 +31,8 @@ app.controller("LibraryCtlr", function($scope){
     // Send a song to the player and save the next 20 songs for an autoplay queue
     $scope.playSong = function(track, element){
 
+        var b_element = element;
+
         autoqueue = [];
         var i = 0;
         while (element.$$nextSibling && i < 20){
@@ -39,20 +42,35 @@ app.controller("LibraryCtlr", function($scope){
             i++;
         }
 
+        backqueue = [];
+        var j = 0;
+        while (b_element.$$prevSibling && j < 20){
+            var t = b_element.$$prevSibling.track;
+            backqueue.push(t);
+            b_element = b_element.$$prevSibling;
+            j++;
+        }
+
         var properties = track.t.properties;
         loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
     }
 
-    $scope.$on('LastRepeaterElement', function(){console.log('good to go');});
+    $scope.nextSong = function(){
+        var track = queue.shift();
+        backqueue.enshift(track);
+        var properties = track.t.properties;
+        loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    }
 
-
+    $scope.previousSong = function(){
+        var track = backqueue.shift();
+        queue.enshift(track);
+        var properties = track.t.properties;
+        loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    }
 
 });
 
-
-app.directive('emitLastRepeaterElement', function() {
-
-});
 
 // Library directive - html Element
 app.directive("library", [function (){
