@@ -278,12 +278,12 @@ function nextListener() {
       var completionPer = mutationRecord.target.style.width;
         if( completionPer == "100%") {
 
-          if (queue.isEmpty()){
-            var properties = autoqueue.dequeue().t.properties;
+          if (queue.length == 0){
+            var properties = autoqueue.shift().t.properties;
             loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
           }
           else {
-            var properties = queue.dequeue().t.properties;
+            var properties = queue.shift().t.properties;
             loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
           }
           
