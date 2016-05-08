@@ -33,20 +33,6 @@ app.controller("LibraryCtlr", function($scope, $http){
         loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
     }
 
-    $scope.nextSong = function(){
-        var track = queue.shift();
-        backqueue.enshift(track);
-        var properties = track.t.properties;
-        loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
-    }
-
-    $scope.previousSong = function(){
-        var track = backqueue.shift();
-        queue.enshift(track);
-        var properties = track.t.properties;
-        loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
-    }
-
     // Update sort variables
     $scope.updateSort = function(sortBy){
         if ($scope.sortType == sortBy)
