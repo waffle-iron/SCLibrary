@@ -116,6 +116,14 @@ app.directive("library", [function (){
                 return date.substring(0, 10);
             }
 
+            // Format playlist name string
+            ctlr.formatName = function(name){
+                if (name.length > 26)
+                    return (name.substring(0,26).trim() + "...");
+                else
+                    return name;
+            }
+
 
             // Add a playlist to the database and hide the new playlist form
             ctlr.createPlaylist = function(){
@@ -175,6 +183,21 @@ app.directive("library", [function (){
                 }
             }
 
+            // Update the view with tracks from the selected playlist.
+            ctlr.loadSCPlaylist = function(playlist){
+                console.log(playlist);
+                console.log("[func] loadPlaylist");
+                var url = 'http://localhost:3000/api/scplaylists/' + playlist.p._id;
+                httpLoader.load(url, function(err, result){
+                    if (err)
+                        console.log(err);
+                    else {
+                        ctlr.display = result;
+                        $scope.context = 'scplaylists';
+                    }
+                })
+            }
+
             // Update the view with the user's collection
             ctlr.displaySongs = function(){
                 console.log("[func] displaySongs");
@@ -218,12 +241,27 @@ app.directive("library", [function (){
                     }
                 });
             }
+
+            // Populate the list of playlists
+            ctlr.loadSCPlaylists = function(){
+                console.log("[func] loadPlaylists");
+                httpLoader.load('http://localhost:3000/api/myscplaylists', function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(result);
+                        ctlr.scplaylists = result;
+                    }
+                });
+            }
             
             // Draggable handles for the columns
             ctlr.colSizeable = attachColHandles();
             ctlr.playNext = nextListener();
             ctlr.loadLibrary();
             ctlr.loadPlaylists();
+            ctlr.loadSCPlaylists();
 
             ctlr.updateMenu = function(){
                 //console.log("[func] updateMenu");

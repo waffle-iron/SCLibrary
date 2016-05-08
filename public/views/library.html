@@ -19,7 +19,14 @@
 
         <!-- Why is this not sorting? -->
         <ul ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name">
-            <li id="playlist{{$index}}" ng-click="ctlr.loadPlaylist(playlist, this)" data-playlist="{{playlist}}">{{playlist.p.properties.name}}</li><span ng-click="ctlr.deletePlaylist(playlist)" >X</span>
+            <li id="playlist{{$index}}" ng-click="ctlr.loadPlaylist(playlist)" data-playlist="{{playlist}}">{{playlist.p.properties.name}}</li><span ng-click="ctlr.deletePlaylist(playlist)" >X</span>
+        </ul>
+
+        <li>SC Playlists</li>
+
+        <!-- Why is this not sorting? -->
+        <ul ng-repeat="playlist in ctlr.scplaylists | orderBy:p.properties.name">
+            <li id="playlist{{$index}}" ng-click="ctlr.loadSCPlaylist(playlist)" data-playlist="{{playlist}}">{{ctlr.formatName(playlist.p.properties.name)}}</li>
         </ul>
 
         <li ng-click="ctlr.displayQueue()">Queue</li>

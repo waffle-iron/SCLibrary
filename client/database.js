@@ -22,6 +22,8 @@ module.exports = {
     deletePlaylist: playlists.deletePlaylist,
     getPlaylist: playlists.getPlaylist,
     getPlaylists: playlists.getPlaylists,
+    getSCPlaylist: playlists.getSCPlaylist,
+    getSCPlaylists: playlists.getSCPlaylists,
     addTrackToPlaylist: playlists.addTrackToPlaylist,
     removeTrackFromPlaylist: playlists.removeTrackFromPlaylist
 }     
