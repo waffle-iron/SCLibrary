@@ -139,6 +139,48 @@ module.exports = function(db){
             }
         });
     }
+    
+    // Given a playlist id, return the list of all tracks contained by the playlist.
+    module.getSCPlaylist = function(pid, done){
+        db.cypher({
+            query: "MATCH (p:SCPlaylist)-[:CONTAINS]->(t:Track)<-[:UPLOADED]-(c)  " +
+                   "WHERE id(p) = " + pid + " " +
+                   "RETURN t, c",
+            params: {
+                id: pid
+            }
+        }, function(error, results){
+            if (error){
+                console.log(error);
+                done(error);
+            }
+            else {
+                console.log(results);
+                done(results);
+            }
+        });
+    }
+
+    // Given a user, return the list of all playlists owned by the user.
+    module.getSCPlaylists = function(uid, done){
+        db.cypher({
+            query: "MATCH (c:Channel)-[:LIKES_PLAYLIST]->(p:SCPlaylist) " +
+                   "WHERE id(c) = {uid} " + 
+                   "RETURN p",
+            params: {
+                uid: uid
+            }
+        }, function(error, results){
+            if (error){
+                console.log(error);
+                done(error);
+            }
+            else {
+                //console.log(results[0].p.properties);
+                done(results);
+            }
+        });
+    }
 
     return module;
 }
