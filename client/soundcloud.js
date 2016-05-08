@@ -5,16 +5,19 @@ var database = require('./database.js');
 
 //used for get requests to soundcloud API
 function getRequest(href, done){
-    //console.log(href);
+    console.log(href);
     requestify.get(href).then(
         function(response){
-            if (response)
-            //console.log(response.getBody());
-            done(response.getBody());
+            if (response){
+                console.log(response.getBody());
+                done(response.getBody());
+            }   
         },
         function(error){
-            if (error)
+            if (error){
+                console.log(error);
                 done(null, error);
+            }
         }
     );
 }
@@ -57,10 +60,9 @@ function getCollection(user, done){
 
 function getCollectionRecurse(user, collection, next_href, done){
     console.log("here");
-        console.log(next_href);
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
-        if (response.next_href && collection.length < 500){ 
+        if (response.next_href && collection.length < 100){ 
             var href = response.next_href + '&client_id=' + config.auth.client_id;
             database.checkExistence(user.id, response.collection[0], function(found, error){
                 if (error)
@@ -74,6 +76,34 @@ function getCollectionRecurse(user, collection, next_href, done){
         else {
             console.log("done grabbing collection");
             done(updatedCollection);
+        }
+    });
+}
+
+
+//get a user's collection 
+function getPlaylists(pids, done){
+    getPlaylistsRecurse(pids, [], 0, done);
+}
+
+function getPlaylistsRecurse(pids, playlists, index, done){
+    var href = "http://api.soundcloud.com/playlists/" + pids[index] + "?client_id=" + config.auth.client_id;
+    console.log(href);
+
+    getRequest(href, function(response, error){
+        if (error){
+            console.log(error);
+            done(null, error);
+        }
+        else {
+            playlists.push(response);
+            index++;
+            if (index < pids.length){
+                getPlaylistsRecurse(pids, playlists, index, done);
+            }
+            else{
+                done(playlists);
+            }
         }
     });
 }
@@ -95,5 +125,6 @@ module.exports = {
     getUser: getUser,
     getUserResource: getUserResource,
     getTrack: getTrack,
-    getPlaylist: getPlaylist
+    getPlaylist: getPlaylist,
+    getPlaylists: getPlaylists
 }     

@@ -49,12 +49,18 @@ router.get('/home/', ensureLoggedOut, function(req, res, next) {
               console.log(error);
             }
             // Add the user's collection to the database.
-            db.addCollection(db_user, collection, function(error){
+            db.addCollection(db_user, collection, function(error, pids){
               if (error) {
                 console.log(error);
               }
-              // Redirect to the library page.
-              res.redirect('/library/');
+              console.log("collection added");
+              soundcloud.getPlaylists(pids, function(playlists, error){
+                console.log("got playlists");
+                db.addPlaylistTracks(playlists, function(){
+                  console.log("added playlist tracks");
+                  res.redirect('/library/');
+                });
+              });
             });
           });
         });
