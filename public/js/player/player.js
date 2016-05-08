@@ -141,6 +141,21 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
         });
 }
 
+
+function nextSong(){
+    var track = queue.shift();
+    backqueue.enshift(track);
+    var properties = track.t.properties;
+    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+}
+
+function previousSong(){
+    var track = backqueue.shift();
+    queue.enshift(track);
+    var properties = track.t.properties;
+    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+}
+
 // used to track resize direction
 
 var left = false;
