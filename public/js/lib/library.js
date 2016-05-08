@@ -178,9 +178,6 @@ app.directive("library", [function (){
                         console.log(error);
                     })
                 }
-                else {
-
-                }
             }
 
             // Update the view with tracks from the selected playlist.
@@ -250,7 +247,6 @@ app.directive("library", [function (){
                         console.log(err);
                     }
                     else {
-                        console.log(result);
                         ctlr.scplaylists = result;
                     }
                 });
