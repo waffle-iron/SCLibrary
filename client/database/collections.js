@@ -1,6 +1,5 @@
 module.exports = function(db){
 
-
     var module = {};
 
     // Given a collection of tracks and a user, create [:LIKES] relationships

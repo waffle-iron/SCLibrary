@@ -9,11 +9,14 @@ var db = new neo4j.GraphDatabase(config.neo4j_href);
 var users = require('./database/users.js')(db);
 var collections = require('./database/collections.js')(db);
 var playlists = require('./database/playlists.js')(db);
+var channels = require('./database/channels.js')(db);
 
 module.exports = {
     instance: db,
     addUser: users.addUser,
     getUser: users.getUser,
+    getChannels: channels.getChannels,
+    getLikedTracksByChannel: channels.getLikedTracksByChannel,
     addCollection: collections.addCollection,
     getCollection: collections.getCollection,
     checkExistence: collections.checkExistence,
