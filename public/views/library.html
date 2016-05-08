@@ -1,36 +1,36 @@
 <div class="left-side-wrapper">
     <div class="search-wrapper">
-        <input type="text" placeholder="Search" ng-model="ctlr.searchTerm" />
+        <input type="text" placeholder="Search" ng-model="searchTerm" />
     </div>
     <ul class="side">
         <li>Library</li>
         <ul class="sub">
-            <li ng-click="ctlr.displaySongs()">Songs</li>
+            <li ng-click="displaySongs()">Songs</li>
             <li>Channels</li>
             <li>Genres</li>
         </ul>
 
         <li>Playlists</li>
         <span class="addPlaylist">+ Add Playlist</span>
-        <form ng-submit="ctlr.createPlaylist()" class="playlistForm">
-            <input type="text" ng-model="ctlr.playlistInput" name="text" />
+        <form ng-submit="createPlaylist()" class="playlistForm">
+            <input type="text" ng-model="playlistInput" name="text" />
             <!--<input type="submit" id="submit" value="Submit" />-->
         </form>
 
         <!-- Why is this not sorting? -->
-        <ul ng-repeat="playlist in ctlr.playlists | orderBy:p.properties.name">
-            <li id="playlist{{$index}}" ng-click="ctlr.loadPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="playlist.p.properties.name"></li>
-            <span ng-click="ctlr.deletePlaylist(playlist)" >X</span>
+        <ul ng-repeat="playlist in playlists | orderBy:p.properties.name">
+            <li id="playlist{{$index}}" ng-click="loadPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="playlist.p.properties.name"></li>
+            <span ng-click="deletePlaylist(playlist)" >X</span>
         </ul>
 
         <li>SC Playlists</li>
 
         <!-- Why is this not sorting? -->
-        <ul ng-repeat="playlist in ctlr.scplaylists | orderBy:p.properties.name">
-            <li id="playlist{{$index}}" ng-click="ctlr.loadSCPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="ctlr.formatName(playlist.p.properties.name)"></li>
+        <ul ng-repeat="playlist in scplaylists | orderBy:p.properties.name">
+            <li id="playlist{{$index}}" ng-click="loadSCPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="formatName(playlist.p.properties.name)"></li>
         </ul>
 
-        <li ng-click="ctlr.displayQueue()">Queue</li>
+        <li ng-click="displayQueue()">Queue</li>
     </ul>
 </div>
 <div class="library-wrapper">
@@ -38,43 +38,43 @@
         <ul class="header">
             <li>
                 <ol class="col-sizeable">
-                    <li class="text-center" ng-click="ctlr.updateSort('c.properties.name')">
+                    <li class="text-center" ng-click="updateSort('c.properties.name')">
                         <a class="dark">Channel</a>
-                        <span ng-show="ctlr.sortType == 'c.properties.name' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="ctlr.sortType == 'c.properties.name' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 'c.properties.name' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'c.properties.name' && sortReverse" class="fa fa-caret-up"></span>
                     </li>
-                    <li class="text-center" ng-click="ctlr.updateSort('t.properties.name')">
+                    <li class="text-center" ng-click="updateSort('t.properties.name')">
                         <a class="dark">Title</a>
-                        <span ng-show="ctlr.sortType == 't.properties.name' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="ctlr.sortType == 't.properties.name' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 't.properties.name' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 't.properties.name' && sortReverse" class="fa fa-caret-up"></span>
                     </li>
-                    <li class="text-center" ng-click="ctlr.updateSort('t.properties.created_at')">
+                    <li class="text-center" ng-click="updateSort('t.properties.created_at')">
                         <a class="dark">Date</a>
-                        <span ng-show="ctlr.sortType == 't.properties.created_at' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="ctlr.sortType == 't.properties.created_at' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 't.properties.created_at' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 't.properties.created_at' && sortReverse" class="fa fa-caret-up"></span>
                     </li>
-                    <li class="text-center" ng-click="ctlr.updateSort('t.properties.genre')">
+                    <li class="text-center" ng-click="updateSort('t.properties.genre')">
                         <a class="dark">Genre</a>
-                        <span ng-show="ctlr.sortType == 't.properties.genre' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="ctlr.sortType == 't.properties.genre' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 't.properties.genre' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 't.properties.genre' && sortReverse" class="fa fa-caret-up"></span>
                     </li>
-                    <li class="text-center" ng-click="ctlr.updateSort('t.properties.duration')">
+                    <li class="text-center" ng-click="updateSort('t.properties.duration')">
                         <a class="dark">Duration</a>
-                        <span ng-show="ctlr.sortType == 't.properties.duration' && !ctlr.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="ctlr.sortType == 't.properties.duration' && ctlr.sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 't.properties.duration' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 't.properties.duration' && sortReverse" class="fa fa-caret-up"></span>
                     </li>
                 </ol>
             </li>
         </ul>
         <ul class="list">
-            <li class="track-row" ng-repeat="track in ctlr.display | orderBy:ctlr.sortType:ctlr.sortReverse | filter:ctlr.searchTerm" ng-click="playSong(track, this)" ng-init="ctlr.updateMenu()" data-track="{{track}}">
+            <li class="track-row" ng-repeat="track in display | orderBy:sortType:sortReverse | filter:searchTerm" ng-click="playSong(track, this)" ng-init="updateMenu()" data-track="{{track}}">
                 <!--td >x</td-->
                 <ol>
                     <li class="channel" ng-bind="track.c.properties.name"></li>
                     <li class="title" ng-bind="track.t.properties.name"></li>
-                    <li class="date" ng-bind="ctlr.formatDate(track.t.properties.created_at)"></li>
+                    <li class="date" ng-bind="formatDate(track.t.properties.created_at)"></li>
                     <li class="genre" ng-bind="track.t.properties.genre"></li>
-                    <li class="duration" ng-bind="ctlr.convertTime(track.t.properties.duration)"></li>
+                    <li class="duration" ng-bind="convertTime(track.t.properties.duration)"></li>
                 </ol>
             </li>
         </ul>
