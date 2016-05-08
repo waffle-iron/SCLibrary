@@ -17,6 +17,7 @@ module.exports = {
     addCollection: collections.addCollection,
     getCollection: collections.getCollection,
     checkExistence: collections.checkExistence,
+    addPlaylistTracks: collections.addPlaylistTracks,
     createPlaylist: playlists.createPlaylist,
     deletePlaylist: playlists.deletePlaylist,
     getPlaylist: playlists.getPlaylist,

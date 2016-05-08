@@ -8,11 +8,11 @@ module.exports = function(db){
     // tracks to the database that do not yet exist.
     module.addCollection = function(user, collection, done){
         console.log("adding collection to database");
-        addItems(user, collection, 0, done);
+        addItems(user, collection, 0, [], done);
     };
 
     // Recursive helper function for addCollection.
-    function addItems(user, collection, index, done){
+    function addItems(user, collection, index, pids, done){
         item = collection[index];
         
         module.checkExistence(user.properties.scuid, item, function(found, error){
@@ -20,18 +20,18 @@ module.exports = function(db){
                 done(error);
             //user to item relationship already exists in database; done.
             if (found) 
-                done();
+                done(null, pids);
             //otherwise relationship does not yet exist; create it.
             else {
                 if (item.track){
                     addTrack(user, item.track, function(success, error){
                         if (success){
-                            console.log("Track added!");
+                            //console.log("Track added!");
                             index++;
                             if (index < collection.length - 1) 
-                                addItems(user, collection, index, done);
+                                addItems(user, collection, index, pids, done);
                             else
-                                done();
+                                done(null, pids);
                         }
                         else {
                             done(error);
@@ -41,12 +41,13 @@ module.exports = function(db){
                 else {
                     addPlaylist(user, item.playlist, function(success, error){
                         if (success){
-                            console.log("Playlist added!");
+                            //console.log("Playlist added!");
+                            pids.push(item.playlist.id);
                             index++;
                             if (index < collection.length - 1) 
-                                addItems(user, collection, index, done);
+                                addItems(user, collection, index, pids, done);
                             else
-                                done();
+                                done(null, pids);
                         }
                         else {
                             done(error);
@@ -55,9 +56,6 @@ module.exports = function(db){
                 }
             }
         })
-
-
-        
     }
 
     function addTrack(user, track, done){
@@ -106,6 +104,78 @@ module.exports = function(db){
             }
         });
 
+    }
+
+    module.addPlaylistTracks = function(playlists, done){
+
+        var tracks = [];
+
+        for (var i = 0; i < playlists.length; i++){
+            var ptracks = playlists[i].tracks;
+            for (var j = 0; j < ptracks.length; j++){
+                ptracks[j].pid = playlists[i].id;
+            }
+            var updatedtracks = tracks.concat(ptracks);
+            tracks = updatedtracks;
+        }
+
+        addPlaylistTracksRecurse(tracks, 0, done);
+ 
+    }
+
+    function addPlaylistTracksRecurse(tracks, index, done){
+        var track = tracks[index];
+
+        var query = 'MATCH (p:SCPlaylist {scid: {pid}}) ' + 
+                    'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
+                    'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
+        if (track.genre != null)
+            query += 'genre: {genre}, ';
+        if (track.purchase_url != null)
+            query += 'purchase_url: {purchase_url}, ';
+        if (track.artwork_url != null)
+            query += 'artwork_url: {artwork_url}, ';
+        query = query + 'waveform_url: {waveform_url} }) ' +
+                    'MERGE (c:Channel { name: {channel} }) ' + 
+                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
+                    'CREATE (p)-[r1:CONTAINS]->(t) ' +
+                    'CREATE (c)-[r2:UPLOADED]->(t) ' +
+                    'RETURN p, r1, c, r2, t';
+
+        db.cypher({ 
+            query: query,
+            params: {
+                pid: track.pid,
+                title: track.title,
+                duration: track.duration,
+                genre: track.genre,
+                tid: track.id,
+                url: track.permalink_url,
+                purchase_url: track.purchase_url,
+                tag_list: track.tag_list,
+                artwork_url: track.artwork_url,
+                created_at: track.created_at,
+                waveform_url: track.waveform_url,
+                channel: track.user.username,
+                channel_url: track.user.permalink_url,
+                avatar_url: track.user.avatar_url,
+                uid: track.user.id
+            },
+        }, function(error, results){
+            if (error){
+                console.log(error);
+                done(false, error);
+            }
+            else {
+                console.log(results);
+                index++;
+                //Is this off by 1? too baked.
+                if (index < tracks.length - 1) 
+                    addPlaylistTracksRecurse(tracks, index, done);
+                else
+                    done(true);
+            }
+        });
     }
 
 
@@ -171,12 +241,12 @@ module.exports = function(db){
                     //console.log(results);
                     // If no match, create an entry for the user
                     if (results.length == 0) {
-                        console.log("No relationship found.");
+                        //console.log("No relationship found.");
                         done(false);
                         //TODO: Update access token
                     }
                     else {
-                        console.log("Relationship already exists.");
+                        //console.log("Relationship already exists.");
                         done(true);
                     }
                 }
