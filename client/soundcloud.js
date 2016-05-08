@@ -47,13 +47,8 @@ function getLoggedInUser(accessToken, done){
 //get a user's collection 
 function getCollection(user, done){
 
-    // var href = 'https://api.soundcloud.com/users/' + user.id 
-    //     + '/favorites?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
-
-    //TODO: Use this API url (gives more results, and includes playlists)
     var href = 'https://api-v2.soundcloud.com/users/' + user.id 
         + '/likes?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
-
 
     getCollectionRecurse(user, [], href, done);
 }
