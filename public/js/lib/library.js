@@ -63,6 +63,15 @@ app.controller("LibraryCtlr", function($scope, $http){
             return name;
     }
 
+    $scope.toggleChannels = function(){
+        $scope.channels_visible = !$scope.channels_visible;
+        if ($scope.channels_visible)
+            $('#channel_list').show();
+        else
+            $('#channel_list').hide();
+
+    }
+
     // Add a playlist to the database and hide the new playlist form
     $scope.createPlaylist = function(){
         console.log("[func] createPlaylist");
@@ -88,7 +97,7 @@ app.controller("LibraryCtlr", function($scope, $http){
         console.log("[func] loadPlaylist");
         var url = 'http://localhost:3000/api/playlists/' + playlist.p._id;
         $http.get(url).then(function(response){
-                $scope.display = response;
+                $scope.display = response.data;
                 $scope.context = 'playlists';
                 $scope.currPlaylist = playlist.p._id;
                 $scope.buildDeleteFromPlaylistMenu(playlist);
@@ -121,8 +130,21 @@ app.controller("LibraryCtlr", function($scope, $http){
         console.log("[func] loadPlaylist");
         var url = 'http://localhost:3000/api/scplaylists/' + playlist.p._id;
         $http.get(url).then(function(response){
-                $scope.display = response;
+                $scope.display = response.data;
                 $scope.context = 'scplaylists';
+            }, function(error){
+                console.log(error);
+            })
+    }
+
+    $scope.loadChannel = function(channel){
+        var uid = loggedinuser._id;
+        var cid = channel.c._id;
+        var url = 'http://localhost:3000/api/users/' + uid + '/channels/' + cid;
+        $http.get(url).then(function(response){
+            console.log(response);
+                $scope.display = response.data;
+                $scope.context = 'channels';
             }, function(error){
                 console.log(error);
             })
@@ -171,10 +193,22 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Populate the list of playlists
     $scope.loadSCPlaylists = function(){
-        console.log("[func] loadPlaylists");
+        console.log("[func] loadSCPlaylists");
         var url = 'http://localhost:3000/api/myscplaylists';
         $http.get(url).then(function(response){
             $scope.scplaylists = response.data;
+        }, function(error){
+            console.log(error);
+        });
+    }
+
+    // Populate the list of playlists
+    $scope.loadChannels = function(){
+        console.log("[func] loadChannels");
+        var url = 'http://localhost:3000/api/mychannels';
+        $http.get(url).then(function(response){
+            $scope.channels = response.data;
+            console.log(response.data);
         }, function(error){
             console.log(error);
         });
@@ -297,6 +331,9 @@ app.directive("library", [function (){
         scope: false,
         link: function(scope, element, attr) {
 
+            $('#channel_list').hide();
+            scope.channels_visible = false;
+
             // Set context to default option (songs)
             scope.context = 'songs';
 
@@ -314,8 +351,9 @@ app.directive("library", [function (){
             scope.colSizeable = attachColHandles();
             scope.playNext = nextListener();
 
-            // Load song library and playlist names
+            // Load song library, and channel/playlist names
             scope.loadLibrary();
+            scope.loadChannels();
             scope.loadPlaylists();
             scope.loadSCPlaylists();
 
