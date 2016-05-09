@@ -4,6 +4,50 @@ var backqueue = [];
 
 var app = angular.module("Library", []);
 
+// Library directive - html Element
+app.directive("library", [function (){
+    return {
+        restrict: 'E',
+        templateUrl: 'http://localhost:3000/views/library.html',
+        scope: false,
+        link: {
+            pre: function(scope, element, attr) {
+
+                $('#channel_list').hide();
+                scope.channels_visible = false;
+
+                $('.playlistForm').hide();
+                $('.addPlaylist').click(function(){
+                    $('.playlistForm').show();
+                });
+
+                // Load song library, and channel/playlist names
+                scope.loadLibrary();
+                scope.loadChannels();
+                scope.loadPlaylists();
+                scope.loadSCPlaylists();
+
+            },
+            post: function(scope, element, attr) {
+
+                // Set context to default option (songs)
+                scope.context = 'songs';
+
+                // Variables used for sort and search functionality
+                scope.sortType = '';
+                scope.sortReverse = false;
+                scope.searchTerm = '';
+
+                // Draggable handles for the columns
+                scope.colSizeable = attachColHandles();
+                scope.playNext = nextListener();
+
+                }
+        }
+    };
+}]);
+
+// Library controller
 app.controller("LibraryCtlr", function($scope, $http){
 
     // Send a song to the player and save the next 20 songs for an autoplay queue
@@ -329,45 +373,3 @@ app.controller("LibraryCtlr", function($scope, $http){
 
 });
 
-
-// Library directive - html Element
-app.directive("library", [function (){
-    return {
-        restrict: 'E',
-        templateUrl: 'http://localhost:3000/views/library.html',
-        scope: false,
-        link: function(scope, element, attr) {
-
-            $('#channel_list').hide();
-            scope.channels_visible = false;
-
-            // Set context to default option (songs)
-            scope.context = 'songs';
-
-            // Variables used for sort and search functionality
-            scope.sortType = '';
-            scope.sortReverse = false;
-            scope.searchTerm = '';
-
-            $('.playlistForm').hide();
-            $('.addPlaylist').click(function(){
-                $('.playlistForm').show();
-            });
-
-            // Draggable handles for the columns
-            scope.colSizeable = attachColHandles();
-            scope.playNext = nextListener();
-
-            // Load song library, and channel/playlist names
-            scope.loadLibrary();
-            scope.loadChannels();
-            scope.loadPlaylists();
-            scope.loadSCPlaylists();
-
-            console.log(scope);
-            console.log(element);
-            console.log(attr);
-
-        }
-    };
-}]);
