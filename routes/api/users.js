@@ -27,4 +27,27 @@ router.get('/:id/playlists', function(req, res, next) {
 	});
 });
 
+/* GET user's channels */
+router.get('/:id/channels', function(req, res, next) {
+	db.getChannels(req.params.id, function(channels, error){
+		if (error)
+			res.json({"error":"failed"});
+		else
+			res.json(channels);
+	});
+});
+
+/* GET liked tracks from a specified channel */
+router.get('/:uid/channels/:cid', function(req, res, next) {
+	db.getLikedTracksByChannel(req.params.uid, req.params.cid, function(tracks, error){
+		if (error){
+			console.log(error);
+			res.json({"error":"failed"});
+		}
+		else{
+			res.json(tracks);
+		}
+	});
+});
+
 module.exports = router;
