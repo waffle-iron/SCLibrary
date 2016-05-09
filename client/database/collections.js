@@ -107,19 +107,25 @@ module.exports = function(db){
 
     module.addPlaylistTracks = function(playlists, done){
 
-        var tracks = [];
+        if (playlists.length == 0){
+            done(true)
+        }
+        else {
+            var tracks = [];
 
-        for (var i = 0; i < playlists.length; i++){
-            var ptracks = playlists[i].tracks;
-            for (var j = 0; j < ptracks.length; j++){
-                ptracks[j].pid = playlists[i].id;
+            for (var i = 0; i < playlists.length; i++){
+                var ptracks = playlists[i].tracks;
+                for (var j = 0; j < ptracks.length; j++){
+                    ptracks[j].pid = playlists[i].id;
+                }
+                var updatedtracks = tracks.concat(ptracks);
+                tracks = updatedtracks;
             }
-            var updatedtracks = tracks.concat(ptracks);
-            tracks = updatedtracks;
+
+            addPlaylistTracksRecurse(tracks, 0, done);
         }
 
-        addPlaylistTracksRecurse(tracks, 0, done);
- 
+        
     }
 
     function addPlaylistTracksRecurse(tracks, index, done){
