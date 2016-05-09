@@ -28,22 +28,88 @@ var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
 //use waveform_url to get the waveform
 //for waveform stuff check out:
 //http://www.waveformjs.org/#examples
+
+var audioPlayer = new Audio();
+//Just did this cause the other guy did it, seems like its kew
+audioPlayer.crossOrigin = "anonymous"
+//audioPlayer.play();
+
+//Set up our pause/play button to use the play button Icon initially
+$('#pauseplay').css('background-image', playIcon);
+
+//Tie our pauseplay button to the "play" and "pause" events from the player
+/*
+audioPlayer.on('play', function () {
+    $('#pauseplay').css('background-image', pauseIcon);
+});
+audioPlayer.on('pause', function () {
+    $('#pauseplay').css('background-image', playIcon);
+});
+*/
+
+//Tie out pause/play button to the "player" objects pause / play functions
+var currtimems = 0;
+$(audioPlayer).on('timeupdate', function () {
+    currtimems = audioPlayer.currentTime*1000;
+    console.log(currtimems);
+});
+
+//Tie our pauseplay button to the "play" and "pause" events from the player
+$(audioPlayer).on('play', function () {
+    $('#pauseplay').css('background-image', pauseIcon);
+});
+$(audioPlayer).on('pause', function () {
+    $('#pauseplay').css('background-image', playIcon);
+});
+
+$('#pauseplay').click(function (e) {
+    if (isPlaying && !audioPlayer.paused) {
+        audioPlayer.pause();
+        isPlaying = false;
+        $('#pauseplay').css('background-image', playIcon);
+    } else {
+        // TODO stop reseting pos on play somehow
+        $('#pauseplay').css('background-image', pauseIcon);
+        
+        var pos = $('#back-div').width();
+        var width = $('#waveformimg').width();
+        var relativePercent = pos / (width * 1.0);
+        var seekPosition = Math.round(duration * relativePercent);
+        //alert(seekPosition);
+        //player.seek(seekPosition);
+        audioPlayer.play();
+        isPlaying = true;
+    }
+});
+
+$('#player').click(function (e) {
+    //how offset the current element is from the x=0 axis
+    var offset = $('#artworkimg').width();
+    var width = $('#waveformimg').width();
+    //relativeOffset = how far into the div's width you clicked in pixels
+    var relativeOffset = e.pageX - offset;
+    console.log(e.pageX - offset + "x");
+    //how far you clicked into the div's width by percent. 1.0 is to cast to double
+    var relativePercent = relativeOffset / (width * 1.0);
+    //console.log(relativePercent*100+"%");
+    //position in miliseconds of total song
+    console.log(relativePercent + '%');
+    var seekPosition = Math.round(duration * relativePercent);
+    console.log("seekpos: " + seekPosition);
+    audioPlayer.currentTime = seekPosition/1000;
+});
+
+
 function loadSong(trackid, durationms, artworkurl, waveformurl) {
-
-    SC.stream('/tracks/' + trackid, smOptions).then(function (player) {
-
-            //Reset all remnants of the last song player
-            if (lastPlayer) {
-                //console.log(lastPlayer._isPlaying);
-                if (lastPlayer.isPlaying()) {
-                    lastPlayer.pause();
-                    isPlaying = false;
-                    lastPlayer.dispose();
-                }
-            }
+    audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=5d5e30bae0d0e71ed80bda5bff8496bf';
+    audioPlayer.load();
+    audioPlayer.play();
+    duration = durationms;
+    console.log('http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=5d5e30bae0d0e71ed80bda5bff8496bf');
             //Reset isPlaying boolean, change the
-            isPlaying = false;
-            $('#pauseplay').css('background-image', playIcon);
+            isPlaying = true;
+            $('#pauseplay').css('background-image', pauseIcon);
+
             //$('#seekicon').css("left", "0%");
             $('#seekicon').css("width", "0%");
 
@@ -72,73 +138,27 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
                 $('#library').css('margin-top', thisM.toString() + "px");
             });
 
-            lastPlayer = player;
-            //console.log(lastPlayer);
-            var duration = durationms;
-
-            //Tie our pauseplay button to the "play" and "pause" events from the player
-            player.on('play', function () {
-                $('#pauseplay').css('background-image', pauseIcon);
-            });
-            player.on('pause', function () {
-                $('#pauseplay').css('background-image', playIcon);
-            });
-
-            //Auto play song
-            player.play();
-            isPlaying = true;
-            //Tie out pause/play button to the "player" objects pause / play functions
-            $('#pauseplay').unbind('click').click(function (e) {
-                console.log('pauseplay clicked');
-                if (isPlaying && player.isPlaying()) {
-                    player.pause();
-                    isPlaying = false;
-                } else {
-                    // TODO stop reseting pos on play somehow
-                    var pos = $('#back-div').width();
-                    var width = $('#waveformimg').width();
-                    var relativePercent = pos / (width * 1.0);
-                    var seekPosition = Math.round(duration * relativePercent);
-                    /*alert(seekPosition);
-                    player.seek(seekPosition);*/
-                    player.play();
-                    isPlaying = true;
-                }
-            });
-
-            $('#player').unbind('click').click(function (e) {
-                //how offset the current element is from the x=0 axis
-                var offset = $('#artworkimg').width();
-                var width = $('#waveformimg').width();
-                //relativeOffset = how far into the div's width you clicked in pixels
-                var relativeOffset = e.pageX - offset;
-                console.log(e.pageX - offset + "x");
-                //how far you clicked into the div's width by percent. 1.0 is to cast to double
-                var relativePercent = relativeOffset / (width * 1.0);
-                //console.log(relativePercent*100+"%");
-                //position in miliseconds of total song
-                var seekPosition = Math.round(duration * relativePercent);
-                console.log("seekpos: " + seekPosition);
-                player.seek(seekPosition);
-            });
 
             //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
             //TODO (sames) grab the waveform url from backend like above
+            /*
             player.on('time', function () {
                 //Get rid of all decimal points except first 2
                 var percentPlayed = Math.floor((player.currentTime() / duration) * 10000) / 100;
                 //console.log(percentPlayed + "% played");
                 $('#back-div').css("width", percentPlayed.toString() + "%");
             });
+            */
 
             //player.on('time', function(){console.log("pos: " : this.position);});
             //soundPlayer = sound;
             //html5Audio = sound._player._html5Audio;
             //html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
-        },
+        /*
         function (error) {
             console.log(error);
         });
+        */
 }
 
 
