@@ -50,7 +50,7 @@ audioPlayer.on('pause', function () {
 //Tie out pause/play button to the "player" objects pause / play functions
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function () {
-    currtimems = audioPlayer.currentTime*1000;
+    currtimems = audioPlayer.currentTime*1000.0;
     console.log(currtimems);
 });
 
@@ -96,16 +96,16 @@ $('#player').click(function (e) {
     console.log(relativePercent + '%');
     var seekPosition = Math.round(duration * relativePercent);
     console.log("seekpos: " + seekPosition);
-    audioPlayer.currentTime = seekPosition/1000;
+    audioPlayer.currentTime = seekPosition/1000.0;
 });
 
 
 function loadSong(trackid, durationms, artworkurl, waveformurl) {
-    audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=5d5e30bae0d0e71ed80bda5bff8496bf';
+    audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0';
     audioPlayer.load();
     audioPlayer.play();
     duration = durationms;
-    console.log('http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=5d5e30bae0d0e71ed80bda5bff8496bf');
+    console.log('http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0');
             //Reset isPlaying boolean, change the
             isPlaying = true;
             $('#pauseplay').css('background-image', pauseIcon);
