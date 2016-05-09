@@ -19,6 +19,7 @@
     "jquery": "^2.2.3",
     "angular": "^1.5.3",
     "jquery-ui": "^1.11.4",
-    "jQuery-contextMenu": "^2.1.1"
+    "jQuery-contextMenu": "^2.1.1",
+    "d3": "^3.5.17"
   }
 }
