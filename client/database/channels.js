@@ -9,20 +9,13 @@ module.exports = function(db){
                    'RETURN DISTINCT c ' +
                    'ORDER BY LOWER(c.name)' ,
             params: {
-                uid: uid
+                uid: parseInt(uid)
             }
         }, function(error, results){
             if (error){
                 done(null, error);
             }
-            else {      
-                // If no match, create an entry for the user
-                if (results.length == 0) {
-                    console.log("No user found.");
-                }
-                else {
-                    console.log("User was found.");
-                }
+            else {
                 done(results);
             }
         });

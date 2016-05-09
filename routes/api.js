@@ -12,7 +12,7 @@ router.use('/scplaylists/', scplaylists);
 
 /* GET API index. */
 router.get('/', function(req, res, next) {
-	res.json({ hello: 'world' });
+	res.json({ error: 'There is nothing here.' });
 });
 
 /* GET logged in user's collection. */
