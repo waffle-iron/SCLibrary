@@ -126,7 +126,7 @@ module.exports = function(db){
                    "WHERE id(c) = {uid} " + 
                    "RETURN p",
             params: {
-                uid: uid
+                uid: parseInt(uid)
             }
         }, function(error, results){
             if (error){
@@ -168,7 +168,7 @@ module.exports = function(db){
                    "WHERE id(c) = {uid} " + 
                    "RETURN p",
             params: {
-                uid: uid
+                uid: parseInt(uid)
             }
         }, function(error, results){
             if (error){
