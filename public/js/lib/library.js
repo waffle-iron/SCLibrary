@@ -168,8 +168,10 @@ app.controller("LibraryCtlr", function($scope, $http){
     // Populate the list of songs
     $scope.loadLibrary = function(){
         console.log("[func] loadLibrary");
-        var url = 'http://localhost:3000/api/mycollection';
+        var uid = loggedinuser._id;
+        var url = 'http://localhost:3000/api/users/' + uid + '/collection/';
         $http.get(url).then(function(response){
+            console.log(response);
             $scope.collection = response.data;
             $scope.displaySongs();
         }, function(error){
@@ -181,8 +183,10 @@ app.controller("LibraryCtlr", function($scope, $http){
     // Populate the list of playlists
     $scope.loadPlaylists = function(){
         console.log("[func] loadPlaylists");
-        var url = 'http://localhost:3000/api/myplaylists';
+        var uid = loggedinuser._id;
+        var url = 'http://localhost:3000/api/users/' + uid + '/playlists/';
         $http.get(url).then(function(response){
+            console.log(response);
             $scope.playlists = response.data;
             $scope.buildAddToPlaylistMenu(response.data);
             $scope.updateMenu();
@@ -194,8 +198,10 @@ app.controller("LibraryCtlr", function($scope, $http){
     // Populate the list of playlists
     $scope.loadSCPlaylists = function(){
         console.log("[func] loadSCPlaylists");
-        var url = 'http://localhost:3000/api/myscplaylists';
+        var uid = loggedinuser._id;
+        var url = 'http://localhost:3000/api/users/' + uid + '/scplaylists/';
         $http.get(url).then(function(response){
+            console.log(response);
             $scope.scplaylists = response.data;
         }, function(error){
             console.log(error);
@@ -205,10 +211,11 @@ app.controller("LibraryCtlr", function($scope, $http){
     // Populate the list of playlists
     $scope.loadChannels = function(){
         console.log("[func] loadChannels");
-        var url = 'http://localhost:3000/api/mychannels';
+        var uid = loggedinuser._id;
+        var url = 'http://localhost:3000/api/users/' + uid + '/channels/';
         $http.get(url).then(function(response){
+            console.log(response);
             $scope.channels = response.data;
-            console.log(response.data);
         }, function(error){
             console.log(error);
         });

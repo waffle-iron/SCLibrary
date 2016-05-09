@@ -17,9 +17,27 @@ router.get('/:id', function(req, res, next) {
 	});
 });
 
+/* GET user's collection. */
+router.get('/:id/collection', function(req, res, next) {
+	// Get the collection from the database and render the json.
+	db.getCollection(req.params.id, function(collection){
+		res.json(collection);
+	});
+})
+
 /* GET user's playlists */
 router.get('/:id/playlists', function(req, res, next) {
 	db.getPlaylists(req.params.id, function(playlists, error){
+		if (error)
+			res.json({"error":"failed"});
+		else
+			res.json(playlists);
+	});
+});
+
+/* GET user's soundcloud playlists */
+router.get('/:id/scplaylists', function(req, res, next) {
+	db.getSCPlaylists(req.params.id, function(playlists, error){
 		if (error)
 			res.json({"error":"failed"});
 		else
