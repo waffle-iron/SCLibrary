@@ -78,7 +78,10 @@ function getCollectionRecurse(user, collection, next_href, done){
 
 //get a user's collection 
 function getPlaylists(pids, done){
-    getPlaylistsRecurse(pids, [], 0, done);
+    if (pids.length > 0)
+        getPlaylistsRecurse(pids, [], 0, done);
+    else
+        done([]);
 }
 
 function getPlaylistsRecurse(pids, playlists, index, done){
