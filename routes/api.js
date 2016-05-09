@@ -45,4 +45,14 @@ router.get('/myscplaylists/', function(req, res, next) {
 	});
 })
 
+/* GET logged in user's soundcloud channels. */
+router.get('/mychannels/', function(req, res, next) {
+	// Retrieve the user data from the session.
+	var user = req.session.user;
+	// Get the collection from the database and render the json.
+	db.getChannels(user._id, function(channels){
+		res.json(channels);
+	});
+})
+
 module.exports = router;
