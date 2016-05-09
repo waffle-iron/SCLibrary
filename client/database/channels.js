@@ -6,7 +6,8 @@ module.exports = function(db){
         db.cypher({ 
             query: 'MATCH (u:Channel)-[:LIKES_TRACK]->(Track)<-[:UPLOADED]-(c:Channel) ' + 
                    'WHERE id(u) = {uid} ' +
-                   'RETURN c',
+                   'RETURN DISTINCT c ' +
+                   'ORDER BY LOWER(c.name)' ,
             params: {
                 uid: uid
             }
@@ -32,10 +33,10 @@ module.exports = function(db){
             query: 'MATCH (u:Channel)-[:LIKES_TRACK]->(t:Track)<-[:UPLOADED]-(c:Channel) ' + 
                    'WHERE id(u) = {uid} ' +
                    'AND id(c) = {cid} ' +
-                   'RETURN t',
+                   'RETURN t, c',
             params: {
-                uid: uid,
-                cid: cid
+                uid: parseInt(uid),
+                cid: parseInt(cid)
             }
         }, function(error, results){
             if (error){
