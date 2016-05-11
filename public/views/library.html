@@ -12,7 +12,7 @@
         </li>
         <div id="channel_list">
             <ul> 
-                <div ng-repeat="channel in channels">
+                <div ng-repeat="channel in channels | filter:searchTerm">
                     <div id="channel{{$index}}" ng-click="loadChannel(channel)" data-playlist="{{channel}}" ng-bind="channel.c.properties.name"></div>
                 </div>
             </ul>
@@ -26,7 +26,7 @@
         </form>
 
         <!-- Why is this not sorting? -->
-        <ul ng-repeat="playlist in playlists | orderBy:p.properties.name">
+        <ul ng-repeat="playlist in playlists | orderBy:p.properties.name | filter:searchTerm">
             <li id="playlist{{$index}}" ng-click="loadPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="playlist.p.properties.name"></li>
             <span ng-click="deletePlaylist(playlist)" >X</span>
         </ul>
@@ -34,7 +34,7 @@
         <li>SC Playlists</li>
 
         <!-- Why is this not sorting? -->
-        <ul ng-repeat="playlist in scplaylists | orderBy:p.properties.name">
+        <ul ng-repeat="playlist in scplaylists | orderBy:p.properties.name | filter:searchTerm">
             <li id="playlist{{$index}}" ng-click="loadSCPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="formatName(playlist.p.properties.name)"></li>
         </ul>
 
