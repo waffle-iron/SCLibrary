@@ -45,6 +45,16 @@ router.get('/:id/scplaylists', function(req, res, next) {
 	});
 });
 
+/* GET user's soundcloud playlist */
+router.get('/:uid/scplaylists/:pid', function(req, res, next) {
+	db.getSCPlaylist(req.params.uid, req.params.pid, function(playlists, error){
+		if (error)
+			res.json({"error":"failed"});
+		else
+			res.json(playlists);
+	});
+});
+
 /* GET user's channels */
 router.get('/:id/channels', function(req, res, next) {
 	db.getChannels(req.params.id, function(channels, error){
