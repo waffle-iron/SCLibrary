@@ -170,10 +170,12 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Update the view with tracks from the selected playlist.
     $scope.loadSCPlaylist = function(playlist){
+        var uid = loggedinuser._id;
         console.log(playlist);
         console.log("[func] loadPlaylist");
-        var url = 'http://localhost:3000/api/scplaylists/' + playlist.p._id;
+        var url = 'http://localhost:3000/api/users/' + uid + '/scplaylists/' + playlist.p._id;
         $http.get(url).then(function(response){
+                console.log(response);
                 $scope.display = response.data;
                 $scope.context = 'scplaylists';
             }, function(error){
