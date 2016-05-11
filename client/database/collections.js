@@ -13,6 +13,7 @@ module.exports = function(db){
     // Recursive helper function for addCollection.
     function addItems(user, collection, index, pids, done){
         item = collection[index];
+        console.log(item);
         
         module.checkExistence(user.properties.scuid, item, function(found, error){
             if (error)
@@ -23,7 +24,7 @@ module.exports = function(db){
             //otherwise relationship does not yet exist; create it.
             else {
                 if (item.track){
-                    addTrack(user, item.track, function(success, error){
+                    addTrack(user, item, function(success, error){
                         if (success){
                             //console.log("Track added!");
                             index++;
@@ -38,7 +39,7 @@ module.exports = function(db){
                     });
                 } 
                 else {
-                    addPlaylist(user, item.playlist, function(success, error){
+                    addPlaylist(user, item, function(success, error){
                         if (success){
                             //console.log("Playlist added!");
                             pids.push(item.playlist.id);
@@ -57,7 +58,9 @@ module.exports = function(db){
         })
     }
 
-    function addTrack(user, track, done){
+    function addTrack(user, item, done){
+
+        var track = item.track;
 
         var query = 'MATCH (u:Channel {name: {name}}) ' + 
                     'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
@@ -71,7 +74,7 @@ module.exports = function(db){
         query = query + 'waveform_url: {waveform_url} }) ' +
                     'MERGE (c:Channel { name: {channel} }) ' + 
                     'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
-                    'CREATE (u)-[r1:LIKES_TRACK]->(t) ' +
+                    'CREATE (u)-[r1:LIKES_TRACK { created_at: {date_liked}}]->(t) ' +
                     'CREATE (c)-[r2:UPLOADED]->(t) ' +
                     'RETURN u, r1, c, r2, t';
 
@@ -92,7 +95,8 @@ module.exports = function(db){
                 channel: track.user.username,
                 channel_url: track.user.permalink_url,
                 avatar_url: track.user.avatar_url,
-                uid: track.user.id
+                uid: track.user.id,
+                date_liked: item.created_at
             },
         }, function(error, results){
             if (error){
@@ -184,7 +188,9 @@ module.exports = function(db){
     }
 
 
-    function addPlaylist(user, playlist, done){
+    function addPlaylist(user, item, done){
+
+        var playlist = item.playlist;
 
         var query = 'MATCH (u:Channel {name: {name}}) ' + 
                     'MERGE (p:SCPlaylist { name: {title}, scid: {scid}, ';
@@ -195,7 +201,7 @@ module.exports = function(db){
         query = query + 'url: {url}, created_at: {created_at} }) ' +
                     'MERGE (c:Channel { name: {channel} }) ' + 
                     'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
-                    'CREATE (u)-[r1:LIKES_PLAYLIST]->(p) ' +
+                    'CREATE (u)-[r1:LIKES_PLAYLIST { created_at: {date_liked}}]->(p) ' +
                     'CREATE (c)-[r2:UPLOADED]->(p) ' +
                     'RETURN u, r1, c, r2, p';
 
@@ -212,7 +218,8 @@ module.exports = function(db){
                 channel: playlist.user.username,
                 channel_url: playlist.user.permalink_url,
                 avatar_url: playlist.user.avatar_url,
-                uid: playlist.user_id
+                uid: playlist.user_id,
+                date_liked: item.created_at
             },
         }, function(error, results){
             if (error){
@@ -294,9 +301,9 @@ module.exports = function(db){
     module.getCollection = function(uid, done){
         db.cypher({ 
             query:  'MATCH (u:Channel), ' +
-                    '(u)-[:LIKES_TRACK]->(t)<-[:UPLOADED]-(c) ' +
+                    '(u)-[r:LIKES_TRACK]->(t)<-[:UPLOADED]-(c) ' +
                     'WHERE id(u) = ' + uid + 
-                    ' RETURN t, c',
+                    ' RETURN t, r, c',
             params: {
                 uid: parseInt(uid)
             },
