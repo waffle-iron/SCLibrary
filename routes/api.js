@@ -8,7 +8,6 @@ var scplaylists = require('./api/scplaylists.js');
 
 router.use('/users/', users);
 router.use('/playlists/', playlists);
-router.use('/scplaylists/', scplaylists);
 
 /* GET API index. */
 router.get('/', function(req, res, next) {
