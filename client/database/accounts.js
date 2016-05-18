@@ -2,7 +2,7 @@ module.exports = function(db){
 
     var module = {};
 
-    module.create = function(username, password, done){
+    module.create = function(username, password, sc_account, done){
         //Check if account already exists
         db.cypher({ 
             query: 'MATCH (a:Account {username:{name} }) ' + 
