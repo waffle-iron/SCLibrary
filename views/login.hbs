@@ -1,0 +1,30 @@
+<br><br><br><br><br>
+
+<div ng-app="Login">
+	<div ng-controller="LoginCtlr">
+
+		<b>Signup</b>
+		<form novalidate class="simple-form">
+		    Name: <input type="text" ng-model="user.name" /><br />
+		    Password: <input type="password" ng-model="user.password" /><br />
+		    Soundcloud Account: <input type="text" ng-model="user.sc_account" /><br />
+		    <input type="button" ng-click="reset()" value="Reset" />
+		    <input type="submit" ng-click="submit(user)" value="Save" />
+		</form>
+
+		<br><br>
+
+		<b>Login</b>
+		<form novalidate class="simple-form">
+		    Name: <input type="text" ng-model="user.name" /><br />
+		    Password: <input type="password" ng-model="user.password" /><br />
+		    <input type="button" ng-click="reset()" value="Reset" />
+		    <input type="submit" ng-click="submit(user)" value="Save" />
+		</form>
+
+	</div>
+</div>
+
+
+<script src="/bower_components/angular/angular.min.js"></script>
+<script src="/js/lib/login.js"></script>
