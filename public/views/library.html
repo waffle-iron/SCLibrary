@@ -1,9 +1,4 @@
 <div class="left-side-wrapper">
-    <div class="user-wrapper">
-      <a class="btn btn-default pull-right" href="/logout/">Logout</a>
-      <a class="user-img" style="background-image: url({{user.properties.avatar_url}})"></a>
-      <a href="user.permalink" class="pull-right username">{{user.properties.name}}</a>
-    </div>
     <div class="search-wrapper">
         <input type="text" placeholder="Search" ng-model="searchTerm" />
     </div>
@@ -16,13 +11,8 @@
             <span ng-show="!channels_visible" class="fa fa-caret-up"></span>
         </li>
         <div id="channel_list">
-<<<<<<< Updated upstream
             <ul> 
                 <div ng-repeat="channel in channels | filter:searchTerm">
-=======
-            <ul>
-                <div ng-repeat="channel in channels">
->>>>>>> Stashed changes
                     <div id="channel{{$index}}" ng-click="loadChannel(channel)" data-playlist="{{channel}}" ng-bind="channel.c.properties.name"></div>
                 </div>
             </ul>

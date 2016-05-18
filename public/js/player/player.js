@@ -51,8 +51,7 @@ audioPlayer.on('pause', function () {
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function () {
     currtimems = audioPlayer.currentTime*1000.0;
-    console.log(percentPlayed);
-    //console.log(currtimems);
+    console.log(currtimems);
 });
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -63,7 +62,7 @@ $(audioPlayer).on('pause', function () {
     $('#pauseplay').css('background-image', playIcon);
 });
 
-$('#player').click(function (e) {
+$('#pauseplay').click(function (e) {
     if (isPlaying && !audioPlayer.paused) {
         audioPlayer.pause();
         isPlaying = false;
@@ -71,7 +70,7 @@ $('#player').click(function (e) {
     } else {
         // TODO stop reseting pos on play somehow
         $('#pauseplay').css('background-image', pauseIcon);
-
+        
         var pos = $('#back-div').width();
         var width = $('#waveformimg').width();
         var relativePercent = pos / (width * 1.0);
@@ -116,7 +115,6 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
 
             //Load artwork image to DOM
             $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
-            $('#art-bk').css('background-image', "url(" + artworkurl + ")");
             //Load waveform image to DOM
             $('#waveformimg').attr('src', waveformurl);
 
@@ -313,8 +311,6 @@ function nextListener() {
     mutations.forEach(function(mutationRecord) {
       //console.log(mutationRecord.target.style.width);
       var completionPer = mutationRecord.target.style.width;
-
-      // move the image background, since we're already listening
         if( completionPer == "100%") {
 
           if (queue.length == 0){
@@ -325,7 +321,7 @@ function nextListener() {
             var properties = queue.shift().t.properties;
             loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
           }
-
+          
         }
     });
   });
