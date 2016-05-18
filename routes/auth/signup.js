@@ -3,16 +3,15 @@ var router = express.Router();
 var config = require('../../config.js');
 var db = require('../../client/database');
 
-var requiresUser = require('../middleware/requiresUser');
 var ensureLoggedOut = require('../middleware/ensureLoggedOut');
 
 /* GET signup page. */
-router.get('/', function(req, res, next) {
+router.get('/', ensureLoggedOut, function(req, res, next) {
   res.render('signup', {msg: null});
 });
 
 /* GET signup/submit page. */
-router.get('/submit', function(req, res, next) {
+router.get('/submit', ensureLoggedOut, function(req, res, next) {
 
   var name = req.query.name;
   var password = req.query.password;
