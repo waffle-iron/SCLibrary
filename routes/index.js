@@ -16,12 +16,15 @@ router.get('/', ensureLoggedOut, function(req, res, next) {
   res.render('index', { title: 'Express', connect_url: connect_url });
 });
 
-
 /* GET login page. */
 router.get('/login/', function(req, res, next) {
   res.render('login');
 });
 
+/* GET signup page. */
+router.get('/signup/', function(req, res, next) {
+  res.render('signup');
+});
 
 /* GET home page. */
 router.get('/home/', ensureLoggedOut, function(req, res, next) {
