@@ -1,7 +1,13 @@
 <br><br><br><br><br>
 
-<b>Signup</b>
 
+{{#if msg}}
+	{{msg}}
+{{/if}}
+
+<br><br>
+
+<b>Signup</b>
 <form action="/signup/submit" method="get" class="simple-form">
 	Name: <input type="text" name="name" /><br />
 	Password: <input type="password" name="password" /><br />
@@ -10,5 +16,5 @@
 	<button type="submit" value="Submit">Submit</button>
 </form>
 
-
+<br>
 <a href="/login/">Login</a>
