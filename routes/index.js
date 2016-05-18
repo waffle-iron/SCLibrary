@@ -17,6 +17,12 @@ router.get('/', ensureLoggedOut, function(req, res, next) {
 });
 
 
+/* GET login page. */
+router.get('/login/', function(req, res, next) {
+  res.render('login');
+});
+
+
 /* GET home page. */
 router.get('/home/', ensureLoggedOut, function(req, res, next) {
   // Save the code returned by soundcloud in the query string. This code will be used to
