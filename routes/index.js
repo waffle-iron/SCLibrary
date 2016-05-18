@@ -9,68 +9,17 @@ var Q = require('q');
 var requiresUser = require('./middleware/requiresUser');
 var ensureLoggedOut = require('./middleware/ensureLoggedOut');
 
+var signup = require('./auth/signup');
+var login = require('./auth/login');
+
+router.use('/login/', login);
+router.use('/signup/', signup);
+
 /* GET index page. */
 router.get('/', ensureLoggedOut, function(req, res, next) {
   // Use SC client to get the connect URL to use for user authentication.
   var connect_url = req.SC.getConnectUrl();
   res.render('index', { title: 'Express', connect_url: connect_url });
-});
-
-/* GET login page. */
-router.get('/login/', function(req, res, next) {
-  res.render('login', {msg: null});
-});
-
-
-/* GET login/submit page. */
-router.get('/login/submit', function(req, res, next) {
-
-  var name = req.query.name;
-  var password = req.query.password;
-
-  db.loginToAccount(name, password, function(account, error){
-    if (error){
-      var message = 'There was an error when trying to login to your account.';
-      res.render('login', {msg: message});
-    }
-    if (account.length == 0){
-      var message = 'We were not able to find your account.';
-      res.render('login', {msg: message});
-    }
-    if (account.length > 0){
-      res.redirect('/library/');
-    }
-  })
-  
-});
-
-/* GET signup page. */
-router.get('/signup/', function(req, res, next) {
-  res.render('signup', {msg: null});
-});
-
-/* GET signup/submit page. */
-router.get('/signup/submit', function(req, res, next) {
-
-  var name = req.query.name;
-  var password = req.query.password;
-  var sc_account = req.query.sc_account;
-
-  db.createAccount(name, password, sc_account, function(created, error){
-    if (error){
-      var message = 'There was an error when trying to create your account.';
-      res.render('signup', {msg: message});
-    }
-    if (!created){
-      var message = 'An account already exists with that name.';
-      res.render('signup', {msg: message});
-    }
-    if (created){
-      var message = 'Your account was successfully created.';
-      res.render('login', {msg: message});
-    }
-  })
-
 });
 
 /* GET home page. */
