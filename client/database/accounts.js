@@ -49,20 +49,41 @@ module.exports = function(db){
 
     module.login = function(username, password, done){
         db.cypher({ 
-            query: 'MATCH (a:Account {username:{name}, password:{pw} }) ' + 
+            query: 'MATCH (a:Account {username:{name}, password:{pw} })' + 
                    'RETURN a',
             params: {
                 name: username,
                 pw: password
             }
-        }, function(error, results){
+        }, function(error, account){
             if (error){
                 done(null, error);
             }
             else {
-                console.log(results);
-                //Account was successfuly created
-                done(results);
+                console.log(account);
+
+                db.cypher({ 
+                    query: 'MATCH (a:Account {username:{name}, password:{pw} })-[:CONNECTED_TO]->(u:Channel) ' + 
+                           'RETURN u',
+                    params: {
+                        name: username,
+                        pw: password
+                    }
+                }, function(error, users){
+                    if (error){
+                        done(null, error);
+                    }
+                    else {
+                        console.log(users);
+                        var results = {
+                            account: account[0],
+                            users: users
+                        }
+                        //Account was successfuly created
+                        done(results);
+                    }
+                });
+
             }
         });
     }

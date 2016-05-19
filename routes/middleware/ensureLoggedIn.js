@@ -4,7 +4,7 @@ function ensureLoggedIn(req, res, next) {
     if (!req.session || !req.session.account) {
     	// If not logged in, redirect to the home page.
         console.log("logged out");
-        res.redirect('/');
+        res.redirect('/login/');
     } else {
     	// User is logged in, continue processing the request.
         console.log("logged in");
