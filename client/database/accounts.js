@@ -140,14 +140,14 @@ module.exports = function(db){
         });
     }
 
-    module.approveRequest = function(rid, done){
+    module.approveRequest = function(aid, rid, uid, done){
         db.cypher({ 
             query: 'MATCH (r:Request) ' + 
-                   'WHERE id(r) = {id} ' +
+                   'WHERE id(r) = {rid} ' +
                    'SET r.complete = true ' + 
                    'RETURN r',
             params: {
-                id: parseInt(rid)
+                rid: parseInt(rid)
             }
         }, function(error, results){
             if (error){
@@ -155,8 +155,26 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
-                //Account approved
-                done(results);
+                db.cypher({ 
+                    query: 'MATCH (a:Account), (u:Channel) ' + 
+                           'WHERE id(u) = {uid} ' +
+                           'AND id(a) = {aid} ' + 
+                           'CREATE (a)-[r:CONNECTED_TO]->(u) ' + 
+                           'RETURN a, r, u',
+                    params: {
+                        uid: parseInt(uid),
+                        aid: parseInt(aid)
+                    }
+                }, function(error, results){
+                    if (error){
+                        console.log(error);
+                        done(null, error);
+                    }
+                    else {
+                        //Account approved
+                        done(results);
+                    }
+                });;
             }
         });
     }
