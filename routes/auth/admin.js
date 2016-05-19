@@ -4,6 +4,8 @@ var config = require('../../config.js');
 var db = require('../../client/database');
 
 var ensureLoggedOut = require('../middleware/ensureLoggedOut');
+var ensureLoggedIn = require('../middleware/ensureLoggedIn');
+var requiresAdmin = require('../middleware/requiresAdmin');
 
 /* GET admin login page. */
 router.get('/', ensureLoggedOut, function(req, res, next) {
@@ -42,7 +44,7 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
 
 
 /* GET admin panel. */
-router.get('/panel/', ensureLoggedOut, function(req, res, next) {
+router.get('/panel/', ensureLoggedIn, requiresAdmin, function(req, res, next) {
   res.render('panel', {msg: null});
 });
 

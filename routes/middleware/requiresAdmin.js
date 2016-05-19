@@ -19,4 +19,4 @@ function requiresAdmin(req, res, next) {
     }
 }
 
-module.exports = requiredAdmin;
+module.exports = requiresAdmin;
