@@ -41,7 +41,6 @@ app.controller("AdminCtlr", function($scope, $http){
         $scope.sortTypeAcc = sortBy;
     }
 
-
     // Update sort variables
     $scope.updateSortReq = function(sortBy){
         if ($scope.sortTypeReq == sortBy)
@@ -71,6 +70,28 @@ app.controller("AdminCtlr", function($scope, $http){
         }, function(error){
             console.log(error);
         });
+    }
+
+    $scope.approveAccount = function(account){
+        var id = account.a._id;
+        var url = 'http://localhost:3000/api/accounts/' + id + '/approve/';
+        $http.get(url).then(function(response){
+            console.log(response);
+            $scope.loadAccounts();
+        }, function(error){
+            console.log(error);
+        });    
+    }
+
+    $scope.denyAccount = function(account){
+        var id = account.a._id;
+        var url = 'http://localhost:3000/api/accounts/' + id + '/deny/';
+        $http.get(url).then(function(response){
+            console.log(response);
+            $scope.loadAccounts();
+        }, function(error){
+            console.log(error);
+        });    
     }
 
 });

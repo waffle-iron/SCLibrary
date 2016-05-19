@@ -27,6 +27,14 @@ Accounts
                     <span ng-show="sortTypeAcc == 'a.properties.approved' && !sortReverseAcc" class="fa fa-caret-down"></span>
                     <span ng-show="sortTypeAcc == 'a.properties.approved' && sortReverseAcc" class="fa fa-caret-up"></span>
                 </li>
+
+                <li class="text-center">
+                	Approve Account?
+                </li>
+
+                <li class="text-center">
+                	Deny Account?
+                </li>
             </ol>
         </li>
     </ul>
@@ -37,6 +45,12 @@ Accounts
                 <li class="username" ng-bind="account.a.properties.username"></li>
                 <li class="type" ng-bind="account.a.properties.type"></li>
                 <li class="approved" ng-bind="account.a.properties.approved"></li>
+                <li class="acc_approval">
+                	<button ng-click="approveAccount(account)">Approve</button>
+                </li>
+                <li class="acc_denial">
+                	<button ng-click="denyAccount(account)">Deny</button>
+                </li>
             </ol>
         </li>
     </ul>
