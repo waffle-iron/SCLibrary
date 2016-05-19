@@ -94,4 +94,14 @@ app.controller("AdminCtlr", function($scope, $http){
         });    
     }
 
+    $scope.approveRequest = function(request){
+        var id = request.r._id;
+        var url = 'http://localhost:3000/api/requests/' + id + '/approve/';
+        $http.get(url).then(function(response){
+            console.log(response);
+            $scope.loadRequests();
+        }, function(error){
+            console.log(error);
+        });    
+    }
 });
