@@ -65,6 +65,21 @@ module.exports = function(db){
         });
     }
 
+    module.getAccountsWithRequests = function(done){
+        db.cypher({ 
+            query: 'MATCH (a:Account)-[:REQUESTS]->(r:Request) ' + 
+                   'RETURN a, r'
+        }, function(error, results){
+            if (error){
+                done(null, error);
+            }
+            else {
+                //Accounts retrieved
+                done(results);
+            }
+        });
+    }
+
     return module;
 
 }
