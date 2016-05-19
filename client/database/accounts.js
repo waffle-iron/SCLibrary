@@ -20,7 +20,7 @@ module.exports = function(db){
                     db.cypher({ 
                         query: 'CREATE (a:Account {username:{name}, password:{pw} })-[:REQUESTS]->' + 
                                '(r:Request {username:{sc_name}, complete:"false"}) ' + 
-                               'RETURN a',
+                               'RETURN a, r',
                         params: {
                             name: username,
                             pw: password,
@@ -31,6 +31,7 @@ module.exports = function(db){
                             done(null, error);
                         }
                         else {
+                            console.log(results);
                             //Account was successfuly created
                             done(true);
                         }
@@ -59,6 +60,7 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
+                console.log(results);
                 //Account was successfuly created
                 done(results);
             }
