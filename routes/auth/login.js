@@ -27,7 +27,14 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
     }
     if (account.length > 0){
       req.session.account = account[0];
-      res.redirect('/library/');
+      if (account[0].a.properties.approved == true){
+        res.redirect('/library/');
+      }
+      else {
+        var message = 'This account has not yet been approved.';
+        res.render('login', {msg: message});
+      }
+      
     }
   })
   
