@@ -17,6 +17,12 @@ app.directive("admin", [function (){
             },
             post: function(scope, element, attr) {
 
+                // Variables used for sort and search functionality
+                scope.sortTypeAcc = '';
+                scope.sortTypeReq = '';
+                scope.sortReverseAcc = false;
+                scope.sortReverseReq = false;
+                scope.searchTerm = '';
              
             }
         }
@@ -25,6 +31,25 @@ app.directive("admin", [function (){
 
 // Library controller
 app.controller("AdminCtlr", function($scope, $http){
+
+    // Update sort variables
+    $scope.updateSortAcc = function(sortBy){
+        if ($scope.sortTypeAcc == sortBy)
+            $scope.sortReverseAcc = !$scope.sortReverseAcc; 
+        else
+            $scope.sortReverseAcc = false;
+        $scope.sortTypeAcc = sortBy;
+    }
+
+
+    // Update sort variables
+    $scope.updateSortReq = function(sortBy){
+        if ($scope.sortTypeReq == sortBy)
+            $scope.sortReverseReq = !$scope.sortReverseReq; 
+        else
+            $scope.sortReverseReq = false;
+        $scope.sortTypeReq = sortBy;
+    }
 
     // Populate the list of songs
     $scope.loadAccounts = function(){
@@ -42,7 +67,7 @@ app.controller("AdminCtlr", function($scope, $http){
         var url = 'http://localhost:3000/api/requests';
         $http.get(url).then(function(response){
             console.log(response);
-            $scope.accounts = response.data;
+            $scope.requests = response.data;
         }, function(error){
             console.log(error);
         });
