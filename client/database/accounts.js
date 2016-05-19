@@ -97,6 +97,26 @@ module.exports = function(db){
         });
     }
 
+    module.approve = function(aid, done){
+        db.cypher({ 
+            query: 'MATCH (a:Account) ' + 
+                   'WHERE id(a) = {id} ' +
+                   'SET a.approved = true ' + 
+                   'RETURN a',
+            params: {
+                id: aid
+            }
+        }, function(error, results){
+            if (error){
+                done(null, error);
+            }
+            else {
+                //Account approved
+                done(results);
+            }
+        });
+    }
+
     return module;
 
 }
