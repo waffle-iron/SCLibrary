@@ -19,8 +19,8 @@ app.directive("admin", [function (){
 
                 // Variables used for sort and search functionality
                 scope.sortTypeAcc = '';
-                scope.sortTypeReq = '';
                 scope.sortReverseAcc = false;
+                scope.sortTypeReq = '';
                 scope.sortReverseReq = false;
                 scope.searchTerm = '';
              
