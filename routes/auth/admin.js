@@ -26,8 +26,15 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
       res.render('adminlogin', {msg: message});
     }
     if (account.length > 0){
-      req.session.account = account;
-      res.redirect('/admin/panel/');
+      req.session.account = account[0];
+      console.log(account[0]);
+      if (account[0].a.properties.type == 'admin'){
+        res.redirect('/admin/panel/');
+      }
+      else {
+        var message = 'This account does not belong to an administrator.';
+        res.render('adminlogin', {msg: message});
+      }
     }
   })
   
