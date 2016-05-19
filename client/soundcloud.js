@@ -116,7 +116,7 @@ function getPlaylist(pid, done){
     getRequest(href, done);
 }
 
-function getScidFromUsername(username, done){
+function getUserFromUsername(username, done){
     var url = "http://soundcloud.com/" + username;
     var href = "http://http://api.soundcloud.com/resolve?url=" 
                 + url + "&client_id=" + config.auth.client_id;
@@ -127,7 +127,7 @@ function getScidFromUsername(username, done){
         }
         else {
             console.log(data);
-            done(data.id);
+            done(data);
         }
     })
 }
@@ -141,5 +141,5 @@ module.exports = {
     getTrack: getTrack,
     getPlaylist: getPlaylist,
     getPlaylists: getPlaylists,
-    getScidFromUsername: getScidFromUsername
+    getUserFromUsername: getUserFromUsername
 }     
