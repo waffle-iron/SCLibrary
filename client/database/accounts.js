@@ -97,7 +97,7 @@ module.exports = function(db){
         });
     }
 
-    module.approve = function(aid, done){
+    module.approveAccount = function(aid, done){
         console.log(aid);
         db.cypher({ 
             query: 'MATCH (a:Account) ' + 
@@ -119,8 +119,7 @@ module.exports = function(db){
         });
     }
 
-    module.deny = function(aid, done){
-        console.log(aid);
+    module.denyAccount = function(aid, done){
         db.cypher({ 
             query: 'MATCH (a:Account) ' + 
                    'WHERE id(a) = {id} ' +
@@ -128,6 +127,27 @@ module.exports = function(db){
                    'RETURN a',
             params: {
                 id: parseInt(aid)
+            }
+        }, function(error, results){
+            if (error){
+                console.log(error);
+                done(null, error);
+            }
+            else {
+                //Account approved
+                done(results);
+            }
+        });
+    }
+
+    module.approveRequest = function(rid, done){
+        db.cypher({ 
+            query: 'MATCH (r:Request) ' + 
+                   'WHERE id(r) = {id} ' +
+                   'SET r.complete = true ' + 
+                   'RETURN r',
+            params: {
+                id: parseInt(rid)
             }
         }, function(error, results){
             if (error){

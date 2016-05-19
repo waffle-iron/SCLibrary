@@ -34,6 +34,7 @@ module.exports = {
     loginToAccount: accounts.login,
     getAccounts: accounts.getAccounts,
     getRequests: accounts.getRequests,
-    approveAccount: accounts.approve,
-    denyAccount: accounts.deny
+    approveAccount: accounts.approveAccount,
+    denyAccount: accounts.denyAccount,
+    approveRequest: accounts.approveRequest
 }     
