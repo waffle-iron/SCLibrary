@@ -24,29 +24,6 @@ function getRequest(href, done){
         }
     })
 
-    /*
-    requestify.get(href).then(
-        function(response){
-            if (response){
-                console.log(response.getBody());
-                done(response.getBody());
-            }   
-        },
-        function(error){
-            if (error){
-                if (error.code == 302){
-                    //redirect: make new request
-                    var href = error.headers.location;
-                    getRequest(href, done);
-                }
-                else {
-                    console.log(error);
-                    done(null, error.getBody());
-                }
-            }
-        }
-    );
-    */
 }
 
 //get a user's data
