@@ -22,7 +22,7 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
       res.render('login', {msg: message});
     }
     if (account.length == 0){
-      var message = 'We were not able to find your account.';
+      var message = 'We were not able to find that account.';
       res.render('login', {msg: message});
     }
     if (account.length > 0){
