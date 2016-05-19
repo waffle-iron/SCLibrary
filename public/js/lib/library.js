@@ -42,7 +42,7 @@ app.directive("library", [function (){
                 scope.colSizeable = attachColHandles();
                 scope.playNext = nextListener();
 
-                }
+            }
         }
     };
 }]);
