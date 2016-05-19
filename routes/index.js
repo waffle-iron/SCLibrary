@@ -6,7 +6,7 @@ var soundcloud = require('../client/soundcloud');
 var db = require('../client/database');
 var Q = require('q');
 
-var requiresUser = require('./middleware/requiresUser');
+var ensureLoggedIn = require('./middleware/ensureLoggedIn');
 var ensureLoggedOut = require('./middleware/ensureLoggedOut');
 
 var signup = require('./auth/signup');
@@ -85,7 +85,7 @@ Credit SoundCloud as the source by including one of the logos found here
 Link to the SoundCloud URL containing the work
 If the sound is private link to the profile of the creator
 */
-router.get('/library/', requiresUser, function(req, res, next) {
+router.get('/library/', ensureLoggedIn, function(req, res, next) {
   // Retrieve the user from the session.
   var user = req.session.user;
   // Render the library page.
@@ -93,7 +93,7 @@ router.get('/library/', requiresUser, function(req, res, next) {
 });
 
 /*GET logout page. */
-router.get('/logout/', requiresUser, function(req, res, next){
+router.get('/logout/', ensureLoggedIn, function(req, res, next){
   // Destroy the session.
   req.session.destroy(function(err){
     console.log(err);
