@@ -67,7 +67,22 @@ module.exports = function(db){
         });
     }
 
-    module.getAccountsWithRequests = function(done){
+    module.getAccounts = function(done){
+        db.cypher({ 
+            query: 'MATCH (a:Account) ' + 
+                   'RETURN a'
+        }, function(error, results){
+            if (error){
+                done(null, error);
+            }
+            else {
+                //Accounts retrieved
+                done(results);
+            }
+        });
+    }
+
+    module.getRequests = function(done){
         db.cypher({ 
             query: 'MATCH (a:Account)-[:REQUESTS]->(r:Request) ' + 
                    'RETURN a, r'
