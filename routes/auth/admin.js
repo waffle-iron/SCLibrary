@@ -5,12 +5,12 @@ var db = require('../../client/database');
 
 var ensureLoggedOut = require('../middleware/ensureLoggedOut');
 
-/* GET login page. */
+/* GET admin login page. */
 router.get('/', ensureLoggedOut, function(req, res, next) {
-  res.render('login', {msg: null});
+  res.render('adminlogin', {msg: null});
 });
 
-/* GET login/submit page. */
+/* GET admin login/submit page. */
 router.get('/submit/', ensureLoggedOut, function(req, res, next) {
 
   var name = req.query.name;
@@ -19,18 +19,25 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
   db.loginToAccount(name, password, function(account, error){
     if (error){
       var message = 'There was an error when trying to login to your account.';
-      res.render('login', {msg: message});
+      res.render('adminlogin', {msg: message});
     }
     if (account.length == 0){
       var message = 'We were not able to find your account.';
-      res.render('login', {msg: message});
+      res.render('adminlogin', {msg: message});
     }
     if (account.length > 0){
       req.session.account = account;
-      res.redirect('/library/');
+      res.redirect('/admin/panel/');
     }
   })
   
 });
+
+
+/* GET admin panel. */
+router.get('/panel/', ensureLoggedOut, function(req, res, next) {
+  res.render('panel', {msg: null});
+});
+
 
 module.exports = router;

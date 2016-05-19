@@ -11,9 +11,11 @@ var ensureLoggedOut = require('./middleware/ensureLoggedOut');
 
 var signup = require('./auth/signup');
 var login = require('./auth/login');
+var admin = require('./auth/admin');
 
 router.use('/login/', login);
 router.use('/signup/', signup);
+router.use('/admin/', admin);
 
 /* GET index page. */
 router.get('/', ensureLoggedOut, function(req, res, next) {
