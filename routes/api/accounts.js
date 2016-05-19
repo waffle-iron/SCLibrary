@@ -12,4 +12,14 @@ router.get('/', function(req, res, next) {
 	});
 });
 
+/* GET Approve account. */
+router.get('/:id/approve', function(req, res, next) {
+	db.approveAccount(req.params.id, function(accounts, error){
+		if (error)
+			res.json({"error":"failed"});
+		else
+			res.json(accounts);
+	});
+});
+
 module.exports = router;
