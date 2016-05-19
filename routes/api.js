@@ -4,9 +4,13 @@ var db = require('../client/database');
 
 var users = require('./api/users.js');
 var playlists = require('./api/playlists.js');
+var accounts = require('./api/accounts.js');
+var requests = require('./api/requests.js');
 
 router.use('/users/', users);
 router.use('/playlists/', playlists);
+router.use('/accounts/', accounts);
+router.use('/requests/', requests);
 
 /* GET API index. */
 router.get('/', function(req, res, next) {
