@@ -26,6 +26,7 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
       res.render('login', {msg: message});
     }
     if (account.length > 0){
+      req.session.account = account;
       res.redirect('/library/');
     }
   })

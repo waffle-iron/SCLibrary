@@ -18,11 +18,13 @@ module.exports = function(db){
                 if (results.length == 0){
                     //Account does not already exist, create a new one
                     db.cypher({ 
-                        query: 'CREATE (a:Account {username:{name}, password:{pw} }) ' + 
+                        query: 'CREATE (a:Account {username:{name}, password:{pw} })-[:REQUESTS]->' + 
+                               '(r:Request {username:{sc_name}, complete:"false"}) ' + 
                                'RETURN a',
                         params: {
                             name: username,
-                            pw: password
+                            pw: password,
+                            sc_name: sc_account
                         }
                     }, function(error, results){
                         if (error){
