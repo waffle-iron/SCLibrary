@@ -161,6 +161,26 @@ module.exports = function(db){
         });
     }
 
+    module.getRequest = function(rid, done){
+        db.cypher({ 
+            query: 'MATCH (r:Request) ' + 
+                   'WHERE id(r) = {id} ' +
+                   'RETURN r',
+            params: {
+                id: parseInt(rid)
+            }
+        }, function(error, results){
+            if (error){
+                console.log(error);
+                done(null, error);
+            }
+            else {
+                //Account approved
+                done(results);
+            }
+        });
+    }
+
     return module;
 
 }
