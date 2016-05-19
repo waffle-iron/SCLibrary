@@ -27,8 +27,8 @@ router.get('/submit', ensureLoggedOut, function(req, res, next) {
       res.render('signup', {msg: message});
     }
     if (created){
-      var message = 'Your account was successfully created.';
-      res.render('login', {msg: message});
+      var message = 'Your account was requested.';
+      res.render('message', {msg: message});
     }
   })
 
