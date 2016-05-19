@@ -30,7 +30,6 @@ router.post('/:id/approve', function(req, res, next) {
 				if (error) {
 					res.json(error);
 				}
-				
 				db.addUser(sc_user, function(db_user, error){
           			if (error) {
             			res.json(error);

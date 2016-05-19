@@ -8,7 +8,18 @@ var ensureLoggedIn = require('../middleware/ensureLoggedIn');
 var requiresAdmin = require('../middleware/requiresAdmin');
 
 /* GET admin login page. */
-router.get('/', ensureLoggedOut, function(req, res, next) {
+router.get('/', function(req, res, next) {
+  if (req.session && req.session.account){
+    var account = req.session.account;
+    console.log(account);
+    if (account.a.properties.type == 'admin'){
+        res.redirect('/admin/panel/');
+    }
+    else {
+      var message = 'This account does not belong to an administrator.';
+      res.render('adminlogin', {msg: message});
+    }
+  }
   res.render('adminlogin', {msg: null});
 });
 
@@ -18,19 +29,19 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
   var name = req.query.name;
   var password = req.query.password;
 
-  db.loginToAccount(name, password, function(account, error){
+  db.loginToAccount(name, password, function(results, error){
     if (error){
       var message = 'There was an error when trying to login to your account.';
       res.render('adminlogin', {msg: message});
     }
-    if (account.length == 0){
+    if (!results.account){
       var message = 'We were not able to find that account.';
       res.render('adminlogin', {msg: message});
     }
-    if (account.length > 0){
-      req.session.account = account[0];
-      console.log(account[0]);
-      if (account[0].a.properties.type == 'admin'){
+    else {
+      req.session.account = results.account;
+      console.log(results.account);
+      if (results.account.a.properties.type == 'admin'){
         res.redirect('/admin/panel/');
       }
       else {
