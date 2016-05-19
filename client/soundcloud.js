@@ -15,8 +15,14 @@ function getRequest(href, done){
         },
         function(error){
             if (error){
-                console.log(error);
-                done(null, error);
+                if (error.code == 302){
+                    var href = error.headers.location;
+                    getRequest(href, done);
+                }
+                else {
+                    console.log(error);
+                    done(null, error);
+                }
             }
         }
     );
@@ -118,18 +124,9 @@ function getPlaylist(pid, done){
 
 function getUserFromUsername(username, done){
     var url = "http://soundcloud.com/" + username;
-    var href = "http://http://api.soundcloud.com/resolve?url=" 
+    var href = "http://api.soundcloud.com/resolve?url=" 
                 + url + "&client_id=" + config.auth.client_id;
-    getRequest(href, function(data, error){
-        if (error){
-            console.log(error);
-            done(null, error);
-        }
-        else {
-            console.log(data);
-            done(data);
-        }
-    })
+    getRequest(href, done)
 }
 
 module.exports = {
