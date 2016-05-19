@@ -61,7 +61,7 @@ function getCollectionRecurse(user, collection, next_href, done){
     console.log("here");
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
-        if (response.next_href && collection.length < 100){ 
+        if (response.next_href){ 
             var href = response.next_href + '&client_id=' + config.auth.client_id;
             database.checkExistence(user.id, response.collection[0], function(found, error){
                 if (error)
