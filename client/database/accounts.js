@@ -98,16 +98,40 @@ module.exports = function(db){
     }
 
     module.approve = function(aid, done){
+        console.log(aid);
         db.cypher({ 
             query: 'MATCH (a:Account) ' + 
                    'WHERE id(a) = {id} ' +
                    'SET a.approved = true ' + 
                    'RETURN a',
             params: {
-                id: aid
+                id: parseInt(aid)
             }
         }, function(error, results){
             if (error){
+                console.log(error);
+                done(null, error);
+            }
+            else {
+                //Account approved
+                done(results);
+            }
+        });
+    }
+
+    module.deny = function(aid, done){
+        console.log(aid);
+        db.cypher({ 
+            query: 'MATCH (a:Account) ' + 
+                   'WHERE id(a) = {id} ' +
+                   'SET a.approved = false ' + 
+                   'RETURN a',
+            params: {
+                id: parseInt(aid)
+            }
+        }, function(error, results){
+            if (error){
+                console.log(error);
                 done(null, error);
             }
             else {

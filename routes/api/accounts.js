@@ -14,7 +14,19 @@ router.get('/', function(req, res, next) {
 
 /* GET Approve account. */
 router.get('/:id/approve', function(req, res, next) {
+	console.log(req.params.id);
 	db.approveAccount(req.params.id, function(accounts, error){
+		if (error)
+			res.json({"error":"failed"});
+		else
+			res.json(accounts);
+	});
+});
+
+/* GET Deny account. */
+router.get('/:id/deny', function(req, res, next) {
+	console.log(req.params.id);
+	db.denyAccount(req.params.id, function(accounts, error){
 		if (error)
 			res.json({"error":"failed"});
 		else
