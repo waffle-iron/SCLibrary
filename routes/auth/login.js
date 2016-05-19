@@ -38,6 +38,10 @@ router.get('/submit/', ensureLoggedOut, function(req, res, next) {
       }
       
     }
+    else {
+      var message = "You don't have any soundcloud accounts associated with your username";
+      res.render('login', {msg: message});
+    }
   })
   
 });
