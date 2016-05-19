@@ -32,5 +32,7 @@ module.exports = {
     removeTrackFromPlaylist: playlists.removeTrackFromPlaylist,
     createAccount: accounts.create,
     loginToAccount: accounts.login,
-    getAccountsWithRequests: accounts.getAccountsWithRequests
+    getAccounts: accounts.getAccounts,
+    getRequests: accounts.getRequests,
+
 }     
