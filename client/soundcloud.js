@@ -1,4 +1,5 @@
 var requestify = require('requestify');
+var request = require('request');
 var config = require('../config.js');
 
 var database = require('./database.js');
@@ -6,6 +7,24 @@ var database = require('./database.js');
 //used for get requests to soundcloud API
 function getRequest(href, done){
     console.log(href);
+
+    var options = {
+        url: href,
+        method: 'GET'
+    }
+
+    request(options, function(error, message, object){
+        if (error){
+            done(null, error);
+        }
+        else {
+            var json = JSON.parse(object);
+            console.log(json);
+            done(json);
+        }
+    })
+
+    /*
     requestify.get(href).then(
         function(response){
             if (response){
@@ -16,16 +35,18 @@ function getRequest(href, done){
         function(error){
             if (error){
                 if (error.code == 302){
+                    //redirect: make new request
                     var href = error.headers.location;
                     getRequest(href, done);
                 }
                 else {
                     console.log(error);
-                    done(null, error);
+                    done(null, error.getBody());
                 }
             }
         }
     );
+    */
 }
 
 //get a user's data
