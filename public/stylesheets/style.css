@@ -88,15 +88,13 @@ a.btn.btn-search {
     height: 30px;
     margin-right: 7px;
 }
-.search-wrapper {
+.search-wrapper,
+.user-wrapper {
+    display: inline-block;
     width: 100%;
-    height: 30px;
-    width: 100%;
-    height: 30px;
+    height: auto;
     TEXT-ALIGN: center;
-    margin-bottom: 7px;
     padding: 6px;
-    margin-bottom: 7px;
 }
 input.search:focus {
     border: 1px solid #afafaf;
@@ -117,17 +115,21 @@ input.search {
 
 .left-side-wrapper {
     width: 300px;
-    float: left;
     height: 100vh;
     display: inline-block;
-    background-color: #e3e3e3;
+    background-color: #242424;
     position: fixed;
+    color: #efefef;
     overflow-y: scroll;
+    position: fixed;
+    top: 0;
 }
 .library-wrapper {
-    width: calc(100vw - 300px);
+    width: 100vw;
     float: right;
     clear: none;
+    transform: translate(300px, 0);
+    overflow-y: scroll;
 }
 * {
     font-family: 'Oxygen', sans-serif;
@@ -135,9 +137,9 @@ input.search {
 }
 ul.header > li > ol > li.ui-resizable:last-of-type {
   position: absolute;
-    top: 0;
-    float: none;
-    transform: translate(calc(100vw - 300px - 100%), 0);
+  top: 0;
+  float: none;
+  transform: translate(calc(100vw - 100%), 0);
 }
 ul.header > li {
 
@@ -146,10 +148,11 @@ ul.header > li {
 ul.header {
     /* Fix header row */
     position: fixed;
-    width: calc(100vw - 300px) !important;
 }
 ul.list {
     margin-top: 30px;
+    overflow-y: scroll !important;
+    height: calc(100vh - 300px);
 }
 table {
     width: 100%;
@@ -180,10 +183,11 @@ li.track-row:nth-of-type(2n+1) {
 ul.list > li,
 ul.header > li {
     width: 100%;
+    height: 25px;
 }
 ul > li,
 ul > li > ol > li {
-    display: block;
+    display: inline-block;
     float: left;
 }
 ul.list,
@@ -213,17 +217,7 @@ ul.header ol > li {
     border-bottom: #afafaf 1px solid;
     color: #333;
     padding: 4px 3px;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f5f6f6+0,dbdce2+21,b8bac6+49,dddfe3+80,f5f6f6+100;Grey+Pipe */
-    background: rgb(245, 246, 246);
-    /* Old browsers */
-    background: -moz-linear-gradient(top, rgba(245, 246, 246, 1) 0%, rgba(219, 220, 226, 1) 21%, rgba(184, 186, 198, 1) 49%, rgba(221, 223, 227, 1) 80%, rgba(245, 246, 246, 1) 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(245, 246, 246, 1) 0%, rgba(219, 220, 226, 1) 21%, rgba(184, 186, 198, 1) 49%, rgba(221, 223, 227, 1) 80%, rgba(245, 246, 246, 1) 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(245, 246, 246, 1) 0%, rgba(219, 220, 226, 1) 21%, rgba(184, 186, 198, 1) 49%, rgba(221, 223, 227, 1) 80%, rgba(245, 246, 246, 1) 100%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f5f6f6', endColorstr='#f5f6f6', GradientType=0);
-    /* IE6-9 */
+    background-color: #e3ecee;
     left: 0 !important;
 }
 
@@ -261,49 +255,47 @@ ul.header ol > li {
     position: relative;
     width: 100%;
 }
-#player:not(.playing) * {
-    max-height: 0;
-    transition: all .3s ease;
-    opacity: 0.0;
-}
-#player.playing + div#library {
-  margin-top: 170px;
-}
 #player.playing + div#library {
     transition: all .2s ease;
+}
+#player:not(.playing) .player-main-wrapper {
+  opacity: 0.0;
+}
+#player.playing .player-main-wrapper {
+  opacity: 1.0;
+  transiton: opacity 1.5s ease;
 }
 #player.playing * {
     max-height: none;
     opacity: 1.0;
-    transition: all .3s ease;
+    transition: all .5s ease;
 }
 #player {
-    display: inline-block;
-    max-height: 0px;
+    display: table;
     transition: max-height 1s ease;
-    position: fixed;
-    top: 60px;
-    background-color: #444;
+    position: relative;
+    top: 0;
+    height: 300px;
+    width: 100%;
+    background-color: #232323;
 }
 #player #playpausewrapper {
     display: none;
 }
-#player.playing {
-    /* Ridiculous max height for transiton */
-    max-height: 300px;
-    display: inline-block;
+
+#player:not(.playing) div#back-div {
+    background-color: rgba(0,0,0,1.0);
+}
+#player.playing div#back-div {
+    background-color: rgba(0,0,0,0.2);
+    transition: background-color 2.5s ease;
 }
 div#back-div {
-    position: absolute;
+    position: fixed;
     top: 0;
-    height: 100%;
-    background-color: #FFA0A0;
-    z-index: -1;
-    /*animation: colorChange 20s infinite ease both;*/
-    /*animation-play-state: running;*/
-    background-image: url(../images/banner-red-poly.svg);
-    background-size: cover;
-    background-position: right center;
+    height: 300px;
+    width: 100vw;
+    z-index: 1;
 }
 #seekbarwrapper {
     background: #333;
@@ -313,8 +305,11 @@ div#back-div {
 #artworkimg {
     background-position: 50% 50%;
     background-size: cover;
-    overflow: hidden;
-    padding: 14px;
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    position: relative;
+    z-index: 2;
 }
 #artworkimg #pauseplay {
     opacity: 0.0;
@@ -344,17 +339,131 @@ ul.sub > li {
 .top-wrapper {
     height: 60px;
     width: 100%;
-    background-image: url(../images/banner-white-poly.svg);
-    background-color: #D6D6D6;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: fixed;
+    position: relative;
     top: 0;
+    display: inline-block;
+    z-index: 100;
 }
 
 
 div#library {
-    margin-top: 60px;
     display: inline-block;
     width: 100vw;
+    position: fixed;
+    top: 300px;
+    overflow-y: visible;
+}
+
+input.ng-pristine {
+    border-radius: 7px;
+    border: none !important;
+    padding: 4px 10px;
+    color: #a1a1a1;
+    outline: none;
+    margin: 7px auto;
+}
+
+ul.side {
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    padding: 0 10px;
+}
+
+div#art-bk {
+  height: 300px;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 100%;
+  position: fixed;
+  top: 0;
+  z-index: 0;
+  -webkit-filter: blur(10px);
+}
+
+/*Toggle functionality for left side wrapper*/
+
+body .left-side-wrapper,
+body .library-wrapper,
+body #player {
+  transition: translate3d 1s ease;
+}
+
+body.toggled .left-side-wrapper {
+    transform: translate3d(0, 0, 0);
+}
+body.toggled .library-wrapper,
+body.toggled #player {
+    transform: translate3d(300px, 0, 0);
+}
+body div.left-side-wrapper {
+    transform: translate3d(-300px, 0, 0);
+}
+body div.library-wrapper,
+body #player {
+    transform: translate3d(0, 0, 0);
+}
+
+
+.player-main-wrapper {
+    width: 100vw;
+    display: inline-block;
+    height: 100px;
+}
+
+a#toggle {
+    height: 40px;
+    width: 40px;
+    background-image: url(../../images/sc_icons/menu.svg);
+    opacity: 0.5;
+}
+a#settings {
+    height: 40px;
+    width: 40px;
+    background-image: url(../../images/sc_icons/gear.svg);
+    opacity: 0.45;
+}
+
+div#top-wrapper {
+    height: 60px;
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 10px;
+    z-index: 2;
+    opacity: 0.6 !important;
+}
+
+a#settings {}
+
+ol.genre-wrapper {
+    max-width: calc(100vw - 100px);
+    display: inline-block;
+    overflow-x: scroll;
+    list-style: none;
+    height: 40px;
+    padding: 0;
+}
+
+span.track-title,
+span.track-channel {
+  background-color: rgba(255,255,255,0.4);
+  width: 60%;
+  height: 40px;
+  z-index: 2;
+  position: absolute;
+  display: inline-block;
+}
+
+span.track-channel {
+    transform: translate(21px, 25px);
+}
+
+span.track-title {
+    transform: translate(10px);
+}
+
+body.toggled {
+    overflow-x: hidden;
 }
