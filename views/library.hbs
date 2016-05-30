@@ -1,21 +1,29 @@
 <!--aside class="user-wrapper"><span>You are logged in as <a href="#" class="username"></a>.</span></aside-->
 
-<div id="player" style="width: 100%;"> 
-    <div class ="pull-left" id="prev"><i class="sc sc-caret-left"></i></div>
-    <div id="artwrapper" style="display:inline-block; float: left;">
-		<div id="artworkimg">
-        <div id="pauseplay" alt="" style="display: inline-block; background-image: url(../images/sc_icons/play.svg);">
-        </div>
-        </div>
+<div id="player">
+  <!-- Top wrapper area, contains toggle/setting buttons, genres -->
+  <div id="top-wrapper">
+    <a class="pull-left" id="toggle" href="javascript:toggleLib();"></a>
+    <ol class="genre-wrapper">
+      <li class="genre-btn"></li>
+    </ol>
+    <a class="pull-right" id="settings" href="#"></a>
+  </div>
+
+  <!-- Main wrapper area, contains artwork, title, channel, and prev/next buttons -->
+  <div class="player-main-wrapper">
+    <div class="container">
+      <!-- Artwork gets loaded in as a background image here -->
+    	<div id="artworkimg"></div>
+      <span class="track-title">&nbsp;</span>
+      <span class="track-channel">&nbsp;</span>
+    </div>
 	</div>
-	<div id="seekbarwrapper" style="display:inline-block; float: left; position:relative; height:100%; width:80%;">
-        
-		<img id="waveformimg"/>
-		<!--img src="../images/seekicon.png" id="seekicon" style="position:absolute;  top: 50%; transform: translateY(-50%);"-->
-        <div id="back-div"></div>
-	</div>
-    <div class ="pull-right" id="next"><i class="sc sc-caret-right"></i></div>
-	
+  <!-- used to darken background art -->
+  <div id="back-div"></div>
+  <div id="art-bk"></div>
+
+
 </div>
 
 

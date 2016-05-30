@@ -51,7 +51,8 @@ audioPlayer.on('pause', function () {
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function () {
     currtimems = audioPlayer.currentTime*1000.0;
-    console.log(currtimems);
+    // console.log(percentPlayed);
+    //console.log(currtimems);
 });
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -62,7 +63,7 @@ $(audioPlayer).on('pause', function () {
     $('#pauseplay').css('background-image', playIcon);
 });
 
-$('#pauseplay').click(function (e) {
+$('#player').click(function (e) {
     if (isPlaying && !audioPlayer.paused) {
         audioPlayer.pause();
         isPlaying = false;
@@ -70,7 +71,7 @@ $('#pauseplay').click(function (e) {
     } else {
         // TODO stop reseting pos on play somehow
         $('#pauseplay').css('background-image', pauseIcon);
-        
+
         var pos = $('#back-div').width();
         var width = $('#waveformimg').width();
         var relativePercent = pos / (width * 1.0);
@@ -115,6 +116,7 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
 
             //Load artwork image to DOM
             $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
+            $('#art-bk').css('background-image', "url(" + artworkurl + ")");
             //Load waveform image to DOM
             $('#waveformimg').attr('src', waveformurl);
 
@@ -185,10 +187,9 @@ function snapToPercents(parentEl) {
   var colCt = parentEl.children().length;
   var catchAdd = 0;
   var j = 0;
-  console.log(parWid + " - " + colCt);
   parentEl.children('li').each(function () {
     // iterate through li + siblings
-    var eachC = "." + $(this).find('a').text().toLowerCase();
+    var eachC = "." + $(this).find('a').attr('also-resize');
     if (j == colCt - 1) {
       // force clearing
       var catchAll = 100.0 - catchAdd;
@@ -311,6 +312,8 @@ function nextListener() {
     mutations.forEach(function(mutationRecord) {
       //console.log(mutationRecord.target.style.width);
       var completionPer = mutationRecord.target.style.width;
+
+      // move the image background, since we're already listening
         if( completionPer == "100%") {
 
           if (queue.length == 0){
@@ -321,11 +324,18 @@ function nextListener() {
             var properties = queue.shift().t.properties;
             loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
           }
-          
+
         }
     });
   });
 
   var target = document.getElementById('back-div');
   observer.observe(target, { attributes : true, attributeFilter : ['style'] });
+}
+
+var toggledLib = false;
+function toggleLib() {
+  toggledLib = !toggledLib;
+  if (!toggledLib) $('body').addClass('toggled');
+  else $('body').removeClass('toggled');
 }
