@@ -387,7 +387,7 @@ div#art-bk {
 body .left-side-wrapper,
 body .library-wrapper,
 body #player {
-  transition: translate3d 1s ease;
+  transition: all 0.5s ease;
 }
 
 body.toggled .left-side-wrapper {
@@ -449,7 +449,7 @@ ol.genre-wrapper {
 span.track-title,
 span.track-channel {
   background-color: rgba(255,255,255,0.4);
-  width: 60%;
+  width: calc(95% - 100px);
   height: 40px;
   z-index: 2;
   position: absolute;
@@ -464,6 +464,6 @@ span.track-title {
     transform: translate(10px);
 }
 
-body.toggled {
+body {
     overflow-x: hidden;
 }
