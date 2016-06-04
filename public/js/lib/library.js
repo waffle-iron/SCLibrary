@@ -82,7 +82,7 @@ app.controller("LibraryCtlr", function($scope, $http){
     // Update sort variables
     $scope.updateSort = function(sortBy){
         if ($scope.sortType == sortBy)
-            $scope.sortReverse = !$scope.sortReverse;
+            $scope.sortReverse = !$scope.sortReverse; 
         else
             $scope.sortReverse = false;
         $scope.sortType = sortBy;
@@ -141,7 +141,7 @@ app.controller("LibraryCtlr", function($scope, $http){
             $scope.loadPlaylists();
         }, function(error){
             console.log(error);
-        });
+        }); 
 
         $('.playlistForm').hide();
         $scope.playlistInput = '';
@@ -385,3 +385,4 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
 });
+
