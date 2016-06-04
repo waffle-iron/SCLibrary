@@ -458,12 +458,16 @@ ol.genre-wrapper {
 
 span.track-title,
 span.track-channel {
-  background-color: rgba(255,255,255,0.4);
-  width: calc(95% - 100px);
-  height: 40px;
-  z-index: 2;
-  position: absolute;
-  display: inline-block;
+    background-color: rgba(255,255,255,0.4);
+    width: calc(95% - 100px);
+    height: 40px;
+    z-index: 2;
+    position: absolute;
+    font-family: Montserrat;
+    font-weight: 600;
+    padding: 10px 15px;
+    color: #222;
+    display: inline-block;
 }
 
 span.track-channel {
@@ -472,10 +476,6 @@ span.track-channel {
 
 span.track-title {
     transform: translate(10px);
-    padding: 10px 15px;
-    font-family: Montserrat;
-    font-weight: 600;
-    color: #222;
 }
 
 body {
