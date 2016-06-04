@@ -1,0 +1,18 @@
+<br><br><br><br><br>
+
+
+{{#if msg}}
+	{{msg}}
+{{/if}}
+
+<br><br>
+
+<b>Login</b>
+<form action="/login/submit" method="get" class="simple-form">
+	Name: <input type="text" name="name" /><br />
+	Password: <input type="password" name="password" /><br />
+	<button type="submit" value="Submit">Submit</button>
+</form>
+
+<br>
+<a href="/signup/">Signup</a>

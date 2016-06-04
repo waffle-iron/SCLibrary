@@ -30,18 +30,22 @@
             <!--<input type="submit" id="submit" value="Submit" />-->
         </form>
 
-        <!-- Why is this not sorting? -->
         <ul ng-repeat="playlist in playlists | orderBy:p.properties.name | filter:searchTerm">
             <li id="playlist{{$index}}" ng-click="loadPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="playlist.p.properties.name"></li>
             <span ng-click="deletePlaylist(playlist)" >X</span>
         </ul>
 
-        <li>SC Playlists</li>
+        <li ng-click="toggleSCPlaylists()">
+            SC Playlists
+            <span ng-show="scplaylists_visible" class="fa fa-caret-down"></span>
+            <span ng-show="!scplaylists_visible" class="fa fa-caret-up"></span>
+        </li>
 
-        <!-- Why is this not sorting? -->
-        <ul ng-repeat="playlist in scplaylists | orderBy:p.properties.name | filter:searchTerm">
-            <li id="playlist{{$index}}" ng-click="loadSCPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="formatName(playlist.p.properties.name)"></li>
-        </ul>
+        <div id="scplaylist_list">
+            <ul ng-repeat="playlist in scplaylists | orderBy:p.properties.name | filter:searchTerm">
+                <li id="playlist{{$index}}" ng-click="loadSCPlaylist(playlist)" data-playlist="{{playlist}}" ng-bind="formatName(playlist.p.properties.name)"></li>
+            </ul>
+        </div>
 
         <li ng-click="displayQueue()">Queue</li>
     </ul>

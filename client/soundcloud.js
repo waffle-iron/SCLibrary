@@ -1,4 +1,5 @@
 var requestify = require('requestify');
+var request = require('request');
 var config = require('../config.js');
 
 var database = require('./database.js');
@@ -6,20 +7,23 @@ var database = require('./database.js');
 //used for get requests to soundcloud API
 function getRequest(href, done){
     console.log(href);
-    requestify.get(href).then(
-        function(response){
-            if (response){
-                console.log(response.getBody());
-                done(response.getBody());
-            }   
-        },
-        function(error){
-            if (error){
-                console.log(error);
-                done(null, error);
-            }
+
+    var options = {
+        url: href,
+        method: 'GET'
+    }
+
+    request(options, function(error, message, object){
+        if (error){
+            done(null, error);
         }
-    );
+        else {
+            var json = JSON.parse(object);
+            console.log(json);
+            done(json);
+        }
+    })
+
 }
 
 //get a user's data
@@ -57,7 +61,7 @@ function getCollectionRecurse(user, collection, next_href, done){
     console.log("here");
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
-        if (response.next_href && collection.length < 100){ 
+        if (response.next_href){ 
             var href = response.next_href + '&client_id=' + config.auth.client_id;
             database.checkExistence(user.id, response.collection[0], function(found, error){
                 if (error)
@@ -116,6 +120,13 @@ function getPlaylist(pid, done){
     getRequest(href, done);
 }
 
+function getUserFromUsername(username, done){
+    var url = "http://soundcloud.com/" + username;
+    var href = "http://api.soundcloud.com/resolve?url=" 
+                + url + "&client_id=" + config.auth.client_id;
+    getRequest(href, done)
+}
+
 module.exports = {
     getRequest: getRequest,
 	getCollection: getCollection,
@@ -124,5 +135,6 @@ module.exports = {
     getUserResource: getUserResource,
     getTrack: getTrack,
     getPlaylist: getPlaylist,
-    getPlaylists: getPlaylists
+    getPlaylists: getPlaylists,
+    getUserFromUsername: getUserFromUsername
 }     
