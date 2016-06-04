@@ -51,8 +51,6 @@ audioPlayer.on('pause', function () {
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function () {
     currtimems = audioPlayer.currentTime*1000.0;
-    // console.log(percentPlayed);
-    //console.log(currtimems);
 });
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -63,7 +61,7 @@ $(audioPlayer).on('pause', function () {
     $('#pauseplay').css('background-image', playIcon);
 });
 
-$('#player').click(function (e) {
+$('#artworkimg').click(function (e) {
     if (isPlaying && !audioPlayer.paused) {
         audioPlayer.pause();
         isPlaying = false;
@@ -76,24 +74,15 @@ $('#player').click(function (e) {
         var width = $('#waveformimg').width();
         var relativePercent = pos / (width * 1.0);
         var seekPosition = Math.round(duration * relativePercent);
-        //alert(seekPosition);
-        //player.seek(seekPosition);
+
         audioPlayer.play();
         isPlaying = true;
     }
 });
 
 $('#player').click(function (e) {
-    //how offset the current element is from the x=0 axis
-    var offset = $('#artworkimg').width();
-    var width = $('#waveformimg').width();
-    //relativeOffset = how far into the div's width you clicked in pixels
-    var relativeOffset = e.pageX - offset;
-    console.log(e.pageX - offset + "x");
     //how far you clicked into the div's width by percent. 1.0 is to cast to double
-    var relativePercent = relativeOffset / (width * 1.0);
-    //console.log(relativePercent*100+"%");
-    //position in miliseconds of total song
+    var relativePercent = e.pageX / ($(window).width() * 1.0);
     console.log(relativePercent + '%');
     var seekPosition = Math.round(duration * relativePercent);
     console.log("seekpos: " + seekPosition);
@@ -101,7 +90,7 @@ $('#player').click(function (e) {
 });
 
 
-function loadSong(trackid, durationms, artworkurl, waveformurl) {
+function loadSong(trackid, durationms, artworkurl, waveformurl, name, genre) {
     audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0';
     audioPlayer.load();
     audioPlayer.play();
@@ -111,56 +100,29 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
             isPlaying = true;
             $('#pauseplay').css('background-image', pauseIcon);
 
-            //$('#seekicon').css("left", "0%");
-            $('#seekicon').css("width", "0%");
+            //load in name
+            $('.track-title').text(name);
 
             //Load artwork image to DOM
             $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
             $('#art-bk').css('background-image', "url(" + artworkurl + ")");
-            //Load waveform image to DOM
-            $('#waveformimg').attr('src', waveformurl);
 
             //expand the player
             $('#player').addClass('playing');
 
-            $('#waveformimg').on('load', function () {
-                var thisH = $('#waveformimg').height();
-                var thisM = thisH + 60;
-                $('#artworkimg').css('height', thisH.toString() + "px");
-                $('#artworkimg').css('width', thisH.toString() + "px");
-                $('#library').css('margin-top', thisM.toString() + "px");
-            });
-
-            // resize function to keep the artwork square
-            $(window).on('resize', function () {
-                var thisH = $('#waveformimg').height();
-                var thisM = thisH + 60;
-                $('#artworkimg').css('height', thisH.toString() + "px");
-                $('#artworkimg').css('width', thisH.toString() + "px");
-                $('#library').css('margin-top', thisM.toString() + "px");
-            });
-
-
             //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
             //TODO (sames) grab the waveform url from backend like above
-            /*
-            player.on('time', function () {
-                //Get rid of all decimal points except first 2
-                var percentPlayed = Math.floor((player.currentTime() / duration) * 10000) / 100;
-                //console.log(percentPlayed + "% played");
-                $('#back-div').css("width", percentPlayed.toString() + "%");
-            });
-            */
 
-            //player.on('time', function(){console.log("pos: " : this.position);});
-            //soundPlayer = sound;
-            //html5Audio = sound._player._html5Audio;
-            //html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
-        /*
-        function (error) {
-            console.log(error);
-        });
-        */
+            // Moving art background animation
+            var seconds = Math.round((duration/1000)* 1.0) + 's';
+            jQuery('#art-bk').removeClass('moving');
+            jQuery('#art-bk').css('transition', 'background-position ' + seconds
+                    + ' linear');
+            jQuery('#art-bk').addClass('moving');
+            // player.on('time', function(){console.log("pos: " : this.position);});
+            // soundPlayer = sound;
+            // html5Audio = sound._player._html5Audio;
+            // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
 }
 
 
@@ -168,14 +130,14 @@ function nextSong(){
     var track = queue.shift();
     backqueue.enshift(track);
     var properties = track.t.properties;
-    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url, properties.name, properties.genre);
 }
 
 function previousSong(){
     var track = backqueue.shift();
     queue.enshift(track);
     var properties = track.t.properties;
-    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url, properties.name, properties.genre);
 }
 
 // used to track resize direction
@@ -318,11 +280,11 @@ function nextListener() {
 
           if (queue.length == 0){
             var properties = autoqueue.shift().t.properties;
-            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
+            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl, properties.name, properties.genre);
           }
           else {
             var properties = queue.shift().t.properties;
-            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
+            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl, properties.name, properties.genre);
           }
 
         }
@@ -335,7 +297,7 @@ function nextListener() {
 
 var toggledLib = false;
 function toggleLib() {
-  toggledLib = !toggledLib;
   if (!toggledLib) $('body').addClass('toggled');
   else $('body').removeClass('toggled');
+  toggledLib = !toggledLib;
 }
