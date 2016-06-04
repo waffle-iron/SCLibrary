@@ -111,9 +111,6 @@ function loadSong(track) {
             isPlaying = true;
             $('#pauseplay').css('background-image', pauseIcon);
 
-            //load in name
-            $('.track-title').text(name);
-
             //Load artwork image to DOM
             $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
             $('#art-bk').css('background-image', "url(" + artworkurl + ")");
