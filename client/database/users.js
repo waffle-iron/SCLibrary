@@ -4,6 +4,7 @@ module.exports = function(db){
 
     // Add a user to the database if they do not already exist.
     module.addUser = function(user, done){
+
         // Search the database to find a match
         db.cypher({ 
             query: 'MATCH (user:Channel {scuid: {scuid}}) RETURN user',

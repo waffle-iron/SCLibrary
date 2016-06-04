@@ -10,6 +10,7 @@ var users = require('./database/users.js')(db);
 var collections = require('./database/collections.js')(db);
 var playlists = require('./database/playlists.js')(db);
 var channels = require('./database/channels.js')(db);
+var accounts = require('./database/accounts.js')(db);
 
 module.exports = {
     instance: db,
@@ -28,5 +29,13 @@ module.exports = {
     getSCPlaylist: playlists.getSCPlaylist,
     getSCPlaylists: playlists.getSCPlaylists,
     addTrackToPlaylist: playlists.addTrackToPlaylist,
-    removeTrackFromPlaylist: playlists.removeTrackFromPlaylist
+    removeTrackFromPlaylist: playlists.removeTrackFromPlaylist,
+    createAccount: accounts.create,
+    loginToAccount: accounts.login,
+    getAccounts: accounts.getAccounts,
+    getRequests: accounts.getRequests,
+    getRequest: accounts.getRequest,
+    approveAccount: accounts.approveAccount,
+    denyAccount: accounts.denyAccount,
+    approveRequest: accounts.approveRequest
 }     

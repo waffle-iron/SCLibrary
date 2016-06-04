@@ -16,6 +16,9 @@ app.directive("library", [function (){
                 $('#channel_list').hide();
                 scope.channels_visible = false;
 
+                $('#scplaylist_list').hide();
+                scope.scplaylists_visible = false;
+
                 $('.playlistForm').hide();
                 $('.addPlaylist').click(function(){
                     $('.playlistForm').show();
@@ -42,7 +45,7 @@ app.directive("library", [function (){
                 scope.colSizeable = attachColHandles();
                 scope.playNext = nextListener();
 
-                }
+            }
         }
     };
 }]);
@@ -113,6 +116,15 @@ app.controller("LibraryCtlr", function($scope, $http){
             $('#channel_list').show();
         else
             $('#channel_list').hide();
+
+    }
+
+    $scope.toggleSCPlaylists = function(){
+        $scope.scplaylists_visible = !$scope.scplaylists_visible;
+        if ($scope.scplaylists_visible)
+            $('#scplaylist_list').show();
+        else
+            $('#scplaylist_list').hide();
 
     }
 

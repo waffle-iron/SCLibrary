@@ -1,0 +1,22 @@
+<br><br><br><br><br>
+
+
+{{#if msg}}
+	{{msg}}
+{{/if}}
+
+<br><br>
+
+<b>Signup</b>
+<form action="/signup/submit" method="get" class="simple-form">
+	Name: <input type="text" name="name" /><br />
+	Password: <input type="password" name="password" /><br />
+    Soundcloud Username: <input type="text" name="sc_account" /><br />
+    ex) http://soundcloud.com/skrillex, the username would be skrillex
+    <br>
+
+	<button type="submit" value="Submit">Submit</button>
+</form>
+
+<br>
+<a href="/login/">Login</a>
