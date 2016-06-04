@@ -101,10 +101,21 @@ $('#player').click(function (e) {
 });
 
 
-function loadSong(trackid, durationms, artworkurl, waveformurl) {
+function loadSong(track) {
+    var trackid = track.t.properties.scid;
+    var durationms = track.t.properties.duration;
+    var artworkurl = track.t.properties.artwork_url;
+    var waveformurl = track.t.properties.waveform_url;
+
     audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0';
     audioPlayer.load();
     audioPlayer.play();
+
+    console.log(track);
+
+    $(".track-title").text(track.t.properties.name);
+    $(".track-channel").text(track.c.properties.name);
+
     duration = durationms;
     console.log('http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0');
             //Reset isPlaying boolean, change the
@@ -167,15 +178,13 @@ function loadSong(trackid, durationms, artworkurl, waveformurl) {
 function nextSong(){
     var track = queue.shift();
     backqueue.enshift(track);
-    var properties = track.t.properties;
-    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    loadSong(track);
 }
 
 function previousSong(){
     var track = backqueue.shift();
     queue.enshift(track);
-    var properties = track.t.properties;
-    loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+    loadSong(track);
 }
 
 // used to track resize direction
@@ -317,12 +326,12 @@ function nextListener() {
         if( completionPer == "100%") {
 
           if (queue.length == 0){
-            var properties = autoqueue.shift().t.properties;
-            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
+            var track = autoqueue.shift();
+            loadSong(track);
           }
           else {
-            var properties = queue.shift().t.properties;
-            loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveformurl);
+            var track = autoqueue.shift();
+            loadSong(track);
           }
 
         }

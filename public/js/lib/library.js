@@ -76,8 +76,7 @@ app.controller("LibraryCtlr", function($scope, $http){
             j++;
         }
 
-        var properties = track.t.properties;
-        loadSong(properties.scid, properties.duration, properties.artwork_url, properties.waveform_url);
+        loadSong(track);
     }
 
     // Update sort variables
