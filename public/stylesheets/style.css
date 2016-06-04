@@ -251,6 +251,14 @@ ul.header ol > li {
     height: 100%;
     width: 100%;
 }
+/*Implement background animation*/
+div#art-bk:not(.moving) {
+    background-position-y: 0%;
+}
+
+div#art-bk.moving {
+    background-position-y: 100%;
+}
 #waveformimg {
     position: relative;
     width: 100%;
@@ -310,6 +318,7 @@ div#back-div {
     width: 100px;
     position: relative;
     z-index: 2;
+    box-shadow: -3px 3px 12px;
 }
 #artworkimg #pauseplay {
     opacity: 0.0;
@@ -354,7 +363,7 @@ div#library {
     overflow-y: visible;
 }
 
-input.ng-pristine {
+input[type=text] {
     border-radius: 7px;
     border: none !important;
     padding: 4px 10px;
@@ -379,7 +388,7 @@ div#art-bk {
   position: fixed;
   top: 0;
   z-index: 0;
-  -webkit-filter: blur(10px);
+  -webkit-filter: blur(9px);
 }
 
 /*Toggle functionality for left side wrapper*/
@@ -410,6 +419,7 @@ body #player {
     width: 100vw;
     display: inline-block;
     height: 100px;
+    margin-top: 30px;
 }
 
 a#toggle {
@@ -457,13 +467,30 @@ span.track-channel {
 }
 
 span.track-channel {
-    transform: translate(21px, 25px);
+    transform: translate(25px, 30px);
 }
 
 span.track-title {
     transform: translate(10px);
+    padding: 10px 15px;
+    font-family: Montserrat;
+    font-weight: 600;
+    color: #222;
 }
 
 body {
     overflow-x: hidden;
+}
+
+
+input {
+    border-radius:;
+}
+
+
+div#total-bar {
+    height: 5px;
+    width: 0%;
+    position: fixed;
+    top: 295px;
 }
