@@ -1,6 +1,6 @@
 <!--aside class="user-wrapper"><span>You are logged in as <a href="#" class="username"></a>.</span></aside-->
 
-<div id="player">
+<div id="player" position="relative">
   <!-- Top wrapper area, contains toggle/setting buttons, genres -->
   <div id="top-wrapper">
     <a class="pull-left" id="toggle" href="javascript:toggleLib();"></a>
@@ -24,8 +24,8 @@
   <!-- used to darken background art -->
   <div id="back-div"></div>
   <div id="art-bk"></div>
-
   <div id="total-bar"></div>
+<div class="charts" id="wf_box"></div>
 </div>
 
 
@@ -48,6 +48,7 @@
 <script src="/bower_components/jquery-ui/ui/resizable.js"></script>
 
 <script src="/bower_components/d3/d3.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 
 <script src="/bower_components/jQuery-contextMenu/dist/jquery.ui.position.js"></script>
 <script src="/bower_components/jQuery-contextMenu/dist/jquery.contextMenu.js"></script>
