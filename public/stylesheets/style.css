@@ -387,7 +387,7 @@ div#art-bk {
   background-position: 50% 100%;
   position: fixed;
   top: 0;
-  z-index: -3;
+  z-index: 0;
   -webkit-filter: blur(9px);
 }
 
@@ -493,10 +493,4 @@ div#total-bar {
     width: 0%;
     position: fixed;
     top: 295px;
-}
-
-div.charts {
-    position:  absolute;
-    bottom: -5px;
-    width:  100%;
 }
