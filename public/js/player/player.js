@@ -144,7 +144,7 @@ function waveform(track_id){
       if (error) throw error;
 
       var height = "100px";
-      var width = "100%";
+      var width = "90%";
 
       var data = [];
       var b = 10;
@@ -159,6 +159,7 @@ function waveform(track_id){
       var chart = d3.select(".charts").append("svg")
         .attr("class", "chart")
         .attr("width", width)
+        .attr("style", "padding-left:10%;")
         .attr("viewBox", "0 0 " + (w * data.length) + " " + h );;
 
 
