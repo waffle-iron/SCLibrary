@@ -183,7 +183,7 @@ function waveform(track_id){
     })
 
 }
-
+var lastShift = 0.0;
 function bgScroll(play, pos, dur) {
     element = document.getElementById("art-bk");
     var bkDiv = jQuery('#art-bk'),
@@ -197,14 +197,27 @@ function bgScroll(play, pos, dur) {
     console.log(dur + ' ' + pos + ' ' + play + ' ' + perShift + '+');
 
     // set new position as percentage
-    if (dur) bkDiv.css('background-position-y', perShift + '%');
+    if (dur) {
+      bkDiv.css('background-position-y', perShift + '%');
+      console.log('dur!');
+      lastShift = shiftOff;
+    }
 
     if (play) {
         // set/reset transition to time remaining
-        bkDiv.css('transition', 'background-position ' +
-            shiftOff + 's linear');
-        element.offsetWidth = element.offsetWidth; // try to trigger reflow?
-        element.classList.add("moving");
+        bkDiv.css('transition', 'none');
+        if (dur) {
+          window.setTimeout( function() {
+            element.classList.add("moving");
+            bkDiv.css('transition', 'background-position ' +
+                shiftOff + 's linear');
+          }, 40);
+        } else {
+          element.classList.add("moving");
+          bkDiv.css('transition', 'background-position ' +
+              lastShift + 's linear');
+        }
+
     } else {
         bkDiv.css('background-position-y', backgroundPer);
     }
