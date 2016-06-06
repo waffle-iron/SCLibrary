@@ -1,6 +1,5 @@
 console.log("client_id: " + client_id);
 
-
 SC.initialize({
     client_id: client_id
 });
@@ -101,8 +100,6 @@ function loadSong(track) {
     audioPlayer.load();
     audioPlayer.play();
 
-    waveform(track.t._id);
-
     console.log(track);
 
     $(".track-title").text(track.t.properties.name);
@@ -134,63 +131,6 @@ function loadSong(track) {
             // soundPlayer = sound;
             // html5Audio = sound._player._html5Audio;
             // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
-}
-
-function waveform(track_id){
-
-    document.getElementById('wf_box').innerHTML = "";
-
-    d3.json("/api/track/waveform/" + track_id, function(error, data1){
-      if (error) throw error;
-
-      var height = "100px";
-      var width = "100%";
-
-      var data = [];
-      var b = 10;
-      for (var i = 0; i < data1.length/b; i++){
-        data.push((data1[(i * b)] + data1[(i * b) + 1] + data1[(i * b) + 2] + data1[(i * b) + 3] + data1[(i * b) + 4] + data1[(i * b) + 5] + data1[(i * b) + 6] + data1[(i * b) + 7] + data1[(i * b) + 8] + data1[(i * b) + 9])/b);
-      }
-
-      console.log(data);
-
-      var w = 10, h = d3.max(data);
-
-      var chart = d3.select(".charts").append("svg")
-        .attr("class", "chart")
-        .attr("width", width)
-        .attr("viewBox", "0 0 " + (w * data.length) + " " + h );;
-
-
-      var x = d3.scale.linear()
-        .domain([0, 1])
-        .range([0, w]);
-         
-      var y = d3.scale.linear()
-        .domain([0, h])
-        .rangeRound([0, h]); //rangeRound is used for antialiasing
-
-        chart.selectAll("rect")
-        .data(data)
-      .enter().append("rect")
-        .attr("x", function(d, i) { return x(i) - .5; })
-        .attr("y", function(d) { return (h - y(d) - .5); })
-        .attr("width", w * .75)
-        .attr("height", function(d) { return y(d);  } );
-
-      // var x = d3.scale.linear()
-      //   .domain([0, d3.max(data2)])
-      //   .range([0, data.length]);
-
-      // d3.select(".chart")
-      //   .selectAll("div")
-      //     .data(data)
-      //   .enter().append("div")
-      //     .style("height", function(d) { return x(d) + "px"; });
-
-
-    })
-
 }
 
 
