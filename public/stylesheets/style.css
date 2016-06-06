@@ -254,10 +254,11 @@ ul.header ol > li {
 /*Implement background animation*/
 div#art-bk:not(.moving) {
     background-position-y: 0%;
+    transition: none;
 }
 
 div#art-bk.moving {
-    background-position-y: 100%;
+    background-position-y: 100% !important;
 }
 #waveformimg {
     position: relative;
@@ -384,7 +385,7 @@ div#art-bk {
   width: 100%;
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: 50% 100%;
+  /* background-position: 50% 100%; */
   position: fixed;
   top: 0;
   z-index: 0;
