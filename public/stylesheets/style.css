@@ -495,3 +495,8 @@ div#total-bar {
     position: fixed;
     top: 295px;
 }
+
+
+ol.col-sizeable {
+    background-color: #e3ecee;
+}
