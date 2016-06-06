@@ -1,20 +1,5 @@
-console.log("client_id: " + client_id);
-
-
-SC.initialize({
-    client_id: client_id
-});
-
-//make this autoplay, or make it so sometimes it will
-var smOptions = {
-    useHTML5Audio: true,
-    preferFlash: false,
-    auto_play: true
-};
 
 var isPlaying = false;
-
-var lastPlayer;
 
 var playIcon = 'url(../../images/sc_icons/play.svg)';
 var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
@@ -47,12 +32,28 @@ audioPlayer.on('pause', function () {
     $('#pauseplay').css('background-image', playIcon);
 });
 */
-
+var amplitude = 0;
+var durationms = 1;
 //Tie out pause/play button to the "player" objects pause / play functions
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function () {
-    currtimems = audioPlayer.currentTime*1000.0;
 });
+
+var details = [];
+
+setInterval(function () {
+    currtimems = audioPlayer.currentTime*1000.0;
+    if (details){
+      var percent = currtimems / durationms;
+      if (details.length > 0){
+        //console.log(Math.round(percent * details.length));
+        //var random = Math.floor((Math.random() * 6) - 3);
+        amplitude = details[Math.round(percent * details.length)];
+        waveform();
+      }
+    }
+}, 15);
+
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
 $(audioPlayer).on('play', function () {
@@ -93,7 +94,7 @@ $('#player').click(function (e) {
 
 function loadSong(track) {
     var trackid = track.t.properties.scid;
-    var durationms = track.t.properties.duration;
+    durationms = track.t.properties.duration;
     var artworkurl = track.t.properties.artwork_url;
     var waveformurl = track.t.properties.waveform_url;
 
@@ -101,7 +102,7 @@ function loadSong(track) {
     audioPlayer.load();
     audioPlayer.play();
 
-    waveform(track.t._id);
+    loadWaveform(track.t._id);
 
     console.log(track);
 
@@ -136,62 +137,71 @@ function loadSong(track) {
             // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
 }
 
-function waveform(track_id){
+var normal = [];
 
-    document.getElementById('wf_box').innerHTML = "";
-
+function loadWaveform(track_id){
     d3.json("/api/track/waveform/" + track_id, function(error, data1){
       if (error) throw error;
 
-      var height = "100px";
-      var width = "100%";
+      normal = data1;
 
-      var data = [];
-      var b = 10;
-      for (var i = 0; i < data1.length/b; i++){
-        data.push((data1[(i * b)] + data1[(i * b) + 1] + data1[(i * b) + 2] + data1[(i * b) + 3] + data1[(i * b) + 4] + data1[(i * b) + 5] + data1[(i * b) + 6] + data1[(i * b) + 7] + data1[(i * b) + 8] + data1[(i * b) + 9])/b);
-      }
-
-      console.log(data);
-
-      var w = 10, h = d3.max(data);
-
-      var chart = d3.select(".charts").append("svg")
-        .attr("class", "chart")
-        .attr("width", width)
-        .attr("viewBox", "0 0 " + (w * data.length) + " " + h );;
-
-
-      var x = d3.scale.linear()
-        .domain([0, 1])
-        .range([0, w]);
-         
-      var y = d3.scale.linear()
-        .domain([0, h])
-        .rangeRound([0, h]); //rangeRound is used for antialiasing
-
-        chart.selectAll("rect")
-        .data(data)
-      .enter().append("rect")
-        .attr("x", function(d, i) { return x(i) - .5; })
-        .attr("y", function(d) { return (h - y(d) - .5); })
-        .attr("width", w * .75)
-        .attr("height", function(d) { return y(d);  } );
-
-      // var x = d3.scale.linear()
-      //   .domain([0, d3.max(data2)])
-      //   .range([0, data.length]);
-
-      // d3.select(".chart")
-      //   .selectAll("div")
-      //     .data(data)
-      //   .enter().append("div")
-      //     .style("height", function(d) { return x(d) + "px"; });
-
-
+      details = interpolateArray(data1, 12500);
     })
+}
+
+
+function waveform(){
+
+    document.getElementById('wf_box').innerHTML = "";
+
+    var data1 = normal;
+
+    var height = "100px";
+    var width = "92%";
+    var data = [];
+
+    var b = 10;
+    data.push(data1[0]);
+    for (var i = 0; i < data1.length/b; i++){
+      //data.push((data1[(i * b)] + data1[(i * b) + 1] + data1[(i * b) + 2] + data1[(i * b) + 3] + data1[(i * b) + 4] + data1[(i * b) + 5] + data1[(i * b) + 6] + data1[(i * b) + 7] + data1[(i * b) + 8] + data1[(i * b) + 9])/b);
+      data.push(data1[(i * b)]);
+    }
+
+    var w = 15, h = d3.max(data);
+
+    var chart = d3.select(".charts").append("svg")
+      .attr("class", "chart")
+      .attr("width", width)
+      .attr("style", "padding-left:8%;")
+      .attr("fill", "white")
+      .attr("viewBox", "0 0 " + (w * data.length) + " " + h );;
+
+    var x = d3.scale.linear()
+      .domain([0, 1])
+      .range([0, w]);
+       
+    var y = d3.scale.linear()
+      .domain([0, h])
+      .rangeRound([0, h]); //rangeRound is used for antialiasing
+
+    var amp = amplitude;
+    // if (amp > 25){
+    //   if (amp < 75) amp -= 5;
+    //   if (amp < 60) amp -= 5;
+    //   if (amp < 35) amp -= 5;
+    // }
+
+    chart.selectAll("rect")
+      .data(data)
+    .enter().append("rect")
+      .attr("x", function(d, i) { return x(i) - .8; })
+      .attr("y", function(d) { return (h - (y(d) * amp / h) - .5) })
+      .attr("width", w * .65)
+      .attr("height", function(d) { return (y(d) * amp / h);  } );
 
 }
+
+
 
 
 function nextSong(){
@@ -367,3 +377,23 @@ function toggleLib() {
   else $('body').removeClass('toggled');
   toggledLib = !toggledLib;
 }
+
+//http://www.hevi.info/2012/03/interpolating-and-array-to-fit-another-size/
+function linearInterpolate(before, after, atPoint) {
+  return before + (after - before) * atPoint;
+};
+
+function interpolateArray(data, fitCount) {
+  var newData = new Array();
+  var springFactor = new Number((data.length - 1) / (fitCount - 1));
+  newData[0] = data[0]; // for new allocation
+  for ( var i = 1; i < fitCount - 1; i++) {
+    var tmp = i * springFactor;
+    var before = new Number(Math.floor(tmp)).toFixed();
+    var after = new Number(Math.ceil(tmp)).toFixed();
+    var atPoint = tmp - before;
+    newData[i] = this.linearInterpolate(data[before], data[after], atPoint);
+    }
+  newData[fitCount - 1] = data[data.length - 1]; // for new allocation
+  return newData;
+};
