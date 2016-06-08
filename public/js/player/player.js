@@ -12,7 +12,7 @@ var options = {
   wf_detail: 12500,
   bar_thickness: .13,
   bar_height: 1,
-  bar_height_2: 6.20,
+  bar_height_2: 1.20,
   bar_y_offset: 11.5
 }
 
@@ -68,7 +68,7 @@ setInterval(function () {
 
 
 
-    var window_width = 1000;
+    var window_width = 10;
 setInterval(function () {
   window_width = Math.round($(window).width() / options.bar_width);
   console.log(window_width);
@@ -186,7 +186,7 @@ function waveform(){
     var width = "" + options.wf_percent + "%";
     var data = [];
 
-    var b = 25 - window_width;
+    var b = 33 - window_width;
 
     data.push(data1[0]);
     data.push(data1[4]);
@@ -198,14 +198,14 @@ function waveform(){
       data.push(Math.round(total/b) || 0);
     }
 
-    var w = options.bar_height_2, h = d3.max(data) * 2;
+    var w = options.bar_height_2 * (6 - 10 / window_width), h = d3.max(data) * 2;
 
     var chart = d3.select(".charts").append("svg")
       .attr("class", "chart")
       .attr("width", width)
       .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
       .attr("fill", "white")
-      .attr("viewBox", "0 0 " + (w * data.length) + " " + h );
+      .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h );
 
     var x = d3.scale.linear()
       .domain([0, 1])
