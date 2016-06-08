@@ -6,7 +6,14 @@ var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
 
 var options = {
   refresh_rate: 15,
-  bucket_size:13
+  bucket_size:13,
+  wf_percent: 96,
+  bar_width: 105,
+  wf_detail: 12500,
+  bar_thickness: .13,
+  bar_height: 1,
+  bar_height_2: 6.20,
+  bar_y_offset: 11.5
 }
 
 //to use the extendable player library put this in the html
@@ -63,7 +70,7 @@ setInterval(function () {
 
     var window_width = 1000;
 setInterval(function () {
-  window_width = Math.round($(window).width() / 105);
+  window_width = Math.round($(window).width() / options.bar_width);
   console.log(window_width);
 }, 1000);
 
@@ -159,7 +166,7 @@ function loadWaveform(track_id){
 
       normal = data1;
 
-      details = interpolateArray(data1, 12500);
+      details = interpolateArray(data1, options.wf_detail);
     })
 }
 
@@ -171,7 +178,7 @@ function waveform(){
     var data1 = normal;
 
     var height = "210px";
-    var width = "95%";
+    var width = "" + options.wf_percent + "%";
     var data = [];
 
     var b = 25 - window_width;
@@ -186,12 +193,12 @@ function waveform(){
       data.push(Math.round(total/b) || 0);
     }
 
-    var w = 15, h = d3.max(data) * 2;
+    var w = options.bar_height_2, h = d3.max(data) * 2;
 
     var chart = d3.select(".charts").append("svg")
       .attr("class", "chart")
       .attr("width", width)
-      .attr("style", "padding-left:5%;")
+      .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
       .attr("fill", "white")
       .attr("viewBox", "0 0 " + (w * data.length) + " " + h );
 
@@ -208,10 +215,10 @@ function waveform(){
     chart.selectAll("rect")
       .data(data)
     .enter().append("rect")
-      .attr("x", function(d, i) { return x(i) - .8; })
-      .attr("y", function(d) { return (h - (y(d * 2.5) * amp / h)) })
-      .attr("width", w * .35)
-      .attr("height", function(d) { return (y(d * 2.5) * amp / h); });
+      .attr("x", function(d, i) { return x(i); })
+      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amp / h)) })
+      .attr("width", w * options.bar_thickness)
+      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amp / h) + options.bar_y_offset, 0); });
 
 }
 
