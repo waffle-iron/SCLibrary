@@ -114,6 +114,7 @@ $('#player').click(function (e) {
 
 
 function loadSong(track) {
+  console.log(track);
     var trackid = track.t.properties.scid;
     durationms = track.t.properties.duration;
     var artworkurl = track.t.properties.artwork_url;
@@ -157,6 +158,10 @@ function loadSong(track) {
             // html5Audio = sound._player._html5Audio;
             // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
 }
+
+
+audioPlayer.addEventListener("ended", nextSong);
+
 
 var normal = [];
 
@@ -226,14 +231,17 @@ function waveform(){
 
 
 function nextSong(){
-    var track = queue.shift();
-    backqueue.enshift(track);
+    if (queue.length > 0)
+      var track = queue.shift();
+    else
+      var track = autoqueue.shift();
+    backqueue.unshift(track);
     loadSong(track);
 }
 
 function previousSong(){
     var track = backqueue.shift();
-    queue.enshift(track);
+    queue.unshift(track);
     loadSong(track);
 }
 
