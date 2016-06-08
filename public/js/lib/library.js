@@ -230,7 +230,7 @@ app.controller("LibraryCtlr", function($scope, $http){
         $http.get(url).then(function(response){
             console.log(response);
             var faster = [response.data[0], response.data[1]];
-            $scope.collection = response.data.splice(0, 200);
+            $scope.collection = response.data.splice(0, 1000);
             $scope.displaySongs();
         }, function(error){
             console.log(error);

@@ -195,7 +195,8 @@ function waveform(){
       for (var j = 0; j < b; j++){
         total +=  data1[(i * b) + j];
       }
-      data.push(Math.round(total/b) || 0);
+      if (Math.round(total/b))
+        data.push(Math.round(total/b));
     }
 
     var w = options.bar_height_2 * (6 - 10 / window_width), h = d3.max(data) * 2;
@@ -215,15 +216,15 @@ function waveform(){
       .domain([0, h])
       .rangeRound([0, h]); //rangeRound is used for antialiasing
 
-    var amp = amplitude;
+    var thickness = amplitude / 150 - .4;
 
     chart.selectAll("rect")
       .data(data)
     .enter().append("rect")
-      .attr("x", function(d, i) { return x(i); })
-      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amp / h)) })
-      .attr("width", w * options.bar_thickness)
-      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amp / h) + options.bar_y_offset, 0); });
+      .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - .25, .3)/2; })
+      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
+      .attr("width", function(d) { return Math.max((w * thickness * d / 100 - .25) + (w * thickness) / 2.5, .2)})
+      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); });
 
 }
 
