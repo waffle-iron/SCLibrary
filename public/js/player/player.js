@@ -49,6 +49,7 @@ setInterval(function () {
         //console.log(Math.round(percent * details.length));
         //var random = Math.floor((Math.random() * 6) - 3);
         amplitude = details[Math.round(percent * details.length)];
+        console.log(audioPlayer.volume);
         waveform();
       }
     }
@@ -156,8 +157,8 @@ function waveform(){
 
     var data1 = normal;
 
-    var height = "100px";
-    var width = "92%";
+    var height = "110px";
+    var width = "95%";
     var data = [];
 
     var b = 10;
@@ -172,9 +173,9 @@ function waveform(){
     var chart = d3.select(".charts").append("svg")
       .attr("class", "chart")
       .attr("width", width)
-      .attr("style", "padding-left:8%;")
+      .attr("style", "padding-left:5%;")
       .attr("fill", "white")
-      .attr("viewBox", "0 0 " + (w * data.length) + " " + h );;
+      .attr("viewBox", "0 0 " + (w * data.length) + " " + h );
 
     var x = d3.scale.linear()
       .domain([0, 1])
