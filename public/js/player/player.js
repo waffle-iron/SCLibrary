@@ -51,6 +51,7 @@ audioPlayer.on('pause', function () {
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function() {
     currtimems = audioPlayer.currentTime * 1000.0;
+    if (currtimems >= duration - 40) nextSong();
 });
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -62,6 +63,7 @@ $(audioPlayer).on('pause', function() {
 });
 
 $('#artworkimg').click(function(e) {
+  // e.preventDefault();
     if (isPlaying && !audioPlayer.paused) {
         audioPlayer.pause();
         isPlaying = false;
@@ -76,19 +78,23 @@ $('#artworkimg').click(function(e) {
     }
 });
 
-$('#player').click(function(e) {
+$('#back-div').click(function(e) {
     //how far you clicked into the div's width by percent. 1.0 is to cast to double
     var relativePercent = e.pageX / ($(window).width() * 1.0);
     console.log(relativePercent + '%');
     var seekPosition = Math.round(duration * relativePercent);
+    bgScroll(true, seekPosition/1000, duration/1000);
     console.log("seekpos: " + seekPosition);
     audioPlayer.currentTime = seekPosition / 1000.0;
+    audioPlayer.play();
+    isPlaying = true;
 });
 
-
+// made this global to help with next load
+var durationms;
 function loadSong(track) {
     var trackid = track.t.properties.scid;
-    var durationms = track.t.properties.duration;
+    durationms = track.t.properties.duration;
     var artworkurl = track.t.properties.artwork_url;
     var waveformurl = track.t.properties.waveform_url;
 
@@ -199,8 +205,9 @@ function bgScroll(play, pos, dur) {
     // set new position as percentage
     if (dur) {
       bkDiv.css('background-position-y', perShift + '%');
-      console.log('dur!');
       lastShift = shiftOff;
+    } else {
+      bkDiv.css('background-position-y', backgroundPer + '%');
     }
 
     if (play) {
