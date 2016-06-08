@@ -4,6 +4,11 @@ var isPlaying = false;
 var playIcon = 'url(../../images/sc_icons/play.svg)';
 var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
 
+var options = {
+  refresh_rate: 15,
+  bucket_size:13
+}
+
 //to use the extendable player library put this in the html
 //	<a href="http://soundcloud.com/matas/hobnotropic" class="sc-player">My new dub track</a>
 //but has MIT license lel
@@ -53,7 +58,7 @@ setInterval(function () {
         waveform();
       }
     }
-}, 15);
+}, options.refresh_rate);
 
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -157,18 +162,19 @@ function waveform(){
 
     var data1 = normal;
 
-    var height = "110px";
+    var height = "210px";
     var width = "95%";
     var data = [];
 
-    var b = 10;
+    var b = options.bucket_size;
     data.push(data1[0]);
-    for (var i = 0; i < data1.length/b; i++){
+    data.push(data1[1]);
+    for (var i = 1; i < data1.length/b; i++){
       //data.push((data1[(i * b)] + data1[(i * b) + 1] + data1[(i * b) + 2] + data1[(i * b) + 3] + data1[(i * b) + 4] + data1[(i * b) + 5] + data1[(i * b) + 6] + data1[(i * b) + 7] + data1[(i * b) + 8] + data1[(i * b) + 9])/b);
       data.push(data1[(i * b)]);
     }
 
-    var w = 15, h = d3.max(data);
+    var w = 15, h = d3.max(data) * 2;
 
     var chart = d3.select(".charts").append("svg")
       .attr("class", "chart")
@@ -196,9 +202,9 @@ function waveform(){
       .data(data)
     .enter().append("rect")
       .attr("x", function(d, i) { return x(i) - .8; })
-      .attr("y", function(d) { return (h - (y(d) * amp / h) - .5) })
-      .attr("width", w * .65)
-      .attr("height", function(d) { return (y(d) * amp / h);  } );
+      .attr("y", function(d) { return (h - (y(d * 2.5) * amp / h)) })
+      .attr("width", w * .35)
+      .attr("height", function(d) { return (y(d * 2.5) * amp / h); });
 
 }
 
