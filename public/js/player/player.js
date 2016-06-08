@@ -54,11 +54,19 @@ setInterval(function () {
         //console.log(Math.round(percent * details.length));
         //var random = Math.floor((Math.random() * 6) - 3);
         amplitude = details[Math.round(percent * details.length)];
-        console.log(audioPlayer.volume);
         waveform();
       }
     }
 }, options.refresh_rate);
+
+
+
+    var window_width = 1000;
+setInterval(function () {
+  window_width = Math.round($(window).width() / 105);
+  console.log(window_width);
+}, 1000);
+
 
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
@@ -166,12 +174,16 @@ function waveform(){
     var width = "95%";
     var data = [];
 
-    var b = options.bucket_size;
+    var b = 25 - window_width;
+
     data.push(data1[0]);
-    data.push(data1[1]);
+    data.push(data1[4]);
     for (var i = 1; i < data1.length/b; i++){
-      //data.push((data1[(i * b)] + data1[(i * b) + 1] + data1[(i * b) + 2] + data1[(i * b) + 3] + data1[(i * b) + 4] + data1[(i * b) + 5] + data1[(i * b) + 6] + data1[(i * b) + 7] + data1[(i * b) + 8] + data1[(i * b) + 9])/b);
-      data.push(data1[(i * b)]);
+      var total = 0;
+      for (var j = 0; j < b; j++){
+        total +=  data1[(i * b) + j];
+      }
+      data.push(Math.round(total/b) || 0);
     }
 
     var w = 15, h = d3.max(data) * 2;
@@ -192,11 +204,6 @@ function waveform(){
       .rangeRound([0, h]); //rangeRound is used for antialiasing
 
     var amp = amplitude;
-    // if (amp > 25){
-    //   if (amp < 75) amp -= 5;
-    //   if (amp < 60) amp -= 5;
-    //   if (amp < 35) amp -= 5;
-    // }
 
     chart.selectAll("rect")
       .data(data)
