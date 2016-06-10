@@ -135,6 +135,9 @@ input.search {
     font-family: 'Oxygen', sans-serif;
     font-weight: 300;
 }
+.toggled ul.header > li > ol > li.ui-resizable:last-of-type {
+  transform: translate(calc(100vw - 300px - 100%), 0);
+}
 ul.header > li > ol > li.ui-resizable:last-of-type {
   position: absolute;
   top: 0;
@@ -279,13 +282,12 @@ div#art-bk.moving {
     transition: all .5s ease;
 }
 #player {
-    display: table;
-    transition: max-height 1s ease;
-    position: relative;
+    :
+    position: relative
     top: 0;
     height: 300px;
-    width: 100%;
     background-color: #232323;
+    width: 100%;
 }
 #player #playpausewrapper {
     display: none;
@@ -396,18 +398,22 @@ div#art-bk {
 body .left-side-wrapper,
 body .library-wrapper,
 body #player {
-  transition: all 0.5s ease;
+  transition: all 1s cubic-bezier(0.39, 0.58, 0.57, 1);
 }
 
 body.toggled .left-side-wrapper {
-    transform: translate3d(0, 0, 0);
+    max-width: 300px;
 }
 body.toggled .library-wrapper,
 body.toggled #player {
-    transform: translate3d(300px, 0, 0);
+    width: calc(100vw - 300px) !important;
+    overflow: hidden;
+}
+body.toggled #player {
+  transform: translate3d(300px, 0, 0);
 }
 body div.left-side-wrapper {
-    transform: translate3d(-300px, 0, 0);
+    max-width: 0px;
 }
 body div.library-wrapper,
 body #player {
@@ -448,7 +454,7 @@ a#settings:hover {
     width: 40px;
     background-image: url(../../images/sc_icons/gear.svg);
     opacity: 0.3;
-    transition: opacity .5s ease;
+    transition: opacity .5s cubic-bezier(0.69, 0.12, 0.58, 1);
 }
 
 div#top-wrapper {
@@ -485,6 +491,11 @@ span.track-channel {
     display: inline-block;
 }
 
+.toggled span.track-title,
+.toggled span.track-channel {
+    width: calc(95% - 400px);
+}
+
 span.track-channel {
     transform: translate(25px, 30px);
 }
@@ -519,4 +530,14 @@ div.charts {
 
 ol.col-sizeable {
     background-color: #e3ecee;
+}
+
+body.toggled .left-side-wrapper * {
+    opacity: 1.0;
+    transition: opacity .5s ease 1s;
+}
+
+body:not(.toggled) .left-side-wrapper * {
+    opacity: 0.0;
+    transition: opacity .5s ease;
 }
