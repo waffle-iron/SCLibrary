@@ -275,7 +275,6 @@ div#art-bk.moving {
 }
 #player.playing * {
     max-height: none;
-    opacity: 1.0;
     transition: all .5s ease;
 }
 #player {
@@ -493,4 +492,11 @@ div#total-bar {
     width: 0%;
     position: fixed;
     top: 295px;
+}
+
+div.charts {
+    position:  absolute;
+    bottom: -5px;
+    width:  100%;
+    opacity: 0.83;
 }

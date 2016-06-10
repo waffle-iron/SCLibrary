@@ -1,22 +1,19 @@
-console.log("client_id: " + client_id);
-
-SC.initialize({
-    client_id: client_id
-});
-
-//make this autoplay, or make it so sometimes it will
-var smOptions = {
-    useHTML5Audio: true,
-    preferFlash: false,
-    auto_play: true
-};
-
 var isPlaying = false;
-
-var lastPlayer;
 
 var playIcon = 'url(../../images/sc_icons/play.svg)';
 var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
+
+var options = {
+  refresh_rate: 15,
+  bucket_size:13,
+  wf_percent: 96,
+  bar_width: 105,
+  wf_detail: 12500,
+  bar_thickness: .05,
+  bar_height: .7,
+  bar_height_2: 1.20,
+  bar_y_offset: 11.5
+}
 
 //to use the extendable player library put this in the html
 //	<a href="http://soundcloud.com/matas/hobnotropic" class="sc-player">My new dub track</a>
@@ -46,12 +43,37 @@ audioPlayer.on('pause', function () {
     $('#pauseplay').css('background-image', playIcon);
 });
 */
-
+var amplitude = 0;
+var durationms = 1;
 //Tie out pause/play button to the "player" objects pause / play functions
 var currtimems = 0;
 $(audioPlayer).on('timeupdate', function () {
-    currtimems = audioPlayer.currentTime*1000.0;
 });
+
+var details = [];
+
+setInterval(function () {
+    currtimems = audioPlayer.currentTime*1000.0;
+    if (details){
+      var percent = currtimems / durationms;
+      if (details.length > 0){
+        //console.log(Math.round(percent * details.length));
+        //var random = Math.floor((Math.random() * 6) - 3);
+        amplitude = details[Math.round(percent * details.length)];
+        waveform();
+      }
+    }
+}, options.refresh_rate);
+
+
+
+    var window_width = 10;
+setInterval(function () {
+  window_width = Math.round($(window).width() / options.bar_width);
+  console.log(window_width);
+}, 1000);
+
+
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
 $(audioPlayer).on('play', function () {
@@ -91,15 +113,16 @@ $('#player').click(function (e) {
 
 
 function loadSong(track) {
+  console.log(track);
     var trackid = track.t.properties.scid;
-    var durationms = track.t.properties.duration;
+    durationms = track.t.properties.duration;
     var artworkurl = track.t.properties.artwork_url;
     var waveformurl = track.t.properties.waveform_url;
 
     audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0';
     audioPlayer.load();
     audioPlayer.play();
-
+    loadWaveform(track.t._id);
     console.log(track);
 
     $(".track-title").text(track.t.properties.name);
@@ -133,16 +156,88 @@ function loadSong(track) {
             // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
 }
 
+audioPlayer.addEventListener("ended", nextSong);
+
+
+var normal = [];
+
+function loadWaveform(track_id){
+    d3.json("/api/track/waveform/" + track_id, function(error, data1){
+      if (error) throw error;
+
+      normal = data1;
+
+      details = interpolateArray(data1, options.wf_detail);
+    })
+}
+
+
+function waveform(){
+
+    console.log(document.getElementById('wf_box'));
+    document.getElementById('wf_box').innerHTML = "";
+
+    var data1 = normal;
+
+    var height = "210px";
+    var width = "" + options.wf_percent + "%";
+    var data = [];
+
+    var b = 33 - window_width;
+
+    data.push(data1[0]);
+    data.push(data1[4]);
+    for (var i = 1; i < data1.length/b; i++){
+      var total = 0;
+      for (var j = 0; j < b; j++){
+        total +=  data1[(i * b) + j];
+      }
+      if (Math.round(total/b))
+        data.push(Math.round(total/b));
+    }
+
+    var w = options.bar_height_2 * (6 - 10 / window_width), h = d3.max(data) * 2;
+
+    var chart = d3.select(".charts").append("svg")
+      .attr("class", "chart")
+      .attr("width", width)
+      .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
+      .attr("fill", "white")
+      .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h );
+      //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
+
+    var x = d3.scale.linear()
+      .domain([0, 1])
+      .range([0, w]);
+       
+    var y = d3.scale.linear()
+      .domain([0, h])
+      .rangeRound([0, h]); //rangeRound is used for antialiasing
+
+    var thickness = amplitude / 150 - .4;
+
+    chart.selectAll("rect")
+      .data(data)
+    .enter().append("rect")
+      .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - .25, .3)/2; })
+      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
+      .attr("width", function(d) { return Math.max((w * thickness) + (w * thickness) / 2.5, .2)})
+      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); });
+
+}
 
 function nextSong(){
-    var track = queue.shift();
-    backqueue.enshift(track);
+    if (queue.length > 0)
+      var track = queue.shift();
+    else
+      var track = autoqueue.shift();
+    backqueue.unshift(track);
     loadSong(track);
 }
 
 function previousSong(){
     var track = backqueue.shift();
-    queue.enshift(track);
+    queue.unshift(track);
     loadSong(track);
 }
 
@@ -307,3 +402,23 @@ function toggleLib() {
   else $('body').removeClass('toggled');
   toggledLib = !toggledLib;
 }
+
+//http://www.hevi.info/2012/03/interpolating-and-array-to-fit-another-size/
+function linearInterpolate(before, after, atPoint) {
+  return before + (after - before) * atPoint;
+};
+
+function interpolateArray(data, fitCount) {
+  var newData = new Array();
+  var springFactor = new Number((data.length - 1) / (fitCount - 1));
+  newData[0] = data[0]; // for new allocation
+  for ( var i = 1; i < fitCount - 1; i++) {
+    var tmp = i * springFactor;
+    var before = new Number(Math.floor(tmp)).toFixed();
+    var after = new Number(Math.ceil(tmp)).toFixed();
+    var atPoint = tmp - before;
+    newData[i] = this.linearInterpolate(data[before], data[after], atPoint);
+    }
+  newData[fitCount - 1] = data[data.length - 1]; // for new allocation
+  return newData;
+};
