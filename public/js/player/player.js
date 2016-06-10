@@ -10,8 +10,8 @@ var options = {
   wf_percent: 96,
   bar_width: 105,
   wf_detail: 12500,
-  bar_thickness: .13,
-  bar_height: 1,
+  bar_thickness: .05,
+  bar_height: .7,
   bar_height_2: 1.20,
   bar_y_offset: 11.5
 }
@@ -207,6 +207,7 @@ function waveform(){
       .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
       .attr("fill", "white")
       .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h );
+      //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
 
     var x = d3.scale.linear()
       .domain([0, 1])
@@ -223,7 +224,7 @@ function waveform(){
     .enter().append("rect")
       .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - .25, .3)/2; })
       .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
-      .attr("width", function(d) { return Math.max((w * thickness * d / 100 - .25) + (w * thickness) / 2.5, .2)})
+      .attr("width", function(d) { return Math.max((w * thickness) + (w * thickness) / 2.5, .2)})
       .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); });
 
 }
