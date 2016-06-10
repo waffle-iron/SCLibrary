@@ -229,7 +229,7 @@ app.controller("LibraryCtlr", function($scope, $http){
         var url = 'http://localhost:3000/api/users/' + uid + '/collection/';
         $http.get(url).then(function(response){
             console.log(response);
-            $scope.collection = response.data;
+            $scope.collection = response.data.splice(0, 1000);
             $scope.displaySongs();
         }, function(error){
             console.log(error);
