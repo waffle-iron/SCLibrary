@@ -254,10 +254,11 @@ ul.header ol > li {
 /*Implement background animation*/
 div#art-bk:not(.moving) {
     background-position-y: 0%;
+    transition: background-position .5s ease;
 }
 
 div#art-bk.moving {
-    background-position-y: 100%;
+    background-position-y: 100% !important;
 }
 #waveformimg {
     position: relative;
@@ -317,7 +318,7 @@ div#back-div {
     width: 100px;
     position: relative;
     z-index: 2;
-    box-shadow: -3px 3px 12px;
+    box-shadow: -3px 3px 12px rgba(23,23,23,0.8);
 }
 #artworkimg #pauseplay {
     opacity: 0.0;
@@ -383,7 +384,7 @@ div#art-bk {
   width: 100%;
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: 50% 100%;
+  /* background-position: 50% 100%; */
   position: fixed;
   top: 0;
   z-index: 0;
@@ -421,17 +422,33 @@ body #player {
     margin-top: 30px;
 }
 
-a#toggle {
+#player.playing #top-wrapper a#toggle {
     height: 40px;
     width: 40px;
     background-image: url(../../images/sc_icons/menu.svg);
-    opacity: 0.5;
+    opacity: 0.3;
+    transition: opacity .5s ease;
 }
-a#settings {
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }   to {
+    transform: rotate(180deg);
+  }
+}
+a#toggle:hover,
+a#settings:hover {
+  opacity: 0.8 !important;
+}
+a#settings:hover {
+  animation: spin 1s ease both;
+}
+#player.playing #top-wrapper a#settings {
     height: 40px;
     width: 40px;
     background-image: url(../../images/sc_icons/gear.svg);
-    opacity: 0.45;
+    opacity: 0.3;
+    transition: opacity .5s ease;
 }
 
 div#top-wrapper {
@@ -441,7 +458,6 @@ div#top-wrapper {
     position: relative;
     padding: 10px;
     z-index: 2;
-    opacity: 0.6 !important;
 }
 
 a#settings {}
@@ -499,4 +515,8 @@ div.charts {
     bottom: -5px;
     width:  100%;
     opacity: 0.83;
+}
+
+ol.col-sizeable {
+    background-color: #e3ecee;
 }

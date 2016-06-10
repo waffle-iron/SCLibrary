@@ -1,3 +1,4 @@
+
 var isPlaying = false;
 
 var playIcon = 'url(../../images/sc_icons/play.svg)';
@@ -29,7 +30,7 @@ var options = {
 var audioPlayer = new Audio();
 //Just did this cause the other guy did it, seems like its kew
 audioPlayer.crossOrigin = "anonymous"
-//audioPlayer.play();
+    //audioPlayer.play();
 
 //Set up our pause/play button to use the play button Icon initially
 $('#pauseplay').css('background-image', playIcon);
@@ -46,8 +47,10 @@ audioPlayer.on('pause', function () {
 var amplitude = 0;
 var durationms = 1;
 //Tie out pause/play button to the "player" objects pause / play functions
+
 var currtimems = 0;
-$(audioPlayer).on('timeupdate', function () {
+$(audioPlayer).on('timeupdate', function() {
+    currtimems = audioPlayer.currentTime * 1000.0;
 });
 
 var details = [];
@@ -67,7 +70,7 @@ setInterval(function () {
 
 
 
-    var window_width = 10;
+var window_width = 10;
 setInterval(function () {
   window_width = Math.round($(window).width() / options.bar_width);
   console.log(window_width);
@@ -76,42 +79,43 @@ setInterval(function () {
 
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
-$(audioPlayer).on('play', function () {
+$(audioPlayer).on('play', function() {
     $('#pauseplay').css('background-image', pauseIcon);
 });
-$(audioPlayer).on('pause', function () {
+$(audioPlayer).on('pause', function() {
     $('#pauseplay').css('background-image', playIcon);
 });
 
-$('#artworkimg').click(function (e) {
+$('#artworkimg').click(function(e) {
+  // e.preventDefault();
     if (isPlaying && !audioPlayer.paused) {
         audioPlayer.pause();
         isPlaying = false;
         $('#pauseplay').css('background-image', playIcon);
+        bgScroll(false);
     } else {
         // TODO stop reseting pos on play somehow
         $('#pauseplay').css('background-image', pauseIcon);
-
-        var pos = $('#back-div').width();
-        var width = $('#waveformimg').width();
-        var relativePercent = pos / (width * 1.0);
-        var seekPosition = Math.round(duration * relativePercent);
-
+        bgScroll(true);
         audioPlayer.play();
         isPlaying = true;
     }
 });
 
-$('#player').click(function (e) {
+$('#back-div').click(function(e) {
     //how far you clicked into the div's width by percent. 1.0 is to cast to double
     var relativePercent = e.pageX / ($(window).width() * 1.0);
     console.log(relativePercent + '%');
     var seekPosition = Math.round(duration * relativePercent);
+    bgScroll(true, seekPosition/1000, duration/1000);
     console.log("seekpos: " + seekPosition);
-    audioPlayer.currentTime = seekPosition/1000.0;
+    audioPlayer.currentTime = seekPosition / 1000.0;
+    audioPlayer.play();
+    isPlaying = true;
 });
 
-
+// made this global to help with next load
+var durationms;
 function loadSong(track) {
   console.log(track);
     var trackid = track.t.properties.scid;
@@ -123,37 +127,33 @@ function loadSong(track) {
     audioPlayer.load();
     audioPlayer.play();
     loadWaveform(track.t._id);
-    console.log(track);
 
     $(".track-title").text(track.t.properties.name);
     $(".track-channel").text(track.c.properties.name);
 
     duration = durationms;
     console.log('http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0');
-            //Reset isPlaying boolean, change the
-            isPlaying = true;
-            $('#pauseplay').css('background-image', pauseIcon);
+    //Reset isPlaying boolean, change the
+    isPlaying = true;
+    $('#pauseplay').css('background-image', pauseIcon);
 
-            //Load artwork image to DOM
-            $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
-            $('#art-bk').css('background-image', "url(" + artworkurl + ")");
+    //Load artwork image to DOM
+    $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
+    $('#art-bk').css('background-image', "url(" + artworkurl + ")");
 
-            //expand the player
-            $('#player').addClass('playing');
+    //expand the player
+    $('#player').addClass('playing');
 
-            //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
-            //TODO (sames) grab the waveform url from backend like above
+    //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
+    //TODO (sames) grab the waveform url from backend like above
 
-            // Moving art background animation
-            var seconds = Math.round((duration/1000)* 1.0) + 's';
-            jQuery('#art-bk').removeClass('moving');
-            jQuery('#art-bk').css('transition', 'background-position ' + seconds
-                    + ' linear');
-            jQuery('#art-bk').addClass('moving');
-            // player.on('time', function(){console.log("pos: " : this.position);});
-            // soundPlayer = sound;
-            // html5Audio = sound._player._html5Audio;
-            // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
+    var seconds = Math.round((duration / 1000) * 1.0)
+    bgScroll(true, 0, seconds); // start bg scrolling
+
+    // player.on('time', function(){console.log("pos: " : this.position);});
+    // soundPlayer = sound;
+    // html5Audio = sound._player._html5Audio;
+    // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
 }
 
 audioPlayer.addEventListener("ended", nextSong);
@@ -174,7 +174,6 @@ function loadWaveform(track_id){
 
 function waveform(){
 
-    console.log(document.getElementById('wf_box'));
     document.getElementById('wf_box').innerHTML = "";
 
     var data1 = normal;
@@ -226,16 +225,54 @@ function waveform(){
 
 }
 
-function nextSong(){
-    if (queue.length > 0)
-      var track = queue.shift();
-    else
-      var track = autoqueue.shift();
-    backqueue.unshift(track);
+var lastShift = 0.0;
+function bgScroll(play, pos, dur) {
+    element = document.getElementById("art-bk");
+    var bkDiv = jQuery('#art-bk'),
+        shiftOff = (dur - pos), // distance from the end in seconds
+        perShift = Math.round(pos / dur * 100.0), // percentage
+        computedStyle = window.getComputedStyle(element),
+        backgroundPer = computedStyle.getPropertyValue('background-position-y');
+
+    // bkDiv.removeClass('moving'); // stop the moving
+    element.classList.remove("moving");
+    console.log(dur + ' ' + pos + ' ' + play + ' ' + perShift + '+');
+
+    // set new position as percentage
+    if (dur) {
+      bkDiv.css('background-position-y', perShift + '%');
+      lastShift = shiftOff;
+    } else {
+      bkDiv.css('background-position-y', backgroundPer + '%');
+    }
+
+    if (play) {
+        // set/reset transition to time remaining
+        bkDiv.css('transition', 'none');
+        if (dur) {
+          window.setTimeout( function() {
+            element.classList.add("moving");
+            bkDiv.css('transition', 'background-position ' +
+                shiftOff + 's linear');
+          }, 40);
+        } else {
+          element.classList.add("moving");
+          bkDiv.css('transition', 'background-position ' +
+              lastShift + 's linear');
+        }
+
+    } else {
+        bkDiv.css('background-position-y', backgroundPer);
+    }
+}
+
+function nextSong() {
+    var track = queue.shift();
+    backqueue.enshift(track);
     loadSong(track);
 }
 
-function previousSong(){
+function previousSong() {
     var track = backqueue.shift();
     queue.unshift(track);
     loadSong(track);
@@ -246,51 +283,51 @@ function previousSong(){
 var left = false;
 
 function snapToPercents(parentEl) {
-  var parWid = parentEl.width();
-  var colCt = parentEl.children().length;
-  var catchAdd = 0;
-  var j = 0;
-  parentEl.children('li').each(function () {
-    // iterate through li + siblings
-    var eachC = "." + $(this).find('a').attr('also-resize');
-    if (j == colCt - 1) {
-      // force clearing
-      var catchAll = 100.0 - catchAdd;
-      //console.log(catchAdd + " + " + catchAll);
-      $(this).css('width', catchAll.toString() + "%");
-    } else {
-      var perW = ($(this).width()/parWid) * 100;
-      $(this).css('width', perW.toString() + "%");
-      //console.log(j + " - " + perW.toString() + "%");
-      catchAdd += perW;
-    }
-    // resize col's below
-    $(eachC).each(function () {
-      if (j == colCt - 1) {
-        $(this).css('width', catchAll.toString() + "%");
-      } else {
-        $(this).css('width', perW.toString() + "%");
-      }
+    var parWid = parentEl.width();
+    var colCt = parentEl.children().length;
+    var catchAdd = 0;
+    var j = 0;
+    parentEl.children('li').each(function() {
+        // iterate through li + siblings
+        var eachC = "." + $(this).find('a').attr('also-resize');
+        if (j == colCt - 1) {
+            // force clearing
+            var catchAll = 100.0 - catchAdd;
+            //console.log(catchAdd + " + " + catchAll);
+            $(this).css('width', catchAll.toString() + "%");
+        } else {
+            var perW = ($(this).width() / parWid) * 100;
+            $(this).css('width', perW.toString() + "%");
+            //console.log(j + " - " + perW.toString() + "%");
+            catchAdd += perW;
+        }
+        // resize col's below
+        $(eachC).each(function() {
+            if (j == colCt - 1) {
+                $(this).css('width', catchAll.toString() + "%");
+            } else {
+                $(this).css('width', perW.toString() + "%");
+            }
+        });
+        j++;
     });
-    j++;
-  });
 }
 
 function attachColHandles() {
-    $('.col-sizeable').each(function () {
+    $('.col-sizeable').each(function() {
         // multiple loops and class vs id
-        $(this).children('li').each(function () {
+        $(this).children('li').each(function() {
             // elements with class matching col header
             // are resized in stop fn
             var thisClass = "." + $(this).find('a').text().toLowerCase();
 
             // keep handles off first/last cols
             if ($(this).is('li:last-of-type')) {
-              var handles = 'sw';
+                var handles = 'sw';
             } else if ($(this).is('li:first-of-type')) {
-              var handles = 'se';
+                var handles = 'se';
             } else {
-              var handles = 'se, sw';
+                var handles = 'se, sw';
             }
 
             // make each col-header resizable
@@ -300,7 +337,7 @@ function attachColHandles() {
                 minHeight: 30,
                 maxHeight: 30,
 
-                resize: function (event, ui) {
+                resize: function(event, ui) {
                     // hack to determine resize dir
                     var srcEl = event.originalEvent.originalEvent.path[0].className;
                     var dragD = srcEl.replace('ui-resizable-handle ui-resizable-', '');
@@ -320,12 +357,12 @@ function attachColHandles() {
                     if (!left) {
                         var colCount = $(this).nextAll('li').length;
                         var cumW = 0;
-                        $(this).prevAll().each(function(){
-                          // sum col widths to the left
-                          cumW += $(this).width();
+                        $(this).prevAll().each(function() {
+                            // sum col widths to the left
+                            cumW += $(this).width();
                         });
                         cumW += $(this).width();
-                        $(this).nextAll().each(function () {
+                        $(this).nextAll().each(function() {
                             // set decreased width to other headers
                             $(this).width(((headerW - cumW) / colCount) - 5);
                         });
@@ -333,23 +370,23 @@ function attachColHandles() {
                         // left-side drag
                         var colCount = $(this).prevAll().length;
                         var cumW = 0;
-                        $(this).nextAll().each(function(){
-                          // sum col widths to the right
-                          // round to assist clearing
-                          cumW += $(this).width();
+                        $(this).nextAll().each(function() {
+                            // sum col widths to the right
+                            // round to assist clearing
+                            cumW += $(this).width();
                         });
                         cumW += $(this).width();
 
                         var k = 0;
                         var runW = 0;
-                        $(this).prevAll().each(function () {
+                        $(this).prevAll().each(function() {
                             // set decreased width to other headers
                             var nowW = (headerW - cumW) / colCount;
                             $(this).width(nowW);
                             runW += nowW;
                             if (k == 1) {
-                              // absorb error for clearing
-                              $(this).width(headerW - (cumW + runW));
+                                // absorb error for clearing
+                                $(this).width(headerW - (cumW + runW));
                             }
                             k++;
                         });
@@ -358,9 +395,9 @@ function attachColHandles() {
             });
 
             // bind a function to update lower widths
-            $(this).on('resizestop', function () {
-              left = false; // reset global hack for dir
-              snapToPercents($(this).parent());
+            $(this).on('resizestop', function() {
+                left = false; // reset global hack for dir
+                snapToPercents($(this).parent());
             });
         });
 
@@ -368,39 +405,42 @@ function attachColHandles() {
 }
 
 function nextListener() {
-  // autoplay!
-  // hack to detect when song is over:
-  // listen for the width of the progress bar
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutationRecord) {
-      //console.log(mutationRecord.target.style.width);
-      var completionPer = mutationRecord.target.style.width;
+    // autoplay!
+    // hack to detect when song is over:
+    // listen for the width of the progress bar
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutationRecord) {
 
-      // move the image background, since we're already listening
-        if( completionPer == "100%") {
+            var completionPer = mutationRecord.target.style.width;
 
-          if (queue.length == 0){
-            var track = autoqueue.shift();
-            loadSong(track);
-          }
-          else {
-            var track = autoqueue.shift();
-            loadSong(track);
-          }
+            // move the image background, since we're already listening
+            if (completionPer == "100%") {
 
-        }
+                if (queue.length == 0) {
+                    var track = autoqueue.shift();
+                    loadSong(track);
+                } else {
+                    var track = autoqueue.shift();
+                    loadSong(track);
+                }
+
+            }
+        });
     });
-  });
 
-  var target = document.getElementById('back-div');
-  observer.observe(target, { attributes : true, attributeFilter : ['style'] });
+    var target = document.getElementById('back-div');
+    observer.observe(target, {
+        attributes: true,
+        attributeFilter: ['style']
+    });
 }
 
 var toggledLib = false;
+
 function toggleLib() {
-  if (!toggledLib) $('body').addClass('toggled');
-  else $('body').removeClass('toggled');
-  toggledLib = !toggledLib;
+    if (!toggledLib) $('body').addClass('toggled');
+    else $('body').removeClass('toggled');
+    toggledLib = !toggledLib;
 }
 
 //http://www.hevi.info/2012/03/interpolating-and-array-to-fit-another-size/
