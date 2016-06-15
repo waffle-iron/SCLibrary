@@ -2,23 +2,36 @@
 
 <div id="player" position="relative">
   <!-- Top wrapper area, contains toggle/setting buttons, genres -->
+
   <div id="top-wrapper">
     <a class="pull-left" id="toggle" href="javascript:toggleLib();"></a>
     <ol class="genre-wrapper">
       <li class="genre-btn"></li>
     </ol>
-    <a class="pull-right" id="settings" href="#"></a>
+    <a class="pull-right" id="settings" href="javascript:toggleSet();"></a>
+    <div id="settings-popup">
+      <div id="top-fake"></div>
+      <span>User Settings</span>
+      <ul>
+        <li>Autoplay</li>
+        <li>Shuffle</li>
+        <li class="text-center"><a class="btn">Update Library</a></li>
+      </ul>
+      <a>More settings...</a>
+    </div>
   </div>
 
   <!-- Main wrapper area, contains artwork, title, channel, and prev/next buttons -->
   <div class="player-main-wrapper">
     <div class="container">
+      <a class="pull-left" id="prev-song" href="javascript:nextSong();"></a>
       <div class="col-sm-12">
         <!-- Artwork gets loaded in as a background image here -->
       	<div id="artworkimg"></div>
         <span class="track-title">&nbsp;</span>
         <span class="track-channel">&nbsp;</span>
       </div>
+      <a class="pull-right" id="next-song" href="javascript:previousSong();"></a>
     </div>
 	</div>
   <!-- used to darken background art -->
