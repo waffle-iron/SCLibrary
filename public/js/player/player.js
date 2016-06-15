@@ -208,7 +208,7 @@ function waveform(){
     var x = d3.scale.linear()
       .domain([0, 1])
       .range([0, w]);
-       
+
     var y = d3.scale.linear()
       .domain([0, h])
       .rangeRound([0, h]); //rangeRound is used for antialiasing
@@ -441,6 +441,12 @@ function toggleLib() {
     if (!toggledLib) $('body').addClass('toggled');
     else $('body').removeClass('toggled');
     toggledLib = !toggledLib;
+}
+var toggledSet = false;
+function toggleSet() {
+  if (!toggledSet) $('#settings').addClass('toggled');
+  else $('#settings').removeClass('toggled');
+  toggledSet = !toggledSet;
 }
 
 //http://www.hevi.info/2012/03/interpolating-and-array-to-fit-another-size/
