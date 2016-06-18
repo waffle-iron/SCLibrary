@@ -8,7 +8,7 @@ var options = {
   refresh_rate: 15,
   bucket_size:13,
   wf_percent: 96,
-  bar_width: 105,
+  bar_width: 75,
   wf_detail: 12500,
   bar_thickness: .05,
   bar_height: .7,
@@ -54,11 +54,12 @@ $(audioPlayer).on('timeupdate', function() {
 });
 
 var details = [];
+var percent = 0;
 
 setInterval(function () {
     currtimems = audioPlayer.currentTime*1000.0;
     if (details){
-      var percent = currtimems / durationms;
+      percent = currtimems / durationms;
       if (details.length > 0){
         //console.log(Math.round(percent * details.length));
         //var random = Math.floor((Math.random() * 6) - 3);
@@ -68,15 +69,10 @@ setInterval(function () {
     }
 }, options.refresh_rate);
 
-
-
 var window_width = 10;
 setInterval(function () {
   window_width = Math.round($(window).width() / options.bar_width);
-  console.log(window_width);
 }, 1000);
-
-
 
 //Tie our pauseplay button to the "play" and "pause" events from the player
 $(audioPlayer).on('play', function() {
@@ -201,7 +197,6 @@ function waveform(){
       .attr("class", "chart")
       .attr("width", width)
       .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
-      .attr("fill", "white")
       .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h );
       //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
 
@@ -219,9 +214,10 @@ function waveform(){
       .data(data)
     .enter().append("rect")
       .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - .25, .3)/2; })
-      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
-      .attr("width", function(d) { return Math.max((w * thickness) + (w * thickness) / 2.5, .2)})
-      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); });
+       .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
+       .attr("width", function(d) { return Math.max((w * thickness * d / 100 - .25) + (w * thickness) / 2.5, .2)})
+       .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); })
+      .attr("fill", function(d, i) { if (i / data.length < percent) return "white"; else return "black"; });
 
 }
 
@@ -267,8 +263,12 @@ function bgScroll(play, pos, dur) {
 }
 
 function nextSong() {
-    var track = queue.shift();
-    backqueue.enshift(track);
+    if (queue.length > 0)
+      var track = queue.shift();
+    else 
+      var track = autoqueue.shift();
+
+    backqueue.unshift(track);
     loadSong(track);
 }
 
