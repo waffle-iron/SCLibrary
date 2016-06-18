@@ -39,24 +39,15 @@ aside {
 a.btn:hover,
 a.btn:focus {
     color: #fff;
-    border-color: #fff;
-    margin-top: -2px;
-    margin-left: -1px;
     box-shadow: 1px 2px 3px rgba(23, 23, 23, 0.4);
 }
 a.btn:active {}
 a.btn {
     transition: all .2s ease;
-    border: #555 solid 2px;
     border-radius: 5px;
     position: relative;
-    display: table-cell;
-    vertical-align: middle;
-    background-image: url(../images/banner-red-poly.svg);
-    background-color: #FFA0A0;
-    background-repeat: no-repeat;
-    background-size: cover;
-    color: #333;
+    background-color: #555;
+    color: #fff;
     box-sizing: border-box;
     padding: 4px 6px;
     text-decoration: none;
@@ -117,9 +108,9 @@ input.search {
     width: 300px;
     height: 100vh;
     display: inline-block;
-    background-color: #242424;
+    background-color: #e3ecee;
     position: fixed;
-    color: #efefef;
+    color: #232323;
     overflow-y: scroll;
     position: fixed;
     top: 0;
@@ -129,7 +120,7 @@ input.search {
     float: right;
     clear: none;
     transform: translate(300px, 0);
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 * {
     font-family: 'Oxygen', sans-serif;
@@ -435,20 +426,7 @@ body #player {
     opacity: 0.3;
     transition: opacity .5s ease;
 }
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }   to {
-    transform: rotate(180deg);
-  }
-}
-a#toggle:hover,
-a#settings:hover {
-  opacity: 0.8 !important;
-}
-a#settings:hover {
-  animation: spin 1s ease both;
-}
+
 #player.playing #top-wrapper a#settings {
     height: 40px;
     width: 40px;
@@ -463,7 +441,7 @@ div#top-wrapper {
     display: inline-block;
     position: relative;
     padding: 10px;
-    z-index: 2;
+    z-index: 3;
 }
 
 a#settings {}
@@ -540,4 +518,96 @@ body.toggled .left-side-wrapper * {
 body:not(.toggled) .left-side-wrapper * {
     opacity: 0.0;
     transition: opacity .5s ease;
+}
+
+
+ul.list::-webkit-scrollbar {
+    width: 0 !important;
+}
+
+.left-side-wrapper::-webkit-scrollbar {
+    width: 0 !important;
+}
+a#prev-song {
+  left: 15px;
+  background-image: url(../../images/sc_icons/caret-left.svg);
+}
+a#next-song {
+  right: 15px;
+  background-image: url(../../images/sc_icons/caret-right.svg);
+}
+a#prev-song,
+a#next-song {
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50% 50%;
+    position: absolute;
+    display: inline-block;
+    height: 30px;
+    width: 10px;
+    top: 50%;
+    margin-top: -15px;
+    z-index: 2;
+    opacity: 0.3;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }   to {
+    transform: rotate(180deg);
+  }
+}
+a#toggle:hover,
+a#settings:hover,
+a#prev-song:hover,
+a#next-song:hover {
+  opacity: 0.8 !important;
+  transform: scale(1.1,1.1);
+  transform-origin: center;
+  transition: all .5s ease;
+}
+a#settings:hover,
+a#setting:active {
+  animation: spin 1s ease both;
+}
+#settings.toggled + #settings-popup {
+  transform: scale(1.0,1.0);
+  opacity: 1.0;
+}
+
+div#settings-popup {
+  transform-origin: top;
+  opacity: 0.0;
+  transform: scale(1.0,0.0);
+  position: absolute;
+  z-index: 5;
+  background-color: #fff;
+  width: 250px;
+  padding: 7px 10px;
+  right: 15px;
+  top: 60px;
+  border-radius: 7px;
+  border-top-right-radius: 0px;
+}
+#settings-popup #top-fake {
+  background-image: url(../../images/bk-fake.svg);
+  background-repeat: no-repeat;
+  position: absolute;
+  margin-top: -17px;
+  height: 10px;
+  width: 250px;
+  background-position: right;
+  margin-left: -10px;
+}
+#settings-popup ul {
+  list-style: none;
+  padding: 0;
+  display: inline-block;
+}
+#settings-popup ul > li {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 7px;
+}
+ margin-bottom: 7px;
 }
