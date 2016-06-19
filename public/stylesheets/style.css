@@ -679,14 +679,6 @@ div#behind-vid {
     z-index: -101;
 };
 
-@keyframes fadeIn {
-  from {
-    opacity: 0.0;
-  }  to {
-    opacity: 1.0;
-  }
-}
-
 #signup-panel,
 #login-panel {
   opacity: 0.0;
