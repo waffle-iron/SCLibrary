@@ -14,7 +14,7 @@ var options = {
   bar_height: .7,
   bar_height_2: 1.20,
   bar_y_offset: 11.5
-}
+};
 
 //to use the extendable player library put this in the html
 //	<a href="http://soundcloud.com/matas/hobnotropic" class="sc-player">My new dub track</a>
@@ -29,7 +29,7 @@ var options = {
 
 var audioPlayer = new Audio();
 //Just did this cause the other guy did it, seems like its kew
-audioPlayer.crossOrigin = "anonymous"
+audioPlayer.crossOrigin = "anonymous";
     //audioPlayer.play();
 
 //Set up our pause/play button to use the play button Icon initially
@@ -143,7 +143,7 @@ function loadSong(track) {
     //TODO, (maybe, or just have a func that passes these params, ajax can call that func) grab the duration from the backend like we do client_id above, that is how we calculate how much of the song has been listened to. wtf why isn't there a better way...
     //TODO (sames) grab the waveform url from backend like above
 
-    var seconds = Math.round((duration / 1000) * 1.0)
+    var seconds = Math.round((duration / 1000) * 1.0);
     bgScroll(true, 0, seconds); // start bg scrolling
 
     // player.on('time', function(){console.log("pos: " : this.position);});
@@ -164,7 +164,7 @@ function loadWaveform(track_id){
       normal = data1;
 
       details = interpolateArray(data1, options.wf_detail);
-    })
+    });
 }
 
 
@@ -208,7 +208,7 @@ function waveform(){
       .domain([0, h])
       .rangeRound([0, h]); //rangeRound is used for antialiasing
 
-    var thickness = amplitude / 150 - .4;
+    var thickness = (amplitude / 150) - 0.4;
 
     chart.selectAll("rect")
       .data(data)
@@ -352,11 +352,12 @@ function attachColHandles() {
                     }
 
                     var headerW = $(this).parent().width();
-
+                    var cumW;
+                    var colCount;
                     // behaviour varies by drag side
                     if (!left) {
-                        var colCount = $(this).nextAll('li').length;
-                        var cumW = 0;
+                        colCount = $(this).nextAll('li').length;
+                        cumW = 0;
                         $(this).prevAll().each(function() {
                             // sum col widths to the left
                             cumW += $(this).width();
@@ -368,8 +369,8 @@ function attachColHandles() {
                         });
                     } else {
                         // left-side drag
-                        var colCount = $(this).prevAll().length;
-                        var cumW = 0;
+                        colCount = $(this).prevAll().length;
+                        cumW = 0;
                         $(this).nextAll().each(function() {
                             // sum col widths to the right
                             // round to assist clearing
@@ -415,12 +416,12 @@ function nextListener() {
 
             // move the image background, since we're already listening
             if (completionPer == "100%") {
-
-                if (queue.length == 0) {
-                    var track = autoqueue.shift();
+                var track;
+                if (queue.length === 0) {
+                    track = autoqueue.shift();
                     loadSong(track);
                 } else {
-                    var track = autoqueue.shift();
+                    track = autoqueue.shift();
                     loadSong(track);
                 }
 
@@ -448,11 +449,23 @@ function toggleSet() {
   else $('#settings').removeClass('toggled');
   toggledSet = !toggledSet;
 }
+var toggledAuto = true;
+function toggleAuto() {
+  if (!toggledAuto) $('#autoplay-toggle').addClass('toggled');
+  else $('#autoplay-toggle').removeClass('toggled');
+  toggledAuto = !toggledAuto;
+}
+var toggledShuffle = false;
+function toggleShuffle() {
+  if (!toggledShuffle) $('#shuffle-toggle').addClass('toggled');
+  else $('#shuffle-toggle').removeClass('toggled');
+  toggledShuffle = !toggledShuffle;
+}
 
 //http://www.hevi.info/2012/03/interpolating-and-array-to-fit-another-size/
 function linearInterpolate(before, after, atPoint) {
   return before + (after - before) * atPoint;
-};
+}
 
 function interpolateArray(data, fitCount) {
   var newData = new Array();
@@ -467,4 +480,4 @@ function interpolateArray(data, fitCount) {
     }
   newData[fitCount - 1] = data[data.length - 1]; // for new allocation
   return newData;
-};
+}

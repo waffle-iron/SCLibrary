@@ -1,22 +1,67 @@
-<br><br><br><br><br>
+<div id="behind-vid"></div>
+<div id="video-div"></div>
 
+<div class="container">
+	<div class="row full-center">
+			<div class="col-md-8">
+					<div class="login-panel panel panel-default login-panel">
+							<div class="panel-heading text-center">
+									<h3 class="panel-title">Sign Up</h3>
+							</div>
+							<div class="panel-body">
+								<div class="banner">
+									{{#if msg}}
+										{{msg}}
+									{{/if}}
+								</div>
+								<form action="/signup/submit" method="get" class="simple-form">
+												<div class="form-group">
+														<input class="form-control" placeholder="Name" name="name" type="text" autofocus>
+												</div>
+												<div class="form-group">
+														<input class="form-control" placeholder="Email" name="email" type="email" value="">
+												</div>
+												<div class="form-group">
+														<input class="form-control" placeholder="Soundcloud Username" name="password" type="text" value="">
+														<span>ex) http://soundcloud.com/skrillex, the username would be skrillex</span>
+												</div>
+												<hr>
+												<div class="form-group">
+														<input class="form-control" placeholder="Password" name="password" type="password" value="">
+												</div>
+												<div class="form-group">
+														<input class="form-control" placeholder="Confirm Password" name="password" type="password" value="">
+												</div>
 
-{{#if msg}}
-	{{msg}}
-{{/if}}
+												<button type="submit" value="Submit" class="btn btn-success btn-block">Submit</button>
+												<hr>
+												<a href="/login/" class="btn btn-success btn-block">Login</a>
+									</form>
+							</div>
+					</div>
+			</div>
+	</div>
+</div>
 
-<br><br>
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 
-<b>Signup</b>
-<form action="/signup/submit" method="get" class="simple-form">
-	Name: <input type="text" name="name" /><br />
-	Password: <input type="password" name="password" /><br />
-    Soundcloud Username: <input type="text" name="sc_account" /><br />
-    ex) http://soundcloud.com/skrillex, the username would be skrillex
-    <br>
+<script type="text/javascript">
+		$(document).ready(function() {
+				var uagent = navigator.userAgent.toLowerCase();
+				if (uagent.search("iphone") > -1 || uagent.search("ipad") > -1 || uagent.search("android") > -1 || uagent.search("blackberry") > -1 || uagent.search("webos") > -1) {
+						// mobile, replace vid with still
+						$("#video-div").replaceWith('<img style="z-index: -100" src="vid_still.jpg" alt="">');
+						$(window).resize();
+				} else {
+						// video won't load properly from local so I have it on MBM's dev server
+						// need to move this before launch
+						$("#video-div").replaceWith('<video autoplay loop poster="slide1_still.jpg" id="bgvid"><source src="http://dev.missionbaymedia.com/enigma/video/enigma.mp4" type="video/mp4"></video>');
+						var vid = document.getElementById("bgvid");
+						vid.addEventListener("click", function() {
+								vid.play();
+						});
+						$("#bgvid").trigger("click");
+				}
+		});
 
-	<button type="submit" value="Submit">Submit</button>
-</form>
-
-<br>
-<a href="/login/">Login</a>
+</script>
