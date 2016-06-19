@@ -265,7 +265,7 @@ function bgScroll(play, pos, dur) {
 function nextSong() {
     if (queue.length > 0)
       var track = queue.shift();
-    else 
+    else
       var track = autoqueue.shift();
 
     backqueue.unshift(track);

@@ -3,7 +3,7 @@
 
 <div class="container">
 	<div class="row full-center">
-			<div class="col-md-8">
+			<div class="col-md-8" id="signup-panel">
 					<div class="login-panel panel panel-default login-panel">
 							<div class="panel-heading text-center">
 									<h3 class="panel-title">Sign Up</h3>
@@ -35,7 +35,7 @@
 
 												<button type="submit" value="Submit" class="btn btn-success btn-block">Submit</button>
 												<hr>
-												<a href="/login/" class="btn btn-success btn-block">Login</a>
+												<a href="javascript:loadLogin();" class="btn btn-success btn-block">Login</a>
 									</form>
 							</div>
 					</div>
@@ -45,23 +45,4 @@
 
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 
-<script type="text/javascript">
-		$(document).ready(function() {
-				var uagent = navigator.userAgent.toLowerCase();
-				if (uagent.search("iphone") > -1 || uagent.search("ipad") > -1 || uagent.search("android") > -1 || uagent.search("blackberry") > -1 || uagent.search("webos") > -1) {
-						// mobile, replace vid with still
-						$("#video-div").replaceWith('<img style="z-index: -100" src="vid_still.jpg" alt="">');
-						$(window).resize();
-				} else {
-						// video won't load properly from local so I have it on MBM's dev server
-						// need to move this before launch
-						$("#video-div").replaceWith('<video autoplay loop poster="slide1_still.jpg" id="bgvid"><source src="http://dev.missionbaymedia.com/enigma/video/enigma.mp4" type="video/mp4"></video>');
-						var vid = document.getElementById("bgvid");
-						vid.addEventListener("click", function() {
-								vid.play();
-						});
-						$("#bgvid").trigger("click");
-				}
-		});
-
-</script>
+<script src="/js/login-signup.js"></script>
