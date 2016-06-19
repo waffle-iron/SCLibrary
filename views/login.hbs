@@ -3,7 +3,7 @@
 
 <div class="container">
 	<div class="row full-center">
-			<div class="col-md-4">
+			<div class="col-md-4" id="login-panel">
 					<div class="login-panel panel panel-default login-panel">
 							<div class="panel-heading text-center">
 									<h3 class="panel-title">Login</h3>
@@ -14,18 +14,18 @@
 										{{msg}}
 									{{/if}}
 								</div>
-									<form action="/login/submit" method="get" class="simple-form">
-												<div class="form-group">
-														<input class="form-control" placeholder="Name" name="name" type="text" autofocus>
-												</div>
-												<div class="form-group">
-														<input class="form-control" placeholder="Password" name="password" type="password" value="">
-												</div>
+								<form action="/login/submit" method="get" class="simple-form">
+											<div class="form-group">
+													<input class="form-control" placeholder="Name" name="name" type="text" autofocus>
+											</div>
+											<div class="form-group">
+													<input class="form-control" placeholder="Password" name="password" type="password" value="">
+											</div>
 
-												<button type="submit" value="Submit" class="btn btn-success btn-block">Submit</button>
-												<hr>
-												<a href="/signup/" class="btn btn-success btn-block">Signup</a>
-									</form>
+											<button type="submit" value="Submit" class="btn btn-success btn-block">Submit</button>
+											<hr>
+											<a href="javascript:loadSignup();" class="btn btn-success btn-block">Signup</a>
+								</form>
 							</div>
 					</div>
 			</div>
@@ -33,24 +33,4 @@
 </div>
 
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-
-<script type="text/javascript">
-		$(document).ready(function() {
-				var uagent = navigator.userAgent.toLowerCase();
-				if (uagent.search("iphone") > -1 || uagent.search("ipad") > -1 || uagent.search("android") > -1 || uagent.search("blackberry") > -1 || uagent.search("webos") > -1) {
-						// mobile, replace vid with still
-						$("#video-div").replaceWith('<img style="z-index: -100" src="vid_still.jpg" alt="">');
-						$(window).resize();
-				} else {
-						// video won't load properly from local so I have it on MBM's dev server
-						// need to move this before launch
-						$("#video-div").replaceWith('<video autoplay loop poster="slide1_still.jpg" id="bgvid"><source src="http://dev.missionbaymedia.com/enigma/video/enigma.mp4" type="video/mp4"></video>');
-						var vid = document.getElementById("bgvid");
-						vid.addEventListener("click", function() {
-								vid.play();
-						});
-						$("#bgvid").trigger("click");
-				}
-		});
-
-</script>
+<script src="/js/login-signup.js"></script>

@@ -12,19 +12,8 @@ body {
     margin: 0;
     background-color: #232323;
 }
-
-/*Delete if we use bootstrap*/
-
-.pull-left {
-    display: block;
-    float: left;
-}
-.pull-right {
-    display: block;
-    float: right;
-}
-.hidden {
-    display: none;
+a.btn, button, input {
+  outline: none !important;
 }
 aside {
     /*margin-left: -50px;
@@ -635,13 +624,13 @@ a#autoplay-toggle {
   background-image: url(../../images/sc_icons/autoplay.svg);
 }
 a#shuffle-toggle {
-  background-image: url(../../images/sc_icons/replay.svg);
+  background-image: url(../../images/sc_icons/shuffle.svg);
 }
 a#autoplay-toggle.toggled {
   background-image: url(../../images/sc_icons/autoplay-highlight.svg);
 }
 a#shuffle-toggle.toggled {
-  background-image: url(../../images/sc_icons/replay-highlight.svg);
+  background-image: url(../../images/sc_icons/shuffle-highlight.svg);
 }
 
 .row.full-center {
@@ -664,8 +653,10 @@ video#bgvid {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100vw;
-  height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   z-index: -100;
   -webkit-transform: translateX(-50%) translateY(-50%);
   -ms-transform: translateX(-50%) translateY(-50%);
@@ -687,3 +678,21 @@ div#behind-vid {
     background-color: #000;
     z-index: -101;
 };
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.0;
+  }  to {
+    opacity: 1.0;
+  }
+}
+
+#signup-panel,
+#login-panel {
+  opacity: 0.0;
+  transition: opacity 1s ease .2s;
+}
+#signup-panel.loaded,
+#login-panel.loaded {
+  opacity: 1.0;
+}
