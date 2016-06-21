@@ -214,10 +214,10 @@ function waveform(){
       .data(data)
     .enter().append("rect")
       .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - .25, .3)/2; })
-       .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
-       .attr("width", function(d) { return Math.max((w * thickness * d / 100 - .25) + (w * thickness) / 2.5, .2)})
-       .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); })
-      .attr("fill", function(d, i) { if (i / data.length < percent) return "white"; else return "black"; });
+      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
+      .attr("width", function(d) { return Math.max((w * thickness * d / 100 - .25) + (w * thickness) / 2.5, .2)})
+      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); })
+      .attr("fill", function(d, i) { if (i / data.length < percent) return "black"; else return "white"; });
 
 }
 
