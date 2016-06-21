@@ -23,7 +23,7 @@ app.directive("admin", [function (){
                 scope.sortTypeReq = '';
                 scope.sortReverseReq = false;
                 scope.searchTerm = '';
-             
+
             }
         }
     };
@@ -35,20 +35,20 @@ app.controller("AdminCtlr", function($scope, $http){
     // Update sort variables
     $scope.updateSortAcc = function(sortBy){
         if ($scope.sortTypeAcc == sortBy)
-            $scope.sortReverseAcc = !$scope.sortReverseAcc; 
+            $scope.sortReverseAcc = !$scope.sortReverseAcc;
         else
             $scope.sortReverseAcc = false;
         $scope.sortTypeAcc = sortBy;
-    }
+    };
 
     // Update sort variables
     $scope.updateSortReq = function(sortBy){
         if ($scope.sortTypeReq == sortBy)
-            $scope.sortReverseReq = !$scope.sortReverseReq; 
+            $scope.sortReverseReq = !$scope.sortReverseReq;
         else
             $scope.sortReverseReq = false;
         $scope.sortTypeReq = sortBy;
-    }
+    };
 
     // Populate the list of songs
     $scope.loadAccounts = function(){
@@ -59,7 +59,7 @@ app.controller("AdminCtlr", function($scope, $http){
         }, function(error){
             console.log(error);
         });
-    }
+    };
 
     // Populate the list of songs
     $scope.loadRequests = function(){
@@ -70,7 +70,7 @@ app.controller("AdminCtlr", function($scope, $http){
         }, function(error){
             console.log(error);
         });
-    }
+    };
 
     $scope.approveAccount = function(account){
         var id = account.a._id;
@@ -80,8 +80,8 @@ app.controller("AdminCtlr", function($scope, $http){
             $scope.loadAccounts();
         }, function(error){
             console.log(error);
-        });    
-    }
+        });
+    };
 
     $scope.denyAccount = function(account){
         var id = account.a._id;
@@ -91,8 +91,8 @@ app.controller("AdminCtlr", function($scope, $http){
             $scope.loadAccounts();
         }, function(error){
             console.log(error);
-        });    
-    }
+        });
+    };
 
     $scope.approveRequest = function(request){
         var id = request.r._id;
@@ -105,6 +105,6 @@ app.controller("AdminCtlr", function($scope, $http){
             $scope.loadRequests();
         }, function(error){
             console.log(error);
-        });    
-    }
+        });
+    };
 });
