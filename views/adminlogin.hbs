@@ -1,18 +1,31 @@
-<br><br><br><br><br>
+<div id="behind-vid"></div>
+<div id="video-div"></div>
 
+<div class="container">
+	<div class="row full-center">
+			<div class="col-md-4" id="login-panel">
+					<div class="login-panel panel panel-default login-panel">
+							<div class="panel-heading text-center">
+									<h3 class="panel-title">Admin</h3>
+							</div>
+							<div class="panel-body">
+								<div class="banner">
+									{{#if msg}}
+										{{msg}}
+									{{/if}}
+								</div>
+								<form action="/admin/submit" method="get" class="simple-form">
+											<div class="form-group">
+													<input class="form-control" placeholder="Name" name="name" type="text" autofocus>
+											</div>
+											<div class="form-group">
+													<input class="form-control" placeholder="Password" name="password" type="password" value="">
+											</div>
 
-{{#if msg}}
-	{{msg}}
-{{/if}}
-
-<br><br>
-
-<b>Admin Login</b>
-<form action="/admin/submit" method="get" class="simple-form">
-	Name: <input type="text" name="name" /><br />
-	Password: <input type="password" name="password" /><br />
-	<button type="submit" value="Submit">Submit</button>
-</form>
-
-<br>
-<a href="/signup/">Signup</a>
+											<button type="submit" value="Submit" class="btn btn-success btn-block">Submit</button>
+								</form>
+							</div>
+					</div>
+			</div>
+	</div>
+</div>

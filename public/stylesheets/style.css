@@ -12,19 +12,8 @@ body {
     margin: 0;
     background-color: #232323;
 }
-
-/*Delete if we use bootstrap*/
-
-.pull-left {
-    display: block;
-    float: left;
-}
-.pull-right {
-    display: block;
-    float: right;
-}
-.hidden {
-    display: none;
+a.btn, button, input {
+  outline: none !important;
 }
 aside {
     /*margin-left: -50px;
@@ -357,11 +346,11 @@ div#library {
 }
 
 input[type=text] {
-    border-radius: 7px;
-    border: none !important;
-    padding: 4px 10px;
-    color: #a1a1a1;
-    outline: none;
+    /* border-radius: 7px; */
+    /* border: none !important; */
+    /* padding: 4px 10px; */
+    /* color: #a1a1a1; */
+    /* outline: none; */
     margin: 7px auto;
 }
 
@@ -584,7 +573,7 @@ div#settings-popup {
   background-color: #fff;
   width: 250px;
   padding: 7px 10px;
-  right: 15px;
+  right: 29px;
   top: 60px;
   border-radius: 7px;
   border-top-right-radius: 0px;
@@ -603,11 +592,99 @@ div#settings-popup {
   list-style: none;
   padding: 0;
   display: inline-block;
+  width: 100%;
 }
 #settings-popup ul > li {
   display: inline-block;
   width: 100%;
-  margin-bottom: 7px;
+  margin: 7px 0;
 }
- margin-bottom: 7px;
+
+a#autoplay-toggle + a,
+a#shuffle-toggle + a {
+  color: #333 !important;
+  text-decoration: none !important;
+}
+a#autoplay-toggle.toggled + a,
+a#shuffle-toggle.toggled + a {
+  color: #3b65ff !important;
+}
+a#autoplay-toggle,
+a#shuffle-toggle {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  margin: 0 7px;
+}
+a#autoplay-toggle {
+  background-image: url(../../images/sc_icons/autoplay.svg);
+}
+a#shuffle-toggle {
+  background-image: url(../../images/sc_icons/shuffle.svg);
+}
+a#autoplay-toggle.toggled {
+  background-image: url(../../images/sc_icons/autoplay-highlight.svg);
+}
+a#shuffle-toggle.toggled {
+  background-image: url(../../images/sc_icons/shuffle-highlight.svg);
+}
+
+.row.full-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+
+.login-panel .banner {
+    background-color: firebrick;
+    color: #fff !important;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 5px;
+}
+
+video#bgvid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  -ms-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  background: url(/slide1_still.jpg) no-repeat;
+  background-size: cover;
+  -webkit-filter: blur(16px);
+}
+
+
+.login-panel {
+    border-radius: 0 !important;
+}
+
+div#behind-vid {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-color: #000;
+    z-index: -101;
+};
+
+#signup-panel,
+#login-panel {
+  opacity: 0.0;
+  transition: opacity 1s ease .2s;
+}
+#signup-panel.loaded,
+#login-panel.loaded {
+  opacity: 1.0;
 }

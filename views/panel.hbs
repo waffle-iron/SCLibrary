@@ -1,16 +1,77 @@
+<div id="wrapper">
 
-<br><br><br><br>
+		<!-- Navigation -->
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+				<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="/admin/panel/">SCLibrary Admin</a>
+				</div>
+				<!-- /.navbar-header -->
 
-Welcome to the admin panel
+				<div class="nav navbar-top-links navbar-right">
+					<a class="btn btn-default" href="/logout/" style="position: absolute; margin-top: -15px; top: 50%;">Logout</a>
+				</div>
+				<!-- /.navbar-top-links -->
+
+				<div class="navbar-default sidebar" role="navigation">
+						<div class="sidebar-nav navbar-collapse">
+								<ul class="nav" id="side-menu">
+										<!-- <li class="sidebar-search">
+												<div class="input-group custom-search-form">
+														<input type="text" class="form-control" placeholder="Search...">
+														<span class="input-group-btn">
+														<button class="btn btn-default" type="button">
+																<i class="fa fa-search"></i>
+														</button>
+												</span>
+												</div>
+										</li> -->
+										<li>
+												<a href="/admin/panel/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+										</li>
+
+								</ul>
+						</div>
+						<!-- /.sidebar-collapse -->
+				</div>
+				<!-- /.navbar-static-side -->
+		</nav>
 
 
-<div id="panel" ng-app="Admin">
-	<admin ng-controller="AdminCtlr">
-	</admin>
-</div>
+		<div id="page-wrapper">
+				<div class="row">
+						<div class="col-lg-12">
+								<h1 class="page-header">Dashboard</h1>
+						</div>
+						<!-- /.col-lg-12 -->
+				</div>
+				<!-- /.row -->
+
+					<!-- ANGULAR ADMIN CONTROLLER -->
+					<div id="panel" ng-app="Admin">
+						<admin ng-controller="AdminCtlr">
+						</admin>
+					</div>
+					<!-- End ANGULAR ADMIN CONTROLLER -->
+			</div>
+			<!-- ./ page wrapper -->
+	</div>
+	<!-- ./ wrapper -->
 
 
 <script src="/bower_components/angular/angular.min.js"></script>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/metisMenu/dist/metisMenu.min.js"></script>
 
 <script src="/js/lib/admin.js"></script>
+<script src="/js/lib/sb-admin-2.js"></script>
+
+<script type="text/javascript">
+	$('head').append('<link rel="stylesheet" href="/stylesheets/admin.css" type="text/css" />' + '\n\n' +
+				'<link rel="stylesheet" href="/bower_components/metisMenu/dist/metisMenu.min.css" type="text/css" />' );
+</script>
