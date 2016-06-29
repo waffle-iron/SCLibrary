@@ -12,15 +12,17 @@ module.exports = function(db){
 
     // Recursive helper function for addCollection.
     function addItems(user, collection, index, pids, done){
-        item = collection[index];
+        var item = collection[index];
         console.log(item);
-        
+
         module.checkExistence(user.properties.scuid, item, function(found, error){
-            if (error)
+            if (error) {
                 done(error);
+            }
             //user to item relationship already exists in database; done.
-            if (found) 
+            if (found) {
                 done(null, pids);
+            }
             //otherwise relationship does not yet exist; create it.
             else {
                 if (item.track){
@@ -28,26 +30,27 @@ module.exports = function(db){
                         if (success){
                             //console.log("Track added!");
                             index++;
-                            if (index < collection.length - 1) 
+                            if (index < collection.length - 1) {
                                 addItems(user, collection, index, pids, done);
-                            else
+                            } else {
                                 done(null, pids);
-                        }
-                        else {
+                            }
+                        } else {
                             done(error);
                         }
                     });
-                } 
+                }
                 else {
                     addPlaylist(user, item, function(success, error){
                         if (success){
                             //console.log("Playlist added!");
                             pids.push(item.playlist.id);
                             index++;
-                            if (index < collection.length - 1) 
+                            if (index < collection.length - 1) {
                                 addItems(user, collection, index, pids, done);
-                            else
+                            } else {
                                 done(null, pids);
+                            }
                         }
                         else {
                             done(error);
@@ -55,14 +58,14 @@ module.exports = function(db){
                     });
                 }
             }
-        })
+        });
     }
 
     function addTrack(user, item, done){
 
         var track = item.track;
 
-        var query = 'MATCH (u:Channel {name: {name}}) ' + 
+        var query = 'MATCH (u:Channel {name: {name}}) ' +
                     'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
                     'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
         if (track.genre != null)
@@ -72,13 +75,13 @@ module.exports = function(db){
         if (track.artwork_url != null)
             query += 'artwork_url: {artwork_url}, ';
         query = query + 'waveform_url: {waveform_url} }) ' +
-                    'MERGE (c:Channel { name: {channel} }) ' + 
-                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
+                    'MERGE (c:Channel { name: {channel} }) ' +
+                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
                     'CREATE (u)-[r1:LIKES_TRACK { created_at: {date_liked}}]->(t) ' +
                     'CREATE (c)-[r2:UPLOADED]->(t) ' +
                     'RETURN u, r1, c, r2, t';
 
-        db.cypher({ 
+        db.cypher({
             query: query,
             params: {
                 name: user.properties.name,
@@ -111,8 +114,8 @@ module.exports = function(db){
 
     module.addPlaylistTracks = function(playlists, done){
 
-        if (playlists.length == 0){
-            done(true)
+        if (playlists.length === 0){
+            done(true);
         }
         else {
             var tracks = [];
@@ -125,17 +128,14 @@ module.exports = function(db){
                 var updatedtracks = tracks.concat(ptracks);
                 tracks = updatedtracks;
             }
-
             addPlaylistTracksRecurse(tracks, 0, done);
         }
-
-        
-    }
+    };
 
     function addPlaylistTracksRecurse(tracks, index, done){
         var track = tracks[index];
 
-        var query = 'MATCH (p:SCPlaylist {scid: {pid}}) ' + 
+        var query = 'MATCH (p:SCPlaylist {scid: {pid}}) ' +
                     'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
                     'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
         if (track.genre != null)
@@ -145,13 +145,13 @@ module.exports = function(db){
         if (track.artwork_url != null)
             query += 'artwork_url: {artwork_url}, ';
         query = query + 'waveform_url: {waveform_url} }) ' +
-                    'MERGE (c:Channel { name: {channel} }) ' + 
-                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
+                    'MERGE (c:Channel { name: {channel} }) ' +
+                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
                     'CREATE (p)-[r1:CONTAINS]->(t) ' +
                     'CREATE (c)-[r2:UPLOADED]->(t) ' +
                     'RETURN p, r1, c, r2, t';
 
-        db.cypher({ 
+        db.cypher({
             query: query,
             params: {
                 pid: track.pid,
@@ -179,7 +179,7 @@ module.exports = function(db){
                 console.log(results);
                 index++;
                 //Is this off by 1? too baked.
-                if (index < tracks.length - 1) 
+                if (index < tracks.length - 1)
                     addPlaylistTracksRecurse(tracks, index, done);
                 else
                     done(true);
@@ -192,20 +192,20 @@ module.exports = function(db){
 
         var playlist = item.playlist;
 
-        var query = 'MATCH (u:Channel {name: {name}}) ' + 
+        var query = 'MATCH (u:Channel {name: {name}}) ' +
                     'MERGE (p:SCPlaylist { name: {title}, scid: {scid}, ';
         if (playlist.purchase_url != null)
             query += 'purchase_url: {purchase_url}, ';
         if (playlist.artwork_url != null)
             query += 'artwork_url: {artwork_url}, ';
         query = query + 'url: {url}, created_at: {created_at} }) ' +
-                    'MERGE (c:Channel { name: {channel} }) ' + 
-                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' + 
+                    'MERGE (c:Channel { name: {channel} }) ' +
+                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
                     'CREATE (u)-[r1:LIKES_PLAYLIST { created_at: {date_liked}}]->(p) ' +
                     'CREATE (c)-[r2:UPLOADED]->(p) ' +
                     'RETURN u, r1, c, r2, p';
 
-        db.cypher({ 
+        db.cypher({
             query: query,
             params: {
                 name: user.properties.name,
@@ -233,12 +233,12 @@ module.exports = function(db){
     }
 
 
-    // Check for the existence of a [:LIKES] relationship between a channel and a track. 
-    // Return true if it exists, false if it does not. 
+    // Check for the existence of a [:LIKES] relationship between a channel and a track.
+    // Return true if it exists, false if it does not.
     module.checkExistence = function(scuid, item, done){
 
         if (item.track){
-            db.cypher({ 
+            db.cypher({
                 query: 'MATCH (u:Channel {scuid: {scuid} }), (t:Track {scid: {scid} } ), (u)-[:LIKES_TRACK]->(t) return u, t',
                 params: {
                     scuid: scuid,
@@ -249,10 +249,10 @@ module.exports = function(db){
                 if (error){
                     done(null, error);
                 }
-                else {      
+                else {
                     //console.log(results);
                     // If no match, create an entry for the user
-                    if (results.length == 0) {
+                    if (results.length === 0) {
                         //console.log("No relationship found.");
                         done(false);
                         //TODO: Update access token
@@ -266,7 +266,7 @@ module.exports = function(db){
         }
         else
         if (item.playlist){
-            db.cypher({ 
+            db.cypher({
                 query: 'MATCH (u:Channel {scuid: {scuid} }), (p:SCPlaylist {scid: {scid} } ), (u)-[:LIKES_PLAYLIST]->(p) return u, p',
                 params: {
                     scuid: scuid,
@@ -277,10 +277,10 @@ module.exports = function(db){
                 if (error){
                     done(null, error);
                 }
-                else {      
+                else {
                     //console.log(results);
                     // If no match, create an entry for the user
-                    if (results.length == 0) {
+                    if (results.length === 0) {
                         console.log("No relationship found.");
                         done(false);
                         //TODO: Update access token
@@ -293,16 +293,16 @@ module.exports = function(db){
             });
         }
 
-        
+
     };
 
     // Given a user, find and return their entire collection of songs, along with the channels
     // that uploaded them.
     module.getCollection = function(uid, done){
-        db.cypher({ 
+        db.cypher({
             query:  'MATCH (u:Channel), ' +
                     '(u)-[r:LIKES_TRACK]->(t)<-[:UPLOADED]-(c) ' +
-                    'WHERE id(u) = ' + uid + 
+                    'WHERE id(u) = ' + uid +
                     ' RETURN t, r, c',
             params: {
                 uid: parseInt(uid)
@@ -315,7 +315,7 @@ module.exports = function(db){
             else {
                 //console.log(results);
                 // No collection found for the user
-                if (results.length == 0) {
+                if (results.length === 0) {
                     console.log("no collection found for this user");
                 // If match found, do nothing
                 } else {
@@ -326,4 +326,4 @@ module.exports = function(db){
         });
     };
     return module;
-}
+};
