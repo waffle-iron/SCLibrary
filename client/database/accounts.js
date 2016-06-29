@@ -4,8 +4,8 @@ module.exports = function(db){
 
     module.create = function(username, password, sc_account, done){
         //Check if account already exists
-        db.cypher({ 
-            query: 'MATCH (a:Account {username:{name} }) ' + 
+        db.cypher({
+            query: 'MATCH (a:Account {username:{name} }) ' +
                    'RETURN a',
             params: {
                 name: username
@@ -15,11 +15,11 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
-                if (results.length == 0){
+                if (results.length === 0){
                     //Account does not already exist, create a new one
-                    db.cypher({ 
-                        query: 'CREATE (a:Account {username:{name}, password:{pw}, type:"user", approved:"false" })-[:REQUESTS]->' + 
-                               '(r:Request {username:{sc_name}, complete:"false"}) ' + 
+                    db.cypher({
+                        query: 'CREATE (a:Account {username:{name}, password:{pw}, type:"user", approved:"false" })-[:REQUESTS]->' +
+                               '(r:Request {username:{sc_name}, complete:"false"}) ' +
                                'RETURN a, r',
                         params: {
                             name: username,
@@ -42,14 +42,14 @@ module.exports = function(db){
                     //Account already exists, signal false
                     done(false);
                 }
-                
+
             }
         });
-    }
+    };
 
     module.login = function(username, password, done){
-        db.cypher({ 
-            query: 'MATCH (a:Account {username:{name}, password:{pw} })' + 
+        db.cypher({
+            query: 'MATCH (a:Account {username:{name}, password:{pw} })' +
                    'RETURN a',
             params: {
                 name: username,
@@ -62,8 +62,8 @@ module.exports = function(db){
             else {
                 console.log(account);
 
-                db.cypher({ 
-                    query: 'MATCH (a:Account {username:{name}, password:{pw} })-[:CONNECTED_TO]->(u:Channel) ' + 
+                db.cypher({
+                    query: 'MATCH (a:Account {username:{name}, password:{pw} })-[:CONNECTED_TO]->(u:Channel) ' +
                            'RETURN u',
                     params: {
                         name: username,
@@ -78,7 +78,7 @@ module.exports = function(db){
                         var results = {
                             account: account[0],
                             users: users
-                        }
+                        };
                         //Account was successfuly created
                         done(results);
                     }
@@ -86,11 +86,11 @@ module.exports = function(db){
 
             }
         });
-    }
+    };
 
     module.getAccounts = function(done){
-        db.cypher({ 
-            query: 'MATCH (a:Account) ' + 
+        db.cypher({
+            query: 'MATCH (a:Account) ' +
                    'RETURN a'
         }, function(error, results){
             if (error){
@@ -101,11 +101,11 @@ module.exports = function(db){
                 done(results);
             }
         });
-    }
+    };
 
     module.getRequests = function(done){
-        db.cypher({ 
-            query: 'MATCH (a:Account)-[:REQUESTS]->(r:Request) ' + 
+        db.cypher({
+            query: 'MATCH (a:Account)-[:REQUESTS]->(r:Request) ' +
                    'RETURN a, r'
         }, function(error, results){
             if (error){
@@ -116,14 +116,14 @@ module.exports = function(db){
                 done(results);
             }
         });
-    }
+    };
 
     module.approveAccount = function(aid, done){
         console.log(aid);
-        db.cypher({ 
-            query: 'MATCH (a:Account) ' + 
+        db.cypher({
+            query: 'MATCH (a:Account) ' +
                    'WHERE id(a) = {id} ' +
-                   'SET a.approved = true ' + 
+                   'SET a.approved = true ' +
                    'RETURN a',
             params: {
                 id: parseInt(aid)
@@ -138,13 +138,13 @@ module.exports = function(db){
                 done(results);
             }
         });
-    }
+    };
 
     module.denyAccount = function(aid, done){
-        db.cypher({ 
-            query: 'MATCH (a:Account) ' + 
+        db.cypher({
+            query: 'MATCH (a:Account) ' +
                    'WHERE id(a) = {id} ' +
-                   'SET a.approved = false ' + 
+                   'SET a.approved = false ' +
                    'RETURN a',
             params: {
                 id: parseInt(aid)
@@ -159,13 +159,13 @@ module.exports = function(db){
                 done(results);
             }
         });
-    }
+    };
 
     module.approveRequest = function(aid, rid, uid, done){
-        db.cypher({ 
-            query: 'MATCH (r:Request) ' + 
+        db.cypher({
+            query: 'MATCH (r:Request) ' +
                    'WHERE id(r) = {rid} ' +
-                   'SET r.complete = true ' + 
+                   'SET r.complete = true ' +
                    'RETURN r',
             params: {
                 rid: parseInt(rid)
@@ -176,11 +176,11 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
-                db.cypher({ 
-                    query: 'MATCH (a:Account), (u:Channel) ' + 
+                db.cypher({
+                    query: 'MATCH (a:Account), (u:Channel) ' +
                            'WHERE id(u) = {uid} ' +
-                           'AND id(a) = {aid} ' + 
-                           'CREATE (a)-[r:CONNECTED_TO]->(u) ' + 
+                           'AND id(a) = {aid} ' +
+                           'CREATE (a)-[r:CONNECTED_TO]->(u) ' +
                            'RETURN a, r, u',
                     params: {
                         uid: parseInt(uid),
@@ -195,14 +195,14 @@ module.exports = function(db){
                         //Account approved
                         done(results);
                     }
-                });;
+                });
             }
         });
-    }
+    };
 
     module.getRequest = function(rid, done){
-        db.cypher({ 
-            query: 'MATCH (r:Request) ' + 
+        db.cypher({
+            query: 'MATCH (r:Request) ' +
                    'WHERE id(r) = {id} ' +
                    'RETURN r',
             params: {
@@ -218,8 +218,8 @@ module.exports = function(db){
                 done(results);
             }
         });
-    }
+    };
 
     return module;
 
-}
+};
