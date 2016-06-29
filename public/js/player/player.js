@@ -10,27 +10,15 @@ var options = {
   wf_percent: 96,
   bar_width: 75,
   wf_detail: 12500,
-  bar_thickness: .05,
-  bar_height: .7,
+  bar_thickness: 0.05,
+  bar_height: 0.7,
   bar_height_2: 1.20,
   bar_y_offset: 11.5
 };
 
-//to use the extendable player library put this in the html
-//	<a href="http://soundcloud.com/matas/hobnotropic" class="sc-player">My new dub track</a>
-//but has MIT license lel
-
-// stream track id 293
-//http://www.schillmania.com/projects/soundmanager2/doc for "soundmanager" docs aka the palyer object
-//for waveforms MAYBE use this library (mit license = we have to share source?): http://www.waveformjs.org/
-//use waveform_url to get the waveform
-//for waveform stuff check out:
-//http://www.waveformjs.org/#examples
-
 var audioPlayer = new Audio();
 //Just did this cause the other guy did it, seems like its kew
 audioPlayer.crossOrigin = "anonymous";
-    //audioPlayer.play();
 
 //Set up our pause/play button to use the play button Icon initially
 $('#pauseplay').css('background-image', playIcon);
@@ -61,14 +49,13 @@ setInterval(function () {
     if (details){
       percent = currtimems / durationms;
       if (details.length > 0){
-        //console.log(Math.round(percent * details.length));
-        //var random = Math.floor((Math.random() * 6) - 3);
         amplitude = details[Math.round(percent * details.length)];
         waveform();
       }
     }
 }, options.refresh_rate);
 
+// This needs to be changed to listen for window size changes.
 var window_width = 10;
 setInterval(function () {
   window_width = Math.round($(window).width() / options.bar_width);
@@ -145,15 +132,9 @@ function loadSong(track) {
 
     var seconds = Math.round((duration / 1000) * 1.0);
     bgScroll(true, 0, seconds); // start bg scrolling
-
-    // player.on('time', function(){console.log("pos: " : this.position);});
-    // soundPlayer = sound;
-    // html5Audio = sound._player._html5Audio;
-    // html5Audio.addEventListener('ended', function(){ console.log('event fired: ended'); });
 }
 
 audioPlayer.addEventListener("ended", nextSong);
-
 
 var normal = [];
 
@@ -197,7 +178,8 @@ function waveform(){
       .attr("class", "chart")
       .attr("width", width)
       .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
-      .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h );
+      .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h )
+      .attr("fill", "white");
       //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
 
     var x = d3.scale.linear()
@@ -213,11 +195,10 @@ function waveform(){
     chart.selectAll("rect")
       .data(data)
     .enter().append("rect")
-      .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - .25, .3)/2; })
+      .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - 0.25, 0.3)/2; })
       .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
-      .attr("width", function(d) { return Math.max((w * thickness * d / 100 - .25) + (w * thickness) / 2.5, .2)})
-      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); })
-      .attr("fill", function(d, i) { if (i / data.length < percent) return "black"; else return "white"; });
+      .attr("width", function(d) { return Math.max((w * thickness * d / 100 - 0.25) + (w * thickness) / 2.5, 0.2)})
+      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); });
 
 }
 
@@ -462,7 +443,6 @@ function toggleShuffle() {
   toggledShuffle = !toggledShuffle;
 }
 
-//http://www.hevi.info/2012/03/interpolating-and-array-to-fit-another-size/
 function linearInterpolate(before, after, atPoint) {
   return before + (after - before) * atPoint;
 }
