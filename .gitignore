@@ -33,3 +33,5 @@ npm-debug.log
 # Configuration folder
 config/*
 
+# Redis installation
+redis/*
