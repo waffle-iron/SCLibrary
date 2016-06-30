@@ -5,55 +5,30 @@ var playIcon = 'url(../../images/sc_icons/play.svg)';
 var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
 
 var options = {
-  refresh_rate: 15,
-  bucket_size:13,
-  wf_percent: 96,
+  refresh_rate: 16.67,
+  wf_percent: 97,
   bar_width: 75,
-  wf_detail: 12500,
-  bar_thickness: 0.05,
-  bar_height: 0.7,
-  bar_height_2: 1.20,
-  bar_y_offset: 11.5
+  bar_height: 0.5,
+  bar_y_offset: 1.5
 };
-
-var audioPlayer = new Audio();
-//Just did this cause the other guy did it, seems like its kew
-audioPlayer.crossOrigin = "anonymous";
 
 //Set up our pause/play button to use the play button Icon initially
 $('#pauseplay').css('background-image', playIcon);
 
-//Tie our pauseplay button to the "play" and "pause" events from the player
-/*
-audioPlayer.on('play', function () {
-    $('#pauseplay').css('background-image', pauseIcon);
-});
-audioPlayer.on('pause', function () {
-    $('#pauseplay').css('background-image', playIcon);
-});
-*/
-var amplitude = 0;
-var durationms = 1;
-//Tie out pause/play button to the "player" objects pause / play functions
-
 var currtimems = 0;
-$(audioPlayer).on('timeupdate', function() {
-    currtimems = audioPlayer.currentTime * 1000.0;
-});
 
 var details = [];
 var percent = 0;
 
-setInterval(function () {
-    currtimems = audioPlayer.currentTime*1000.0;
-    if (details){
+setInterval(
+  function () {
+    if (isPlaying){
+      currtimems = audioPlayer.currentTime*1000.0;
       percent = currtimems / durationms;
-      if (details.length > 0){
-        amplitude = details[Math.round(percent * details.length)];
-        waveform();
-      }
+      waveform();
     }
-}, options.refresh_rate);
+  }, options.refresh_rate
+);
 
 // This needs to be changed to listen for window size changes.
 var window_width = 10;
@@ -97,6 +72,20 @@ $('#back-div').click(function(e) {
     isPlaying = true;
 });
 
+
+var audioPlayer = new Audio();
+//Just did this cause the other guy did it, seems like its kew
+audioPlayer.crossOrigin = "anonymous";
+audioPlayer.addEventListener("ended", nextSong);
+
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var audioSrc = audioCtx.createMediaElementSource(audioPlayer);
+var analyser = audioCtx.createAnalyser();
+var fd = new Uint8Array(256);
+
+audioSrc.connect(analyser);
+audioSrc.connect(audioCtx.destination);
+
 // made this global to help with next load
 var durationms;
 function loadSong(track) {
@@ -134,72 +123,91 @@ function loadSong(track) {
     bgScroll(true, 0, seconds); // start bg scrolling
 }
 
-audioPlayer.addEventListener("ended", nextSong);
-
-var normal = [];
-
+var wform_data = [];
 function loadWaveform(track_id){
-    d3.json("/api/track/waveform/" + track_id, function(error, data1){
+    d3.json("/api/track/waveform/" + track_id, function(error, data){
       if (error) throw error;
-
-      normal = data1;
-
-      details = interpolateArray(data1, options.wf_detail);
+      wform_data = data;
+      isPlaying = true;
     });
 }
 
-
 function waveform(){
+    analyser.getByteFrequencyData(fd);
 
-    document.getElementById('wf_box').innerHTML = "";
+    if (fd[0] !== 0){
 
-    var data1 = normal;
-
-    var height = "210px";
-    var width = "" + options.wf_percent + "%";
-    var data = [];
-
-    var b = 33 - window_width;
-
-    data.push(data1[0]);
-    data.push(data1[4]);
-    for (var i = 1; i < data1.length/b; i++){
-      var total = 0;
-      for (var j = 0; j < b; j++){
-        total +=  data1[(i * b) + j];
+      var fd2 = [];
+      var fd3 = [];
+      for (var i = 0; i < 256; i++){
+        fd2.push(fd[i] / (i + 20));
+        fd3.push(fd[i]);
       }
-      if (Math.round(total/b))
-        data.push(Math.round(total/b));
+      var highs = 7 + d3.mean(fd3.splice(180, 245)) / 4;
+      var mids = 7 + d3.mean(fd3.splice(80, 160)) / 4;
+      var lows = 7 + d3.mean(fd3.splice(20, 40)) / 5;
+      var sub = -40 + d3.mean(fd2.splice(0, 20)) * 11.5;
+
+      var data = [];
+
+      var b = 33 - window_width;
+      for (var i = 1; i < wform_data.length/b; i++){
+        var total = 0;
+        for (var j = 0; j < b; j++){
+          total +=  wform_data[(i * b) + j];
+        }
+        if (Math.round(total/b))
+          data.push(Math.round(total/b));
+      }
+
+      var w = 1.2 * (6 - 10 / window_width), h = d3.max(data) * 2;
+
+      var chart = d3.select(".charts").append("svg")
+        .attr("class", "chart")
+        .attr("width", "" + options.wf_percent + "%")
+        .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
+        .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + Math.max(h, 0) )
+        .attr("fill", "white");
+        //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
+
+      var x = d3.scale.linear()
+        .domain([0, 1])
+        .range([0, w]);
+
+      var y = d3.scale.linear()
+        .domain([0, h])
+        .rangeRound([0, h]); //rangeRound is used for antialiasing
+
+      var max = d3.max(data);
+
+      chart.selectAll("rect")
+        .data(data)
+      .enter().append("rect")
+        .attr("x", function(d, i) {
+          var x_offset = x(i) - Math.max(w * max / 900 - 0.25, 0.1)/2;
+          return x_offset;
+        })
+        .attr("y", function(d, i) {
+          var y_offset;
+          if (i % 4 === 0) y_offset = y(d * options.bar_height) * highs / h;
+          if (i % 4 === 1) y_offset = y(d * options.bar_height) * lows / h;
+          if (i % 4 === 2) y_offset = y(d * options.bar_height) * mids / h;
+          if (i % 4 === 3) y_offset = y(d * options.bar_height) * sub / h;
+          return h - Math.pow(Math.max(y_offset, .01), 1.55);
+        })
+        .attr("width", function(d) {
+          var width = Math.max((w * max / 900 - 0.25), 0.1);
+          return width;
+        })
+        .attr("height", function(d, i) {
+          var height;
+          if (i % 4 === 0) height = y(d * options.bar_height) * highs / h;
+          if (i % 4 === 1) height = y(d * options.bar_height) * lows / h;
+          if (i % 4 === 2) height = y(d * options.bar_height) * mids / h;
+          if (i % 4 === 3) height = y(d * options.bar_height) * sub / h;
+          return Math.pow(Math.max(height, .01), 1.55) + options.bar_y_offset;
+        });
     }
-
-    var w = options.bar_height_2 * (6 - 10 / window_width), h = d3.max(data) * 2;
-
-    var chart = d3.select(".charts").append("svg")
-      .attr("class", "chart")
-      .attr("width", width)
-      .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
-      .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + h )
-      .attr("fill", "white");
-      //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
-
-    var x = d3.scale.linear()
-      .domain([0, 1])
-      .range([0, w]);
-
-    var y = d3.scale.linear()
-      .domain([0, h])
-      .rangeRound([0, h]); //rangeRound is used for antialiasing
-
-    var thickness = (amplitude / 150) - 0.4;
-
-    chart.selectAll("rect")
-      .data(data)
-    .enter().append("rect")
-      .attr("x", function(d, i) { return x(i) - Math.max(w * thickness * d / 100 - 0.25, 0.3)/2; })
-      .attr("y", function(d) { return (h - (y(d * options.bar_height) * amplitude / h)) })
-      .attr("width", function(d) { return Math.max((w * thickness * d / 100 - 0.25) + (w * thickness) / 2.5, 0.2)})
-      .attr("height", function(d) { return Math.max((y(d * options.bar_height) * amplitude / h) + options.bar_y_offset, 0); });
-
 }
 
 var lastShift = 0.0;
@@ -260,7 +268,6 @@ function previousSong() {
 }
 
 // used to track resize direction
-
 var left = false;
 
 function snapToPercents(parentEl) {
@@ -382,7 +389,6 @@ function attachColHandles() {
                 snapToPercents($(this).parent());
             });
         });
-
     });
 }
 
@@ -441,23 +447,4 @@ function toggleShuffle() {
   if (!toggledShuffle) $('#shuffle-toggle').addClass('toggled');
   else $('#shuffle-toggle').removeClass('toggled');
   toggledShuffle = !toggledShuffle;
-}
-
-function linearInterpolate(before, after, atPoint) {
-  return before + (after - before) * atPoint;
-}
-
-function interpolateArray(data, fitCount) {
-  var newData = new Array();
-  var springFactor = new Number((data.length - 1) / (fitCount - 1));
-  newData[0] = data[0]; // for new allocation
-  for ( var i = 1; i < fitCount - 1; i++) {
-    var tmp = i * springFactor;
-    var before = new Number(Math.floor(tmp)).toFixed();
-    var after = new Number(Math.ceil(tmp)).toFixed();
-    var atPoint = tmp - before;
-    newData[i] = this.linearInterpolate(data[before], data[after], atPoint);
-    }
-  newData[fitCount - 1] = data[data.length - 1]; // for new allocation
-  return newData;
 }
