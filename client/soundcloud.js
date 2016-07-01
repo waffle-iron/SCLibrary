@@ -32,12 +32,12 @@ function getUser(uid, done){
     getRequest(href, done);
 }
 
-/* Get a particular resource of a user. 
+/* Get a particular resource of a user.
 *  Options include:
 *     tracks, playlists, followings, followers, comments, favorites, groups, web-profiles
 */
 function getUserResource(uid, resource, done){
-    var href = "http://api.soundcloud.com/users/" + uid + 
+    var href = "http://api.soundcloud.com/users/" + uid +
          "/" + resource + "?client_id=" + config.auth.client_id;
     getRequest(href, done);
 }
@@ -48,10 +48,10 @@ function getLoggedInUser(accessToken, done){
     getRequest(href, done);
 }
 
-//get a user's collection 
+//get a user's collection
 function getCollection(user, done){
 
-    var href = 'https://api-v2.soundcloud.com/users/' + user.id 
+    var href = 'https://api-v2.soundcloud.com/users/' + user.id
         + '/likes?client_id=' + config.auth.client_id + '&linked_partitioning=1&limit=200';
 
     getCollectionRecurse(user, [], href, done);
@@ -61,7 +61,7 @@ function getCollectionRecurse(user, collection, next_href, done){
     console.log("here");
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
-        if (response.next_href){ 
+        if (response.next_href){
             var href = response.next_href + '&client_id=' + config.auth.client_id;
             database.checkExistence(user.id, response.collection[0], function(found, error){
                 if (error)
@@ -80,7 +80,7 @@ function getCollectionRecurse(user, collection, next_href, done){
 }
 
 
-//get a user's collection 
+//get a user's collection
 function getPlaylists(pids, done){
     if (pids.length > 0)
         getPlaylistsRecurse(pids, [], 0, done);
@@ -120,16 +120,17 @@ function getPlaylist(pid, done){
     getRequest(href, done);
 }
 
+//TODO: change this to getSCUIDFromUsername
 function getUserFromUsername(username, done){
     var url = "http://soundcloud.com/" + username;
-    var href = "http://api.soundcloud.com/resolve?url=" 
+    var href = "http://api.soundcloud.com/resolve?url="
                 + url + "&client_id=" + config.auth.client_id;
     getRequest(href, done)
 }
 
 module.exports = {
     getRequest: getRequest,
-	getCollection: getCollection,
+    getCollection: getCollection,
     getLoggedInUser: getLoggedInUser,
     getUser: getUser,
     getUserResource: getUserResource,
@@ -137,4 +138,4 @@ module.exports = {
     getPlaylist: getPlaylist,
     getPlaylists: getPlaylists,
     getUserFromUsername: getUserFromUsername
-}     
+}
