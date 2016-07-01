@@ -5,7 +5,7 @@ var playIcon = 'url(../../images/sc_icons/play.svg)';
 var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
 
 var options = {
-  refresh_rate: 16.67,
+  refresh_rate: 24,
   wf_percent: 97,
   bar_width: 75,
   bar_height: 0.5,
@@ -136,17 +136,12 @@ function waveform(){
     analyser.getByteFrequencyData(fd);
 
     if (fd[0] !== 0){
+      document.getElementById('wf_box').innerHTML = "";
 
-      var fd2 = [];
-      var fd3 = [];
-      for (var i = 0; i < 256; i++){
-        fd2.push(fd[i] / (i + 20));
-        fd3.push(fd[i]);
-      }
-      var highs = 7 + d3.mean(fd3.splice(180, 245)) / 4;
-      var mids = 7 + d3.mean(fd3.splice(80, 160)) / 4;
-      var lows = 7 + d3.mean(fd3.splice(20, 40)) / 5;
-      var sub = -40 + d3.mean(fd2.splice(0, 20)) * 11.5;
+      var highs = 5 + d3.mean(fd.slice(180, 245)) / 5;
+      var mids = 5 + d3.mean(fd.slice(80, 160)) / 5;
+      var lows = 5 + d3.mean(fd.slice(20, 40)) / 5;
+      var sub = 2 + d3.mean(fd.slice(6, 12)) / 5;
 
       var data = [];
 
@@ -160,7 +155,7 @@ function waveform(){
           data.push(Math.round(total/b));
       }
 
-      var w = 1.2 * (6 - 10 / window_width), h = d3.max(data) * 2;
+      var w = (7 - 12 / window_width), h = d3.max(data) * 2;
 
       var chart = d3.select(".charts").append("svg")
         .attr("class", "chart")
