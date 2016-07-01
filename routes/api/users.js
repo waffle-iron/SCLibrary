@@ -25,6 +25,38 @@ router.get('/:id/collection', function(req, res, next) {
 	});
 })
 
+/* POST update user's collection */
+router.post('/:id/collection/update', function(req, res, next) {
+	sc.getUser(req.params.id, function(sc_user){
+		if (error){
+			res.json(error);
+		}
+		sc.getCollection(sc_user, function(collection, error){
+			if (error){
+				res.json(error);
+			}
+			db.addCollection(db_user, collection, function(error, pids){
+				if (error) {
+					res.json(error);
+				}
+				sc.getPlaylists(pids, function(playlists, error){
+					if (error) {
+						res.json(error);
+					}
+					db.addPlaylistTracks(playlists, function(complete, error){
+						if (error) {
+							res.json(error);
+						}
+						else {
+							res.json({"success":"success"});
+						}
+					});
+				});
+			});
+		});
+	});
+});
+
 /* GET user's playlists */
 router.get('/:id/playlists', function(req, res, next) {
 	db.getPlaylists(req.params.id, function(playlists, error){
@@ -77,5 +109,6 @@ router.get('/:uid/channels/:cid', function(req, res, next) {
 		}
 	});
 });
+
 
 module.exports = router;
