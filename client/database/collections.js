@@ -302,8 +302,9 @@ module.exports = function(db){
         db.cypher({
             query:  'MATCH (u:Channel), ' +
                     '(u)-[r:LIKES_TRACK]->(t)<-[:UPLOADED]-(c) ' +
-                    'WHERE id(u) = ' + uid +
-                    ' RETURN t, r, c',
+                    'WHERE id(u) = ' + uid + ' ' +
+                    'RETURN t, r, c ' +
+                    'ORDER BY r.created_at ASC',
             params: {
                 uid: parseInt(uid)
             },
