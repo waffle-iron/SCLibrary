@@ -37,8 +37,8 @@ app.directive("library", [function (){
                 scope.context = 'songs';
 
                 // Variables used for sort and search functionality
-                scope.sortType = '';
-                scope.sortReverse = false;
+                scope.sortType = 'r.properties.created_at';
+                scope.sortReverse = true;
                 scope.searchTerm = '';
 
                 // Draggable handles for the columns
@@ -229,7 +229,7 @@ app.controller("LibraryCtlr", function($scope, $http){
         var url = 'http://localhost:3000/api/users/' + uid + '/collection/';
         $http.get(url).then(function(response){
             console.log(response);
-            $scope.collection = response.data.splice(0, 1000);
+            $scope.collection = response.data.splice(3800, 4000);
             $scope.displaySongs();
         }, function(error){
             console.log(error);
@@ -241,6 +241,7 @@ app.controller("LibraryCtlr", function($scope, $http){
     $scope.loadPlaylists = function(){
         console.log("[func] loadPlaylists");
         var uid = loggedinuser._id;
+        console.log(uid);
         var url = 'http://localhost:3000/api/users/' + uid + '/playlists/';
         $http.get(url).then(function(response){
             console.log(response);
