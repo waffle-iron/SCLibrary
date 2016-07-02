@@ -13,9 +13,9 @@ var channels = require('./database/channels.js')(db);
 var accounts = require('./database/accounts.js')(db);
 
 var getTrack = function(id, done){
-    db.cypher({ 
-        query: 'MATCH (n:Track) ' + 
-               'WHERE id(n) = ' + parseInt(id) + ' ' + 
+    db.cypher({
+        query: 'MATCH (n:Track) ' +
+               'WHERE id(n) = ' + parseInt(id) + ' ' +
                'RETURN n'
     }, function(error, results){
         if (error){
@@ -53,5 +53,6 @@ module.exports = {
     approveAccount: accounts.approveAccount,
     denyAccount: accounts.denyAccount,
     approveRequest: accounts.approveRequest,
+    getConnectedChannels: accounts.getConnectedChannels,
     getTrack: getTrack
-}     
+}

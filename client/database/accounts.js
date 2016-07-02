@@ -16,7 +16,7 @@ module.exports = function(db){
             }
             else {
                 if (results.length === 0){
-                    //Account does not already exist, create a new one
+                    //Account does not exist, create a new one
                     db.cypher({
                         query: 'CREATE (a:Account {username:{name}, password:{pw}, type:"user", approved:"false" })-[:REQUESTS]->' +
                                '(r:Request {username:{sc_name}, complete:"false"}) ' +
@@ -31,18 +31,16 @@ module.exports = function(db){
                             done(null, error);
                         }
                         else {
-                            console.log(results);
-                            //Account was successfuly created
+                            //Account/Request was successfully created
                             done(true);
                         }
                     });
 
                 }
                 else {
-                    //Account already exists, signal false
+                    //Account already exists
                     done(false);
                 }
-
             }
         });
     };
@@ -60,8 +58,6 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
-                console.log(account);
-
                 db.cypher({
                     query: 'MATCH (a:Account {username:{name}, password:{pw} })-[:CONNECTED_TO]->(u:Channel) ' +
                            'RETURN u',
@@ -74,12 +70,11 @@ module.exports = function(db){
                         done(null, error);
                     }
                     else {
-                        console.log(users);
                         var results = {
                             account: account[0],
                             users: users
                         };
-                        //Account was successfuly created
+                        //Account was successfully created
                         done(results);
                     }
                 });
@@ -112,7 +107,7 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
-                //Accounts retrieved
+                //Requests retrieved
                 done(results);
             }
         });
@@ -151,11 +146,10 @@ module.exports = function(db){
             }
         }, function(error, results){
             if (error){
-                console.log(error);
                 done(null, error);
             }
             else {
-                //Account approved
+                //Account denied
                 done(results);
             }
         });
@@ -172,7 +166,6 @@ module.exports = function(db){
             }
         }, function(error, results){
             if (error){
-                console.log(error);
                 done(null, error);
             }
             else {
@@ -188,11 +181,10 @@ module.exports = function(db){
                     }
                 }, function(error, results){
                     if (error){
-                        console.log(error);
                         done(null, error);
                     }
                     else {
-                        //Account approved
+                        //Request approved
                         done(results);
                     }
                 });
@@ -210,15 +202,32 @@ module.exports = function(db){
             }
         }, function(error, results){
             if (error){
-                console.log(error);
                 done(null, error);
             }
             else {
-                //Account approved
                 done(results);
             }
         });
     };
+
+    module.getConnectedChannels = function(aid, done){
+        db.cypher({
+            query: 'MATCH (a:Account)-[:CONNECTED_TO]->(c:Channel)  ' +
+                   'WHERE id(a) = {aid} ' +
+                   'RETURN c',
+            params: {
+                aid: parseInt(aid)
+            }
+        }, function(error, results){
+            if (error){
+                done(null, error);
+            }
+            else {
+                done(results);
+            }
+        });
+
+    }
 
     return module;
 
