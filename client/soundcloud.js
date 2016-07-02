@@ -6,24 +6,19 @@ var database = require('./database.js');
 
 //used for get requests to soundcloud API
 function getRequest(href, done){
-    console.log(href);
-
     var options = {
         url: href,
         method: 'GET'
     }
-
     request(options, function(error, message, object){
         if (error){
             done(null, error);
         }
         else {
             var json = JSON.parse(object);
-            console.log(json);
             done(json);
         }
     })
-
 }
 
 //get a user's data
@@ -58,7 +53,6 @@ function getCollection(user, done){
 }
 
 function getCollectionRecurse(user, collection, next_href, done){
-    console.log("here");
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
         if (response.next_href){
@@ -90,7 +84,6 @@ function getPlaylists(pids, done){
 
 function getPlaylistsRecurse(pids, playlists, index, done){
     var href = "http://api.soundcloud.com/playlists/" + pids[index] + "?client_id=" + config.auth.client_id;
-    console.log(href);
 
     getRequest(href, function(response, error){
         if (error){
@@ -104,6 +97,7 @@ function getPlaylistsRecurse(pids, playlists, index, done){
                 getPlaylistsRecurse(pids, playlists, index, done);
             }
             else{
+                console.log("done grabbing playlists");
                 done(playlists);
             }
         }
