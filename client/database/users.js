@@ -6,7 +6,7 @@ module.exports = function(db){
     module.addUser = function(user, done){
 
         // Search the database to find a match
-        db.cypher({ 
+        db.cypher({
             query: 'MATCH (user:Channel {scuid: {scuid}}) RETURN user',
             params: {
                 scuid: user.id
@@ -19,7 +19,7 @@ module.exports = function(db){
             if (results.length == 0) {
                 console.log('User not found. Going to create user ' + user.username + '.');
                 // Create an entry for the user
-                db.cypher({ 
+                db.cypher({
                     query: 'CREATE (user:Channel {name: {name}, scuid: {scuid}, permalink: {permalink}, '
                             + 'avatar_url: {avatar_url}, country: {country} }) RETURN user',
                     params: {
@@ -37,7 +37,7 @@ module.exports = function(db){
                         done(results[0].user);
                     }
                 });
-                
+
             // If match found, do nothing
             } else {
                 console.log("User already in database");
@@ -48,26 +48,27 @@ module.exports = function(db){
 
     // Find a user from the database given their scuid.
     module.getUser = function(uid, done){
-        db.cypher({ 
-            query: 'MATCH (user:Channel) ' + 
+        db.cypher({
+            query: 'MATCH (user:Channel) ' +
                    'WHERE id(user) = {uid} ' +
                    'RETURN user',
             params: {
-                uid: uid
+                uid: parseInt(uid)
             }
         }, function(error, results){
             if (error){
                 done(null, error);
             }
-            else {      
+            else {
                 // If no match, create an entry for the user
                 if (results.length == 0) {
-                    console.log("No user found.");
+                    var error = {"error":"no user found"};
+                    done(null, error);
                 }
                 else {
-                    console.log("User was found.");
+                  console.log(results);
+                    done(results[0].user);
                 }
-                done(results);
             }
         });
     }

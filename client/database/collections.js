@@ -13,14 +13,13 @@ module.exports = function(db){
     // Recursive helper function for addCollection.
     function addItems(user, collection, index, pids, done){
         var item = collection[index];
-        console.log(item);
 
-        module.checkExistence(user.properties.scuid, item, function(found, error){
+        module.checkExistence(user.properties.scuid, item, function(relationshipExists, error){
             if (error) {
                 done(error);
             }
             //user to item relationship already exists in database; done.
-            if (found) {
+            if (relationshipExists) {
                 done(null, pids);
             }
             //otherwise relationship does not yet exist; create it.
@@ -28,7 +27,6 @@ module.exports = function(db){
                 if (item.track){
                     addTrack(user, item, function(success, error){
                         if (success){
-                            //console.log("Track added!");
                             index++;
                             if (index < collection.length - 1) {
                                 addItems(user, collection, index, pids, done);
@@ -43,7 +41,6 @@ module.exports = function(db){
                 else {
                     addPlaylist(user, item, function(success, error){
                         if (success){
-                            //console.log("Playlist added!");
                             pids.push(item.playlist.id);
                             index++;
                             if (index < collection.length - 1) {
@@ -250,15 +247,12 @@ module.exports = function(db){
                     done(null, error);
                 }
                 else {
-                    //console.log(results);
                     // If no match, create an entry for the user
                     if (results.length === 0) {
-                        //console.log("No relationship found.");
                         done(false);
                         //TODO: Update access token
                     }
                     else {
-                        //console.log("Relationship already exists.");
                         done(true);
                     }
                 }
@@ -278,7 +272,6 @@ module.exports = function(db){
                     done(null, error);
                 }
                 else {
-                    //console.log(results);
                     // If no match, create an entry for the user
                     if (results.length === 0) {
                         console.log("No relationship found.");
@@ -314,7 +307,6 @@ module.exports = function(db){
                 done(null, error);
             }
             else {
-                //console.log(results);
                 // No collection found for the user
                 if (results.length === 0) {
                     console.log("no collection found for this user");
