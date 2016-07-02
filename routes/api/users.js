@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../../client/database');
+var sc = require('../../client/soundcloud');
 
 /* GET API/playlist index page. */
 router.get('/', function(req, res, next) {
@@ -27,29 +28,41 @@ router.get('/:id/collection', function(req, res, next) {
 
 /* POST update user's collection */
 router.post('/:id/collection/update', function(req, res, next) {
-	sc.getUser(req.params.id, function(sc_user){
+	db.getConnectedChannels(req.params.id, function(sc_users, error){
 		if (error){
 			res.json(error);
 		}
-		sc.getCollection(sc_user, function(collection, error){
+		var scuid = sc_users[0].c.properties.scuid;
+		var scid = sc_users[0].c._id;
+		sc.getUser(scuid, function(sc_user, error){
 			if (error){
 				res.json(error);
 			}
-			db.addCollection(db_user, collection, function(error, pids){
+			db.getUser(scid, function(db_user, error){
 				if (error) {
 					res.json(error);
 				}
-				sc.getPlaylists(pids, function(playlists, error){
-					if (error) {
+				sc.getCollection(sc_user, function(collection, error){
+					if (error){
 						res.json(error);
 					}
-					db.addPlaylistTracks(playlists, function(complete, error){
+					db.addCollection(db_user, collection, function(error, pids){
 						if (error) {
 							res.json(error);
 						}
-						else {
-							res.json({"success":"success"});
-						}
+						sc.getPlaylists(pids, function(playlists, error){
+							if (error) {
+								res.json(error);
+							}
+							db.addPlaylistTracks(playlists, function(complete, error){
+								if (error) {
+									res.json(error);
+								}
+								else {
+									res.json({"success":"success"});
+								}
+							});
+						});
 					});
 				});
 			});

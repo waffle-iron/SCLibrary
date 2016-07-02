@@ -23,7 +23,7 @@ router.post('/:id/approve', function(req, res, next) {
 		if (error)
 			res.json(error);
 		else {
-			console.log(request);
+			//TODO: make this work with multiple requests
 			var username = request[0].r.properties.username;
 			sc.getUserFromUsername(username, function(sc_user, error){
 				if (error) {
