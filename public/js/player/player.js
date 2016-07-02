@@ -9,11 +9,9 @@ var options = {
   wf_percent: 97,
   bar_width: 75,
   bar_height: 0.5,
-  bar_y_offset: 1.5
+  bar_y_offset: 1.5,
+  height: .3
 };
-
-//Set up our pause/play button to use the play button Icon initially
-$('#pauseplay').css('background-image', playIcon);
 
 var currtimems = 0;
 
@@ -22,11 +20,9 @@ var percent = 0;
 
 setInterval(
   function () {
-    if (isPlaying){
-      currtimems = audioPlayer.currentTime*1000.0;
-      percent = currtimems / durationms;
-      waveform();
-    }
+    currtimems = audioPlayer.currentTime*1000.0;
+    percent = currtimems / durationms;
+    waveform();
   }, options.refresh_rate
 );
 
@@ -89,7 +85,6 @@ audioSrc.connect(audioCtx.destination);
 // made this global to help with next load
 var durationms;
 function loadSong(track) {
-  console.log(track);
     var trackid = track.t.properties.scid;
     durationms = track.t.properties.duration;
     var artworkurl = track.t.properties.artwork_url;
@@ -104,7 +99,6 @@ function loadSong(track) {
     $(".track-channel").text(track.c.properties.name);
 
     duration = durationms;
-    console.log('http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0');
     //Reset isPlaying boolean, change the
     isPlaying = true;
     $('#pauseplay').css('background-image', pauseIcon);
@@ -134,75 +128,71 @@ function loadWaveform(track_id){
 
 function waveform(){
     analyser.getByteFrequencyData(fd);
+    document.getElementById('wf_box').innerHTML = "";
 
-    if (fd[0] !== 0){
-      document.getElementById('wf_box').innerHTML = "";
+    var highs = d3.mean(fd.slice(180, 245)) * options.height;
+    var mids = d3.mean(fd.slice(80, 160)) * options.height;
+    var lows = d3.mean(fd.slice(20, 40)) * options.height;
+    var sub = d3.mean(fd.slice(0, 22)) * options.height * .9;
 
-      var highs = 5 + d3.mean(fd.slice(180, 245)) / 5;
-      var mids = 5 + d3.mean(fd.slice(80, 160)) / 5;
-      var lows = 5 + d3.mean(fd.slice(20, 40)) / 5;
-      var sub = 2 + d3.mean(fd.slice(6, 12)) / 5;
-
-      var data = [];
-
-      var b = 33 - window_width;
-      for (var i = 1; i < wform_data.length/b; i++){
-        var total = 0;
-        for (var j = 0; j < b; j++){
-          total +=  wform_data[(i * b) + j];
-        }
-        if (Math.round(total/b))
-          data.push(Math.round(total/b));
+    var data = [];
+    var b = 33 - window_width;
+    for (var i = 1; i < wform_data.length/b; i++){
+      var total = 0;
+      for (var j = 0; j < b; j++){
+        total +=  wform_data[(i * b) + j];
       }
-
-      var w = (7 - 12 / window_width), h = d3.max(data) * 2;
-
-      var chart = d3.select(".charts").append("svg")
-        .attr("class", "chart")
-        .attr("width", "" + options.wf_percent + "%")
-        .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
-        .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + Math.max(h, 0) )
-        .attr("fill", "white");
-        //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
-
-      var x = d3.scale.linear()
-        .domain([0, 1])
-        .range([0, w]);
-
-      var y = d3.scale.linear()
-        .domain([0, h])
-        .rangeRound([0, h]); //rangeRound is used for antialiasing
-
-      var max = d3.max(data);
-
-      chart.selectAll("rect")
-        .data(data)
-      .enter().append("rect")
-        .attr("x", function(d, i) {
-          var x_offset = x(i) - Math.max(w * max / 900 - 0.25, 0.1)/2;
-          return x_offset;
-        })
-        .attr("y", function(d, i) {
-          var y_offset;
-          if (i % 4 === 0) y_offset = y(d * options.bar_height) * highs / h;
-          if (i % 4 === 1) y_offset = y(d * options.bar_height) * lows / h;
-          if (i % 4 === 2) y_offset = y(d * options.bar_height) * mids / h;
-          if (i % 4 === 3) y_offset = y(d * options.bar_height) * sub / h;
-          return h - Math.pow(Math.max(y_offset, .01), 1.55);
-        })
-        .attr("width", function(d) {
-          var width = Math.max((w * max / 900 - 0.25), 0.1);
-          return width;
-        })
-        .attr("height", function(d, i) {
-          var height;
-          if (i % 4 === 0) height = y(d * options.bar_height) * highs / h;
-          if (i % 4 === 1) height = y(d * options.bar_height) * lows / h;
-          if (i % 4 === 2) height = y(d * options.bar_height) * mids / h;
-          if (i % 4 === 3) height = y(d * options.bar_height) * sub / h;
-          return Math.pow(Math.max(height, .01), 1.55) + options.bar_y_offset;
-        });
+      if (Math.round(total/b))
+        data.push(Math.round(total/b));
     }
+
+    var max = d3.max(data);
+    var w = (7 - 12 / window_width)
+    var h = max * 2;
+
+    var x = d3.scale.linear()
+      .domain([0, 1])
+      .range([0, w]);
+
+    var y = d3.scale.linear()
+      .domain([0, h])
+      .rangeRound([0, h]); //rangeRound is used for antialiasing
+
+    var chart = d3.select(".charts").append("svg")
+      .attr("class", "chart")
+      .attr("width", "" + options.wf_percent + "%")
+      .attr("style", "padding-left:" + (100 - options.wf_percent) + "%;")
+      .attr("viewBox", "0 0 " + Math.max(w * data.length, 0) + " " + Math.max(h, 0) )
+      .attr("fill", "white");
+      //TODO: Make a color analyzer for album artwork so that we can use a pallette to color things in the player, like fill.
+
+    chart.selectAll("rect")
+      .data(data)
+    .enter().append("rect")
+      .attr("x", function(d, i) {
+        var x_offset = x(i) - Math.max(w * max / 900 - 0.25, 0.1)/2;
+        return x_offset;
+      })
+      .attr("y", function(d, i) {
+        var y_offset = y(d * options.bar_height) / h;
+        if (i % 4 === 0) y_offset *= highs;
+        if (i % 4 === 1) y_offset *= lows;
+        if (i % 4 === 2) y_offset *= mids;
+        if (i % 4 === 3) y_offset *= sub;
+        return h - Math.pow(Math.max(y_offset, .01), 1.5);
+      })
+      .attr("width", function(d) {
+        var width = Math.max((w * max / 900 - 0.25), 0.1);
+        return width;
+      })
+      .attr("height", function(d, i) {
+        var height = y(d * options.bar_height) / h;
+        if (i % 4 === 0) height *= highs;
+        if (i % 4 === 1) height *= lows;
+        if (i % 4 === 2) height *= mids;
+        if (i % 4 === 3) height *= sub;
+        return Math.pow(Math.max(height, .01), 1.5) + options.bar_y_offset;
+      });
 }
 
 var lastShift = 0.0;
@@ -418,6 +408,7 @@ function nextListener() {
     });
 }
 
+/* TODO: MOVE THIS STUFF INTO ANGULAR */
 var toggledLib = false;
 
 function toggleLib() {
