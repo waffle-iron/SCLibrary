@@ -7,6 +7,67 @@ const options = {
   height: .3
 };
 
+var map = [];
+document.body.onkeydown = document.body.onkeyup = function(e){
+    e = e || event; // to deal with IE
+    map[e.keyCode] = e.type == 'keydown';
+    if(map[32]){
+        playPause();
+    }
+    if(map[39] && map[16]){
+        fastForward(8);
+    }
+    if(map[39] && !map[16]){
+        fastForward(.5);
+    }
+    if(map[37] && map[16]){
+        rewind(8);
+    }
+    if(map[37] && !map[16]){
+        rewind(.5);
+    }
+    if(map[188]){
+        previousSong();
+    }
+    if(map[190]){
+        nextSong();
+    }
+}
+
+function playPause() {
+  if (!audioPlayer.paused) {
+      audioPlayer.pause();
+      bgScroll(false);
+  } else {
+      bgScroll(true);
+      audioPlayer.play();
+  }
+}
+
+function nextSong() {
+    if (queue.length > 0)
+      var track = queue.shift();
+    else
+      var track = autoqueue.shift();
+
+    backqueue.unshift(track);
+    loadSong(track);
+}
+
+function previousSong() {
+    var track = backqueue.shift();
+    queue.unshift(track);
+    loadSong(track);
+}
+
+function fastForward(seconds) {
+  audioPlayer.currentTime = audioPlayer.currentTime + seconds;
+}
+
+function rewind(seconds) {
+  audioPlayer.currentTime = audioPlayer.currentTime - seconds;
+}
+
 let window_width;
 function resize_window() {
     window_width = Math.round($(window).width() / options.bar_width);
@@ -14,15 +75,8 @@ function resize_window() {
 $(document).ready(resize_window);
 window.addEventListener("resize", resize_window);
 
-$('#artworkimg').click(function(e) {
-    if (!audioPlayer.paused) {
-        audioPlayer.pause();
-        bgScroll(false);
-    } else {
-        bgScroll(true);
-        audioPlayer.play();
-    }
-});
+
+$('#artworkimg').click(playPause);
 
 //TODO: Seeking should be based on the width of the waveform, not the window's width.
 $('#back-div').click(function(e) {
@@ -206,22 +260,6 @@ function bgScroll(play, pos, dur) {
     } else {
         bkDiv.css('background-position-y', backgroundPer);
     }
-}
-
-function nextSong() {
-    if (queue.length > 0)
-      var track = queue.shift();
-    else
-      var track = autoqueue.shift();
-
-    backqueue.unshift(track);
-    loadSong(track);
-}
-
-function previousSong() {
-    var track = backqueue.shift();
-    queue.unshift(track);
-    loadSong(track);
 }
 
 // used to track resize direction
