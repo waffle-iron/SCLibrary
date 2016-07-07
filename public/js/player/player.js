@@ -1,4 +1,4 @@
-var options = {
+const options = {
   refresh_rate: 24,
   wf_percent: 97,
   bar_width: 75,
@@ -7,30 +7,29 @@ var options = {
   height: .3
 };
 
-// This needs to be changed to be a listener for window size changes.
-var window_width = 10;
-setInterval(function () {
-  window_width = Math.round($(window).width() / options.bar_width);
-}, 1000);
-
+let window_width;
+function resize_window() {
+    window_width = Math.round($(window).width() / options.bar_width);
+}
+$(document).ready(resize_window);
+window.addEventListener("resize", resize_window);
 
 $('#artworkimg').click(function(e) {
-  // e.preventDefault();
     if (!audioPlayer.paused) {
         audioPlayer.pause();
         bgScroll(false);
     } else {
-        // TODO stop reseting pos on play somehow
         bgScroll(true);
         audioPlayer.play();
     }
 });
 
+//TODO: Seeking should be based on the width of the waveform, not the window's width.
 $('#back-div').click(function(e) {
     //how far you clicked into the div's width by percent. 1.0 is to cast to double
-    var relativePercent = e.pageX / ($(window).width() * 1.0);
+    let relativePercent = e.pageX / ($(window).width() * 1.0);
     console.log(relativePercent + '%');
-    var seekPosition = Math.round(duration * relativePercent);
+    let seekPosition = Math.round(duration * relativePercent);
     bgScroll(true, seekPosition/1000, duration/1000);
     console.log("seekpos: " + seekPosition);
     audioPlayer.currentTime = seekPosition / 1000.0;
@@ -38,15 +37,15 @@ $('#back-div').click(function(e) {
 });
 
 
-var audioPlayer = new Audio();
+let audioPlayer = new Audio();
 //Just did this cause the other guy did it, seems like its kew
 audioPlayer.crossOrigin = "anonymous";
 audioPlayer.addEventListener("ended", nextSong);
 
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var audioSrc = audioCtx.createMediaElementSource(audioPlayer);
-var analyser = audioCtx.createAnalyser();
-var fd = new Uint8Array(256);
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioSrc = audioCtx.createMediaElementSource(audioPlayer);
+let analyser = audioCtx.createAnalyser();
+let fd = new Uint8Array(256);
 
 audioSrc.connect(analyser);
 audioSrc.connect(audioCtx.destination);
@@ -97,10 +96,12 @@ function waveform(){
     analyser.getByteFrequencyData(fd);
     document.getElementById('wf_box').innerHTML = "";
 
-    var highs = d3.mean(fd.slice(180, 245)) * options.height;
-    var mids = d3.mean(fd.slice(80, 160)) * options.height;
-    var lows = d3.mean(fd.slice(20, 40)) * options.height;
-    var sub = d3.mean(fd.slice(0, 22)) * options.height * .9;
+    var highs1 = d3.mean(fd.slice(200, 245)) * options.height;
+    var highs2 = d3.mean(fd.slice(170, 200)) * options.height;
+    var mids1 = d3.mean(fd.slice(120, 160)) * options.height;
+    var mids2 = d3.mean(fd.slice(90, 120)) * options.height;
+    var lows = d3.mean(fd.slice(22, 40)) * options.height * .8;
+    var sub = d3.mean(fd.slice(0, 22)) * options.height * .8;
 
     var data = [];
     var b = 33 - window_width;
@@ -142,10 +143,12 @@ function waveform(){
       })
       .attr("y", function(d, i) {
         var y_offset = y(d * options.bar_height) / h;
-        if (i % 4 === 0) y_offset *= highs;
-        if (i % 4 === 1) y_offset *= lows;
-        if (i % 4 === 2) y_offset *= mids;
-        if (i % 4 === 3) y_offset *= sub;
+        if (i % 6 === 0) y_offset *= highs1;
+        if (i % 6 === 1) y_offset *= lows;
+        if (i % 6 === 2) y_offset *= mids1;
+        if (i % 6 === 3) y_offset *= highs2;
+        if (i % 6 === 4) y_offset *= sub;
+        if (i % 6 === 5) y_offset *= mids2;
         return h - Math.pow(Math.max(y_offset, .01), 1.5);
       })
       .attr("width", function(d) {
@@ -154,10 +157,12 @@ function waveform(){
       })
       .attr("height", function(d, i) {
         var height = y(d * options.bar_height) / h;
-        if (i % 4 === 0) height *= highs;
-        if (i % 4 === 1) height *= lows;
-        if (i % 4 === 2) height *= mids;
-        if (i % 4 === 3) height *= sub;
+        if (i % 6 === 0) height *= highs1;
+        if (i % 6 === 1) height *= lows;
+        if (i % 6 === 2) height *= mids1;
+        if (i % 6 === 3) height *= highs2;
+        if (i % 6 === 4) height *= sub;
+        if (i % 6 === 5) height *= mids2;
         return Math.pow(Math.max(height, .01), 1.5) + options.bar_y_offset;
       });
 }
