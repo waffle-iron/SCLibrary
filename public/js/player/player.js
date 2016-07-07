@@ -1,9 +1,3 @@
-
-var isPlaying = false;
-
-var playIcon = 'url(../../images/sc_icons/play.svg)';
-var pauseIcon = 'url(../../images/sc_icons/pause.svg)';
-
 var options = {
   refresh_rate: 24,
   wf_percent: 97,
@@ -13,46 +7,22 @@ var options = {
   height: .3
 };
 
-var currtimems = 0;
-
-var details = [];
-var percent = 0;
-
-setInterval(
-  function () {
-    currtimems = audioPlayer.currentTime*1000.0;
-    percent = currtimems / durationms;
-    waveform();
-  }, options.refresh_rate
-);
-
-// This needs to be changed to listen for window size changes.
+// This needs to be changed to be a listener for window size changes.
 var window_width = 10;
 setInterval(function () {
   window_width = Math.round($(window).width() / options.bar_width);
 }, 1000);
 
-//Tie our pauseplay button to the "play" and "pause" events from the player
-$(audioPlayer).on('play', function() {
-    $('#pauseplay').css('background-image', pauseIcon);
-});
-$(audioPlayer).on('pause', function() {
-    $('#pauseplay').css('background-image', playIcon);
-});
 
 $('#artworkimg').click(function(e) {
   // e.preventDefault();
-    if (isPlaying && !audioPlayer.paused) {
+    if (!audioPlayer.paused) {
         audioPlayer.pause();
-        isPlaying = false;
-        $('#pauseplay').css('background-image', playIcon);
         bgScroll(false);
     } else {
         // TODO stop reseting pos on play somehow
-        $('#pauseplay').css('background-image', pauseIcon);
         bgScroll(true);
         audioPlayer.play();
-        isPlaying = true;
     }
 });
 
@@ -65,7 +35,6 @@ $('#back-div').click(function(e) {
     console.log("seekpos: " + seekPosition);
     audioPlayer.currentTime = seekPosition / 1000.0;
     audioPlayer.play();
-    isPlaying = true;
 });
 
 
@@ -99,9 +68,6 @@ function loadSong(track) {
     $(".track-channel").text(track.c.properties.name);
 
     duration = durationms;
-    //Reset isPlaying boolean, change the
-    isPlaying = true;
-    $('#pauseplay').css('background-image', pauseIcon);
 
     //Load artwork image to DOM
     $('#artworkimg').css('background-image', "url(" + artworkurl + ")");
@@ -122,10 +88,11 @@ function loadWaveform(track_id){
     d3.json("/api/track/waveform/" + track_id, function(error, data){
       if (error) throw error;
       wform_data = data;
-      isPlaying = true;
     });
 }
 
+// Repeatedly update the waveform in the player.
+setInterval( waveform, options.refresh_rate );
 function waveform(){
     analyser.getByteFrequencyData(fd);
     document.getElementById('wf_box').innerHTML = "";
