@@ -31,6 +31,7 @@ module.exports = {
     instance: db,
     addUser: users.addUser,
     getUser: users.getUser,
+    getUserByScuid: users.getUserByScuid,
     getChannels: channels.getChannels,
     getLikedTracksByChannel: channels.getLikedTracksByChannel,
     addCollection: collections.addCollection,

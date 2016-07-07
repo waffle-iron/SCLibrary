@@ -66,7 +66,29 @@ module.exports = function(db){
                     done(null, error);
                 }
                 else {
-                  console.log(results);
+                    done(results[0].user);
+                }
+            }
+        });
+    }
+
+    module.getUserByScuid = function(scuid, done){
+        db.cypher({
+            query: 'MATCH (user:Channel {scuid: {scuid}}) ' +
+                   'RETURN user',
+            params: {
+                scuid: parseInt(scuid)
+            }
+        }, function(error, results){
+            if (error){
+                done(null, error);
+            }
+            else {
+                if (results.length == 0) {
+                    var error = {"error":"no user found"};
+                    done(null, error);
+                }
+                else {
                     done(results[0].user);
                 }
             }
