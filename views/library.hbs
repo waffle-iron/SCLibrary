@@ -1,15 +1,45 @@
 <!--aside class="user-wrapper"><span>You are logged in as <a href="#" class="username"></a>.</span></aside-->
 
-<div id="player" position="relative">
-  <!-- Top wrapper area, contains toggle/setting buttons, genres -->
+<!-- Modal Dialogues -->
+<!-- Modal -->
+<div class="modal fade" id="set-modal" role="dialog">
+    <div class="modal-dialog">
 
-  <div id="top-wrapper">
-    <a class="pull-left" id="toggle" href="javascript:toggleLib();"></a>
-    <ol class="genre-wrapper">
-      <li class="genre-btn"></li>
-    </ol>
-    <a class="pull-right" id="settings" href="javascript:toggleSet();"></a>
-    <div id="settings-popup">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>User Settings</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <p>
+                        <a href="javascript:toggleAuto();" id="autoplay-toggle" class="toggled"></a><a href="javascript:toggleAuto();"> Autoplay</a></p>
+                    <p>
+                        <a href="javascript:toggleShuffle();" id="shuffle-toggle"></a><a href="javascript:toggleShuffle();"> Shuffle</a></p>
+                    <p class="text-center"><a class="btn">Update Library</a></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p><a>More settings...</a></p>
+                <p>Forgot <a href="#">Password?</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modals -->
+
+<div id="player" position="relative">
+    <!-- Top wrapper area, contains toggle/setting buttons, genres -->
+
+    <div id="top-wrapper">
+        <a class="pull-left" id="toggle" href="javascript:toggleLib();"></a>
+        <ol class="genre-wrapper">
+            <li class="genre-btn"></li>
+        </ol>
+        <a class="pull-right" id="settings" data-toggle="modal" href="#set-modal"></a>
+        <!-- <a class="pull-right" id="settings" href="javascript:toggleSet();"></a> -->
+        <!-- <div id="settings-popup">
       <div id="top-fake"></div>
       <span>User Settings</span>
       <ul>
@@ -18,38 +48,38 @@
         <li class="text-center"><a class="btn">Update Library</a></li>
       </ul>
       <a>More settings...</a>
+    </div> -->
     </div>
-  </div>
 
-  <!-- Main wrapper area, contains artwork, title, channel, and prev/next buttons -->
-  <div class="player-main-wrapper">
-    <div class="container">
-      <a class="pull-left" id="prev-song" href="javascript:nextSong();"></a>
-      <div class="col-sm-12">
-        <!-- Artwork gets loaded in as a background image here -->
-      	<div id="artworkimg"></div>
-        <span class="track-title">&nbsp;</span>
-        <span class="track-channel">&nbsp;</span>
-      </div>
-      <a class="pull-right" id="next-song" href="javascript:previousSong();"></a>
+    <!-- Main wrapper area, contains artwork, title, channel, and prev/next buttons -->
+    <div class="player-main-wrapper">
+        <div class="container">
+            <a class="pull-left" id="prev-song" href="javascript:nextSong();"></a>
+            <div class="col-sm-12">
+                <!-- Artwork gets loaded in as a background image here -->
+                <div id="artworkimg"></div>
+                <span class="track-title">&nbsp;</span>
+                <span class="track-channel">&nbsp;</span>
+            </div>
+            <a class="pull-right" id="next-song" href="javascript:previousSong();"></a>
+        </div>
     </div>
-	</div>
-  <!-- used to darken background art -->
-  <div id="back-div"></div>
-  <div id="art-bk"></div>
-  <div id="total-bar"></div>
-<div class="charts" id="wf_box"></div>
+    <!-- used to darken background art -->
+    <div id="back-div"></div>
+    <div id="art-bk"></div>
+    <div id="total-bar"></div>
+    <div class="charts" id="wf_box"></div>
 </div>
 
 
 <div id="library" ng-app="Library">
-	<library ng-controller="LibraryCtlr">
-	</library>
+    <library ng-controller="LibraryCtlr">
+    </library>
 </div>
 
 <script type="text/javascript">
-	var client_id = JSON.parse('{{{json client_id}}}');
-	var loggedinuser = JSON.parse('{{{json user}}}');
+    var client_id = JSON.parse('{{{json client_id}}}');
+    var loggedinuser = JSON.parse('{{{json user}}}');
 </script>
 
 
@@ -72,3 +102,5 @@
 <script src="/js/player/api.js"></script>
 <script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
 <script src="/js/player/player.js"></script>
+
+<script src="/bower_components/bootstrap/js/modal.js"></script>
