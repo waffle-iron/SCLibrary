@@ -688,3 +688,8 @@ div#behind-vid {
 #login-panel.loaded {
   opacity: 1.0;
 }
+
+
+.modal-content {
+    box-shadow: none !important;
+}
