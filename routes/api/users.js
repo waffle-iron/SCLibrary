@@ -28,40 +28,36 @@ router.get('/:id/collection', function(req, res, next) {
 
 /* POST update user's collection */
 router.post('/:id/collection/update', function(req, res, next) {
-	db.getConnectedChannels(req.params.id, function(sc_users, error){
+	var scuid = req.params.id;
+	sc.getUser(scuid, function(sc_user, error){
+		console.log(sc_user);
 		if (error){
 			res.json(error);
 		}
-		var scuid = sc_users[0].c.properties.scuid;
-		var scid = sc_users[0].c._id;
-		sc.getUser(scuid, function(sc_user, error){
-			if (error){
+		db.getUserByScuid(scuid, function(db_user, error){
+			console.log(db_user);
+			if (error) {
 				res.json(error);
 			}
-			db.getUser(scid, function(db_user, error){
-				if (error) {
+			sc.getCollection(sc_user, function(collection, error){
+				if (error){
 					res.json(error);
 				}
-				sc.getCollection(sc_user, function(collection, error){
-					if (error){
+				db.addCollection(db_user, collection, function(error, pids){
+					if (error) {
 						res.json(error);
 					}
-					db.addCollection(db_user, collection, function(error, pids){
+					sc.getPlaylists(pids, function(playlists, error){
 						if (error) {
 							res.json(error);
 						}
-						sc.getPlaylists(pids, function(playlists, error){
+						db.addPlaylistTracks(playlists, function(complete, error){
 							if (error) {
 								res.json(error);
 							}
-							db.addPlaylistTracks(playlists, function(complete, error){
-								if (error) {
-									res.json(error);
-								}
-								else {
-									res.json({"success":"success"});
-								}
-							});
+							else {
+								res.json({"success":"success"});
+							}
 						});
 					});
 				});
