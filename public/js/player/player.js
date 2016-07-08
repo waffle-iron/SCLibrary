@@ -45,11 +45,11 @@ function playPause() {
 }
 
 function nextSong() {
-    if (queue.length > 0)
+    if (queue.length > 0) {
       var track = queue.shift();
-    else
+    } else {
       var track = autoqueue.shift();
-
+    }
     backqueue.unshift(track);
     loadSong(track);
 }
@@ -69,12 +69,11 @@ function rewind(seconds) {
 }
 
 let window_width;
-function resize_window() {
+function setWidth() {
     window_width = Math.round($(window).width() / options.bar_width);
 }
-$(document).ready(resize_window);
-window.addEventListener("resize", resize_window);
-
+$(document).ready(setWidth);
+window.addEventListener("resize", setWidth);
 
 $('#artworkimg').click(playPause);
 
@@ -90,7 +89,6 @@ $('#back-div').click(function(e) {
     audioPlayer.play();
 });
 
-
 let audioPlayer = new Audio();
 //Just did this cause the other guy did it, seems like its kew
 audioPlayer.crossOrigin = "anonymous";
@@ -104,11 +102,9 @@ let fd = new Uint8Array(256);
 audioSrc.connect(analyser);
 audioSrc.connect(audioCtx.destination);
 
-// made this global to help with next load
-var durationms;
 function loadSong(track) {
     var trackid = track.t.properties.scid;
-    durationms = track.t.properties.duration;
+    var durationms = track.t.properties.duration;
     var artworkurl = track.t.properties.artwork_url;
     var waveformurl = track.t.properties.waveform_url;
 
@@ -136,16 +132,21 @@ function loadSong(track) {
     bgScroll(true, 0, seconds); // start bg scrolling
 }
 
+var refresh = false;
 var wform_data = [];
 function loadWaveform(track_id){
     d3.json("/api/track/waveform/" + track_id, function(error, data){
       if (error) throw error;
       wform_data = data;
+      refresh = true;
     });
 }
 
 // Repeatedly update the waveform in the player.
-setInterval( waveform, options.refresh_rate );
+setInterval( function() {
+  if (refresh) waveform();
+}, options.refresh_rate );
+
 function waveform(){
     analyser.getByteFrequencyData(fd);
     document.getElementById('wf_box').innerHTML = "";

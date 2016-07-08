@@ -41,6 +41,9 @@ app.directive("library", [function (){
                 scope.sortReverse = true;
                 scope.searchTerm = '';
 
+                // Variable used for pagination
+                scope.limit = 200;
+
                 // Draggable handles for the columns
                 scope.colSizeable = attachColHandles();
                 scope.playNext = nextListener();
@@ -129,7 +132,6 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Add a playlist to the database and hide the new playlist form
     $scope.createPlaylist = function(){
-        console.log("[func] createPlaylist");
         console.log(loggedinuser);
         var url = 'http://localhost:3000/api/playlists/';
         var data = {
@@ -149,7 +151,6 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Update the view with tracks from the selected playlist.
     $scope.loadPlaylist = function(playlist){
-        console.log("[func] loadPlaylist");
         var url = 'http://localhost:3000/api/playlists/' + playlist.p._id;
         $http.get(url).then(function(response){
                 $scope.display = response.data;
@@ -163,7 +164,6 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Delete playlist with permission from the user.
     $scope.deletePlaylist = function(playlist){
-        console.log("[func] deletePlaylist");
         if (confirm("Are you sure you want to delete?") == true){
             var id = playlist.p._id;
             var url = 'http://localhost:3000/api/playlists/' + id;
@@ -182,8 +182,6 @@ app.controller("LibraryCtlr", function($scope, $http){
     // Update the view with tracks from the selected playlist.
     $scope.loadSCPlaylist = function(playlist){
         var uid = loggedinuser._id;
-        console.log(playlist);
-        console.log("[func] loadPlaylist");
         var url = 'http://localhost:3000/api/users/' + uid + '/scplaylists/' + playlist.p._id;
         $http.get(url).then(function(response){
                 console.log(response);
@@ -209,14 +207,12 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Update the view with the user's collection
     $scope.displaySongs = function(){
-        console.log("[func] displaySongs");
-        $scope.display = $scope.collection;
+        $scope.display = $scope.collection.splice(0,$scope.limit);
         $scope.context = 'songs';
         $scope.currPlaylist = null;
     }
 
     $scope.displayQueue = function(){
-        console.log("[func] displayQueue");
         $scope.display = queue;
         $scope.context = 'queue';
         $scope.currPlaylist = null;
@@ -224,24 +220,20 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Populate the list of songs
     $scope.loadLibrary = function(){
-        console.log("[func] loadLibrary");
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/collection/';
         $http.get(url).then(function(response){
             console.log(response);
-            $scope.collection = response.data;//.splice(3800, 4000);
+            $scope.collection = response.data;
             $scope.displaySongs();
         }, function(error){
             console.log(error);
         });
-
     }
 
     // Populate the list of playlists
     $scope.loadPlaylists = function(){
-        console.log("[func] loadPlaylists");
         var uid = loggedinuser._id;
-        console.log(uid);
         var url = 'http://localhost:3000/api/users/' + uid + '/playlists/';
         $http.get(url).then(function(response){
             console.log(response);
@@ -255,7 +247,6 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Populate the list of playlists
     $scope.loadSCPlaylists = function(){
-        console.log("[func] loadSCPlaylists");
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/scplaylists/';
         $http.get(url).then(function(response){
@@ -268,7 +259,6 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     // Populate the list of playlists
     $scope.loadChannels = function(){
-        console.log("[func] loadChannels");
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/channels/';
         $http.get(url).then(function(response){
@@ -280,7 +270,6 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
     $scope.updateMenu = function(){
-
         //Destroy the current context menu
         $.contextMenu( 'destroy' );
 
@@ -300,7 +289,7 @@ app.controller("LibraryCtlr", function($scope, $http){
                 };
         }
 
-        //Include delete_queue when in a queue, add_queue when not inside a queue
+        //Include delete_queue when in queue, add_queue when not inside queue
         if ($scope.context == 'queue'){
             items.delete_queue = {
                 name: "Delete from queue",
@@ -344,8 +333,6 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
     $scope.buildAddToPlaylistMenu = function(result){
-        console.log("[func] buildAddToPlaylistMenu");
-
         var playlist_menu = {};
 
         for (var i = 0; i < result.length; i++){
@@ -371,7 +358,6 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
     $scope.buildDeleteFromPlaylistMenu = function(playlist){
-        console.log("[func] buildDeleteFromPlaylistMenu");
         $scope.delete_func =  function(key, opt){
             var pid = playlist.p._id;
             var tid = JSON.parse(opt.$trigger[0].dataset.track).t._id;
