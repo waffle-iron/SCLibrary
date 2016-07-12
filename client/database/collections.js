@@ -297,7 +297,7 @@ module.exports = function(db){
                     '(u)-[r:LIKES_TRACK]->(t)<-[:UPLOADED]-(c) ' +
                     'WHERE id(u) = ' + uid + ' ' +
                     'RETURN t, r, c ' +
-                    'ORDER BY r.created_at ASC',
+                    'ORDER BY r.created_at DESC',
             params: {
                 uid: parseInt(uid)
             },
