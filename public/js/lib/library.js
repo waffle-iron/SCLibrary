@@ -223,7 +223,6 @@ app.controller("LibraryCtlr", function($scope, $http){
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/collection/';
         $http.get(url).then(function(response){
-            console.log(response);
             $scope.collection = response.data;
             $scope.displaySongs();
         }, function(error){
@@ -236,7 +235,6 @@ app.controller("LibraryCtlr", function($scope, $http){
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/playlists/';
         $http.get(url).then(function(response){
-            console.log(response);
             $scope.playlists = response.data;
             $scope.buildAddToPlaylistMenu(response.data);
             $scope.updateMenu();
@@ -250,7 +248,6 @@ app.controller("LibraryCtlr", function($scope, $http){
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/scplaylists/';
         $http.get(url).then(function(response){
-            console.log(response);
             $scope.scplaylists = response.data;
         }, function(error){
             console.log(error);
@@ -262,7 +259,6 @@ app.controller("LibraryCtlr", function($scope, $http){
         var uid = loggedinuser._id;
         var url = 'http://localhost:3000/api/users/' + uid + '/channels/';
         $http.get(url).then(function(response){
-            console.log(response);
             $scope.channels = response.data;
         }, function(error){
             console.log(error);
@@ -273,11 +269,17 @@ app.controller("LibraryCtlr", function($scope, $http){
         //Destroy the current context menu
         $.contextMenu( 'destroy' );
 
+        $scope.buildRateTrackMenu();
+
         //These options belong in every context
         var items = {
             add_playlist: {
                 name: "Add to playlist...",
                 items: $scope.playlist_menu
+            },
+            rate_track: {
+                name: "Rate track...",
+                items: $scope.rating_menu
             }
         };
 
@@ -367,8 +369,51 @@ app.controller("LibraryCtlr", function($scope, $http){
                 $scope.loadPlaylist(playlist);
             }, function(error){
                 console.log(error);
-            })
+            });
         }
+    }
+
+    $scope.buildRateTrackMenu = function(){
+      var rating_menu = {};
+
+      for (var i = 0; i <= 5; i++){
+          var next =  {
+              name: "" + i + " stars",
+              callback: function(key, opt){
+                var tid = JSON.parse(opt.$trigger[0].dataset.track).t._id;
+                var body = { id: loggedinuser._id, rating: key };
+                var url = 'http://localhost:3000/api/tracks/' + tid + '/rate';
+                $http.post(url, body).then(function(response){
+                  for (var i = 0; i < $scope.display.length; i++){
+                    var track = $scope.display[i];
+                    if (track.t._id == tid) track.r.properties.rating = key;
+                  }
+                }, function(error){
+                  console.log(error);
+                });
+              }
+          }
+          rating_menu[i] = next;
+      }
+
+      rating_menu[0].name = "Clear rating"
+      
+      $scope.rating_menu = rating_menu;
+    }
+
+    $scope.incPlayCount = function(track){
+      console.log("inc");
+      var tid = track.t._id;
+      var body = { id: loggedinuser._id };
+      var url = 'http://localhost:3000/api/tracks/' + tid + '/playcount';
+      $http.post(url, body).then(function(response){
+        for (var i = 0; i < $scope.display.length; i++){
+          var track = $scope.display[i];
+          if (track.t._id == tid) track.r.properties.play_count++;
+        }
+      }, function(error){
+        console.log(error);
+      });
     }
 
 });

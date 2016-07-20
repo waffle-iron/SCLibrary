@@ -108,6 +108,8 @@ function loadSong(track) {
     var artworkurl = track.t.properties.artwork_url;
     var waveformurl = track.t.properties.waveform_url;
 
+    angular.element(document.getElementById('libraryCtlrDiv')).scope().incPlayCount(track);
+
     audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0';
     audioPlayer.load();
     audioPlayer.play();
@@ -135,7 +137,7 @@ function loadSong(track) {
 var refresh = false;
 var wform_data = [];
 function loadWaveform(track_id){
-    d3.json("/api/track/waveform/" + track_id, function(error, data){
+    d3.json("/api/tracks/" + track_id + "/waveform", function(error, data){
       if (error) throw error;
       wform_data = data;
       refresh = true;
