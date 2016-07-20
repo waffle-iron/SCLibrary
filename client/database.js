@@ -11,21 +11,7 @@ var collections = require('./database/collections.js')(db);
 var playlists = require('./database/playlists.js')(db);
 var channels = require('./database/channels.js')(db);
 var accounts = require('./database/accounts.js')(db);
-
-var getTrack = function(id, done){
-    db.cypher({
-        query: 'MATCH (n:Track) ' +
-               'WHERE id(n) = ' + parseInt(id) + ' ' +
-               'RETURN n'
-    }, function(error, results){
-        if (error){
-            done(null, error);
-        }
-        else {
-            done(results);
-        }
-    });
-}
+var tracks = require('./database/tracks.js')(db);
 
 module.exports = {
     instance: db,
@@ -55,5 +41,7 @@ module.exports = {
     denyAccount: accounts.denyAccount,
     approveRequest: accounts.approveRequest,
     getConnectedChannels: accounts.getConnectedChannels,
-    getTrack: getTrack
+    getTrack: tracks.getTrack,
+    rateTrack: tracks.rateTrack,
+    incPlayCount: tracks.incPlayCount
 }
