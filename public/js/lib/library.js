@@ -397,7 +397,7 @@ app.controller("LibraryCtlr", function($scope, $http){
       }
 
       rating_menu[0].name = "Clear rating"
-      
+
       $scope.rating_menu = rating_menu;
     }
 
@@ -417,3 +417,10 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
 });
+
+function highlightRow(track){
+  console.log("hi");
+  $('.curr-playing').removeClass('curr-playing');
+  console.log($('*[data-id="' + track.t._id + '"]'));
+  $('*[data-id="' + track.t._id + '"]').addClass('curr-playing');
+}

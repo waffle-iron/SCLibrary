@@ -110,6 +110,8 @@ function loadSong(track) {
 
     angular.element(document.getElementById('libraryCtlrDiv')).scope().incPlayCount(track);
 
+    highlightRow(track);
+
     audioPlayer.src = 'http://api.soundcloud.com/tracks/' + trackid + '/stream' + '?client_id=a3629314a336fd5ed371ff0f3e46d4d0';
     audioPlayer.load();
     audioPlayer.play();

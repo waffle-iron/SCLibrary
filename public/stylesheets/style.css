@@ -155,6 +155,8 @@ a.dark {
     color: #333;
 }
 
+
+
 /*alternating colors*/
 
 li.track-row:nth-of-type(2n) {
@@ -163,6 +165,10 @@ li.track-row:nth-of-type(2n) {
 li.track-row:nth-of-type(2n+1) {
     background-color: #fff;
 }
+li.track-row.curr-playing {
+  background-color: gold;
+}
+
 ul.list > li,
 ul.header > li {
     width: 100%;
