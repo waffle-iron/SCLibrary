@@ -699,3 +699,7 @@ div#behind-vid {
 .modal-content {
     box-shadow: none !important;
 }
+
+.context-menu-item {
+  clear: left;
+}
