@@ -416,11 +416,24 @@ app.controller("LibraryCtlr", function($scope, $http){
       });
     }
 
+    $scope.toggleDownload = function(element){
+      var tid = element.track.t._id;
+      console.log(element.track);
+      var body = { id: loggedinuser._id };
+      var url = 'http://localhost:3000/api/tracks/' + tid + '/downloaded';
+      $http.post(url, body).then(function(response){
+        for (var i = 0; i < $scope.display.length; i++){
+          var track = $scope.display[i];
+          if (track.t._id == tid) track.r.properties.downloaded = !track.r.properties.downloaded;
+        }
+      }, function(error){
+        console.log(error);
+      });
+    }
+
 });
 
 function highlightRow(track){
-  console.log("hi");
   $('.curr-playing').removeClass('curr-playing');
-  console.log($('*[data-id="' + track.t._id + '"]'));
   $('*[data-id="' + track.t._id + '"]').addClass('curr-playing');
 }
