@@ -276,10 +276,6 @@ app.controller("LibraryCtlr", function($scope, $http){
             add_playlist: {
                 name: "Add to playlist...",
                 items: $scope.playlist_menu
-            },
-            rate_track: {
-                name: "Rate track...",
-                items: $scope.rating_menu
             }
         };
 
@@ -316,6 +312,11 @@ app.controller("LibraryCtlr", function($scope, $http){
                     queue.push(track);
                 }
             }
+        }
+
+        items.rate_track = {
+            name: "Rate track...",
+            items: $scope.rating_menu
         }
 
         //Create the context menu
@@ -402,7 +403,6 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
     $scope.incPlayCount = function(track){
-      console.log("inc");
       var tid = track.t._id;
       var body = { id: loggedinuser._id };
       var url = 'http://localhost:3000/api/tracks/' + tid + '/playcount';
@@ -418,7 +418,6 @@ app.controller("LibraryCtlr", function($scope, $http){
 
     $scope.toggleDownload = function(element){
       var tid = element.track.t._id;
-      console.log(element.track);
       var body = { id: loggedinuser._id };
       var url = 'http://localhost:3000/api/tracks/' + tid + '/downloaded';
       $http.post(url, body).then(function(response){
