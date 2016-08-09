@@ -46,4 +46,14 @@ router.post('/:id/playcount', function(req, res, next) {
   });
 });
 
+router.post('/:id/downloaded', function(req, res, next) {
+  db.toggleDLStatus(req.params.id, req.body.id, function(track, error){
+    if (error){
+			res.json(error);
+		} else {
+		  res.json({"success":"download status toggled"});
+		}
+  });
+});
+
 module.exports = router;
