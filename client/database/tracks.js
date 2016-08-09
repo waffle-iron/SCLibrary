@@ -49,7 +49,23 @@ module.exports = function(db){
               done(results);
           }
       });
+    }
 
+    module.toggleDLStatus = function(tid, uid, done){
+      db.cypher({
+          query: 'MATCH (u:Channel)-[r:LIKES_TRACK]->(t:Track) ' +
+                 'WHERE id(t) = ' + parseInt(tid) + ' ' +
+                 'AND id(u) = ' + parseInt(uid) + ' ' +
+                 'SET r.downloaded = not(r.downloaded) ' +
+                 'RETURN r'
+      }, function(error, results){
+          if (error){
+              done(null, error);
+          }
+          else {
+              done(results);
+          }
+      });
     }
 
     return module;

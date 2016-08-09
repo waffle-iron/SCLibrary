@@ -43,5 +43,6 @@ module.exports = {
     getConnectedChannels: accounts.getConnectedChannels,
     getTrack: tracks.getTrack,
     rateTrack: tracks.rateTrack,
-    incPlayCount: tracks.incPlayCount
+    incPlayCount: tracks.incPlayCount,
+    toggleDLStatus: tracks.toggleDLStatus
 }

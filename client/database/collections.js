@@ -74,7 +74,7 @@ module.exports = function(db){
         query = query + 'waveform_url: {waveform_url} }) ' +
                     'MERGE (c:Channel { name: {channel} }) ' +
                     'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
-                    'CREATE (u)-[r1:LIKES_TRACK { created_at: {date_liked}, play_count: 0, rating: 0 }]->(t) ' +
+                    'CREATE (u)-[r1:LIKES_TRACK { created_at: {date_liked}, play_count: 0, rating: 0, downloaded: false }]->(t) ' +
                     'CREATE (c)-[r2:UPLOADED]->(t) ' +
                     'RETURN u, r1, c, r2, t';
 
