@@ -266,20 +266,22 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
     $scope.updateMenu = function(){
-        //Destroy the current context menu
+        // Destroy the current context menu
         $.contextMenu( 'destroy' );
 
+        // Initialize rate track menu
         $scope.buildRateTrackMenu();
 
-        //These options belong in every context
-        var items = {
-            add_playlist: {
-                name: "Add to playlist...",
-                items: $scope.playlist_menu
-            }
-        };
+        // Create object to hold context menu items
+        var items = {};
 
-        //Include delete_playlist option when in a playlist
+        // Include add_playlist option in every context
+        items.add_playlist = {
+          name: "Add to playlist...",
+          items: $scope.playlist_menu
+        }
+
+        // Include delete_playlist option when in a playlist context
         if ($scope.context == 'playlists'){
             items.delete_playlist = {
                     name: "Delete from playlist",
@@ -287,7 +289,7 @@ app.controller("LibraryCtlr", function($scope, $http){
                 };
         }
 
-        //Include delete_queue when in queue, add_queue when not inside queue
+        // Include delete_queue when in queue context, add_queue when not in queue context
         if ($scope.context == 'queue'){
             items.delete_queue = {
                 name: "Delete from queue",
@@ -314,12 +316,13 @@ app.controller("LibraryCtlr", function($scope, $http){
             }
         }
 
+        // Include rate_track option in every context
         items.rate_track = {
             name: "Rate track...",
             items: $scope.rating_menu
         }
 
-        //Create the context menu
+        // Create the context menu
         $.contextMenu({
             selector: '.track-row',
             items: items,
@@ -332,7 +335,6 @@ app.controller("LibraryCtlr", function($scope, $http){
                   .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
             },
         });
-
     }
 
     $scope.buildAddToPlaylistMenu = function(result){
