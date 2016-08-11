@@ -473,6 +473,20 @@ app.controller("LibraryCtlr", function($scope, $http){
       return track.t.properties.purchase_url !== undefined;
     }
 
+    $scope.truncatePurchaseUrl = function(purchase_url){
+      if (!purchase_url) {
+        return "";
+      } else {
+        var url_object = new URL(purchase_url);
+        var domain = url_object.host;
+        if (domain.substring(0,3) === 'www') {
+          return domain.substring(4);
+        } else {
+          return domain;
+        }
+      }
+    }
+
 });
 
 function highlightRow(track){
