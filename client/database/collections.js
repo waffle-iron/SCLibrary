@@ -1,3 +1,5 @@
+const url = require('url');
+
 module.exports = function(db){
 
     var module = {};
@@ -59,8 +61,9 @@ module.exports = function(db){
     }
 
     function addTrack(user, item, done){
-
         var track = item.track;
+
+        if (track.purchase_url) track.purchase_url_domain = truncatePurchaseUrl(track.purchase_url);
 
         var query = 'MATCH (u:Channel {name: {name}}) ' +
                     'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
@@ -68,7 +71,7 @@ module.exports = function(db){
         if (track.genre != null)
             query += 'genre: {genre}, ';
         if (track.purchase_url != null)
-            query += 'purchase_url: {purchase_url}, ';
+            query += 'purchase_url: {purchase_url}, purchase_url_domain: {purchase_url_domain}, ';
         if (track.artwork_url != null)
             query += 'artwork_url: {artwork_url}, ';
         query = query + 'waveform_url: {waveform_url} }) ' +
@@ -88,6 +91,7 @@ module.exports = function(db){
                 tid: track.id,
                 url: track.permalink_url,
                 purchase_url: track.purchase_url,
+                purchase_url_domain: track.purchase_url_domain,
                 tag_list: track.tag_list,
                 artwork_url: track.artwork_url,
                 created_at: track.created_at,
@@ -133,13 +137,15 @@ module.exports = function(db){
     function addPlaylistTracksRecurse(tracks, index, done){
         var track = tracks[index];
 
+        if (track.purchase_url) track.purchase_url_domain = truncatePurchaseUrl(track.purchase_url);
+
         var query = 'MATCH (p:SCPlaylist {scid: {pid}}) ' +
                     'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
                     'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
         if (track.genre != null)
             query += 'genre: {genre}, ';
         if (track.purchase_url != null)
-            query += 'purchase_url: {purchase_url}, ';
+            query += 'purchase_url: {purchase_url}, purchase_url_domain: {purchase_url_domain}, ';
         if (track.artwork_url != null)
             query += 'artwork_url: {artwork_url}, ';
         query = query + 'waveform_url: {waveform_url} }) ' +
@@ -159,6 +165,7 @@ module.exports = function(db){
                 tid: track.id,
                 url: track.permalink_url,
                 purchase_url: track.purchase_url,
+                purchase_url_domain: track.purchase_url_domain,
                 tag_list: track.tag_list,
                 artwork_url: track.artwork_url,
                 created_at: track.created_at,
@@ -321,3 +328,17 @@ module.exports = function(db){
     };
     return module;
 };
+
+truncatePurchaseUrl = function(purchase_url){
+  if (!purchase_url) {
+    return "";
+  } else {
+    var url_object = url.parse(purchase_url);
+    var domain = url_object.host;
+    if (domain.substring(0,3) === 'www') {
+      return domain.substring(4);
+    } else {
+      return domain;
+    }
+  }
+}
