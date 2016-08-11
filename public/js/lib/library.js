@@ -479,3 +479,12 @@ function highlightRow(track){
   $('.curr-playing').removeClass('curr-playing');
   $('*[data-id="' + track.t._id + '"]').addClass('curr-playing');
 }
+
+function updateCollection(){
+  var scuid = loggedinuser.properties.scuid
+  var url = "http://localhost:3000/api/users/" + scuid + "/collection/update";
+
+  $.post(url, function( data ) {
+    location.reload();
+  });
+}

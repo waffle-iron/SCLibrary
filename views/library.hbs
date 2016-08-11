@@ -14,10 +14,14 @@
             <div class="modal-body">
                 <form role="form">
                     <p>
-                        <a href="javascript:toggleAuto();" id="autoplay-toggle" class="toggled"></a><a href="javascript:toggleAuto();"> Autoplay</a></p>
+                        <a href="javascript:toggleAuto();" id="autoplay-toggle" class="toggled"></a><a href="javascript:toggleAuto();"> Autoplay</a>
+                    </p>
                     <p>
-                        <a href="javascript:toggleShuffle();" id="shuffle-toggle"></a><a href="javascript:toggleShuffle();"> Shuffle</a></p>
-                    <p class="text-center"><a class="btn">Update Library</a></p>
+                        <a href="javascript:toggleShuffle();" id="shuffle-toggle"></a><a href="javascript:toggleShuffle();"> Shuffle</a>
+                    </p>
+                    <p class="text-center">
+                        <a onclick="updateCollection();" class="btn">Update Library</a>
+                    </p>
                 </form>
             </div>
             <div class="modal-footer">
