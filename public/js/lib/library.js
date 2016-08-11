@@ -335,8 +335,7 @@ app.controller("LibraryCtlr", function($scope, $http){
         }
       }
 
-      // Create the context menu
-      $.contextMenu({
+      var settings = {
         selector: '.track-row[data-purchase="false"]',
         items: items,
         reposition: true,
@@ -346,11 +345,14 @@ app.controller("LibraryCtlr", function($scope, $http){
           // http://api.jqueryui.com/position/
           $menu.css('display', 'block')
             .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
-        },
-      });
+        }
+      };
 
-      // Include link to purchase url
-      items.purchase_link = {
+      // Create the context menu
+      $.contextMenu(settings);
+
+      // Include link to purchase url and change selector for tracks with purchase_url
+      settings.items.purchase_link = {
         name: "Download page",
         callback: function(key, opt){
           var track = JSON.parse(opt.$trigger[0].dataset.track);
@@ -358,20 +360,10 @@ app.controller("LibraryCtlr", function($scope, $http){
           window.open(url);
         }
       }
+      settings.selector = '.track-row[data-purchase="true"]';
 
       // Create the context menu
-      $.contextMenu({
-        selector: '.track-row[data-purchase="true"]',
-        items: items,
-        reposition: true,
-        autoHide: true,
-        determinePosition: function($menu){
-          // Position using jQuery.ui.position
-          // http://api.jqueryui.com/position/
-          $menu.css('display', 'block')
-            .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
-        },
-      });
+      $.contextMenu(settings);
     }
 
     $scope.buildAddToPlaylistMenu = function(result){
