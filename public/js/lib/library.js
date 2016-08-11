@@ -266,75 +266,112 @@ app.controller("LibraryCtlr", function($scope, $http){
     }
 
     $scope.updateMenu = function(){
-        // Destroy the current context menu
-        $.contextMenu( 'destroy' );
+      // Destroy the current context menu
+      $.contextMenu( 'destroy' );
 
-        // Initialize rate track menu
-        $scope.buildRateTrackMenu();
+      // Initialize rate track menu
+      $scope.buildRateTrackMenu();
 
-        // Create object to hold context menu items
-        var items = {};
+      // Create object to hold context menu items
+      var items = {};
 
-        // Include add_playlist option in every context
-        items.add_playlist = {
-          name: "Add to playlist...",
-          items: $scope.playlist_menu
-        }
+      // Include add_playlist option in every context
+      items.add_playlist = {
+        name: "Add to playlist...",
+        items: $scope.playlist_menu
+      }
 
-        // Include delete_playlist option when in a playlist context
-        if ($scope.context == 'playlists'){
-            items.delete_playlist = {
-                    name: "Delete from playlist",
-                    callback: $scope.delete_func
-                };
-        }
+      // Include delete_playlist option when in a playlist context
+      if ($scope.context == 'playlists'){
+        items.delete_playlist = {
+          name: "Delete from playlist",
+          callback: $scope.delete_func
+        };
+      }
 
-        // Include delete_queue when in queue context, add_queue when not in queue context
-        if ($scope.context == 'queue'){
-            items.delete_queue = {
-                name: "Delete from queue",
-                callback: function(key, opt){
-                    var track = JSON.parse(opt.$trigger[0].dataset.track);
-                    var i = 0;
-                    for (i = 0; i < queue.length; i++){
-                        if (track.t._id == queue[i].t._id){
-                            queue.splice(i, 1);
-                            $scope.display = queue.splice(i, 1);
-                            break;
-                        }
-                    }
-                }
-            };
-        }
-        else {
-            items.add_queue = {
-                name: "Add to Queue",
-                callback: function(key, opt){
-                    var track = JSON.parse(opt.$trigger[0].dataset.track);
-                    queue.push(track);
-                }
+      // Include delete_queue when in queue context, add_queue when not in queue context
+      if ($scope.context == 'queue'){
+        items.delete_queue = {
+          name: "Delete from queue",
+          callback: function(key, opt){
+            var track = JSON.parse(opt.$trigger[0].dataset.track);
+            var i = 0;
+            for (i = 0; i < queue.length; i++){
+              if (track.t._id == queue[i].t._id){
+                queue.splice(i, 1);
+                $scope.display = queue.splice(i, 1);
+                break;
+              }
             }
+          }
+        };
+      }
+      else {
+        items.add_queue = {
+          name: "Add to Queue",
+          callback: function(key, opt){
+            var track = JSON.parse(opt.$trigger[0].dataset.track);
+            queue.push(track);
+          }
         }
+      }
 
-        // Include rate_track option in every context
-        items.rate_track = {
-            name: "Rate track...",
-            items: $scope.rating_menu
+      // Include rate_track option in every context
+      items.rate_track = {
+        name: "Rate track...",
+        items: $scope.rating_menu
+      }
+
+      // Include separator
+      items.sep1 = "---------";
+
+      // Include link to soundcloud page
+      items.soundcloud_page = {
+        name: "Soundcloud page",
+        callback: function(key, opt){
+          var track = JSON.parse(opt.$trigger[0].dataset.track);
+          var url = track.t.properties.url;
+          window.open(url);
         }
+      }
 
-        // Create the context menu
-        $.contextMenu({
-            selector: '.track-row',
-            items: items,
-            reposition: true,
-            autoHide: true,
-            determinePosition: function($menu){
-              // Position using jQuery.ui.position
-              // http://api.jqueryui.com/position/
-              $menu.css('display', 'block')
-                  .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
-            },
-        });
+      // Create the context menu
+      $.contextMenu({
+        selector: '.track-row[data-purchase="false"]',
+        items: items,
+        reposition: true,
+        autoHide: true,
+        determinePosition: function($menu){
+          // Position using jQuery.ui.position
+          // http://api.jqueryui.com/position/
+          $menu.css('display', 'block')
+            .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
+        },
+      });
+
+      // Include link to purchase url
+      items.purchase_link = {
+        name: "Download page",
+        callback: function(key, opt){
+          var track = JSON.parse(opt.$trigger[0].dataset.track);
+          var url = track.t.properties.purchase_url;
+          window.open(url);
+        }
+      }
+
+      // Create the context menu
+      $.contextMenu({
+        selector: '.track-row[data-purchase="true"]',
+        items: items,
+        reposition: true,
+        autoHide: true,
+        determinePosition: function($menu){
+          // Position using jQuery.ui.position
+          // http://api.jqueryui.com/position/
+          $menu.css('display', 'block')
+            .position({ my: "right bottom", at: "left top", of: this, collision: "fit"});
+        },
+      });
     }
 
     $scope.buildAddToPlaylistMenu = function(result){
@@ -430,6 +467,10 @@ app.controller("LibraryCtlr", function($scope, $http){
       }, function(error){
         console.log(error);
       });
+    }
+
+    $scope.hasPurchaseUrl = function(track){
+      return track.t.properties.purchase_url !== undefined;
     }
 
 });
