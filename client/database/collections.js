@@ -64,7 +64,7 @@ module.exports = function(db){
 
         var query = 'MATCH (u:Channel {name: {name}}) ' +
                     'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
-                    'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
+                    'url: {url}, tag_list: {tag_list}, created_at: {created_at}, downloadable: {downloadable}, ';
         if (track.genre != null)
             query += 'genre: {genre}, ';
         if (track.purchase_url != null)
@@ -91,6 +91,7 @@ module.exports = function(db){
                 tag_list: track.tag_list,
                 artwork_url: track.artwork_url,
                 created_at: track.created_at,
+                downloadable: track.downloadable,
                 waveform_url: track.waveform_url,
                 channel: track.user.username,
                 channel_url: track.user.permalink_url,
