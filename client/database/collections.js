@@ -63,6 +63,8 @@ module.exports = function(db){
     function addTrack(user, item, done){
         var track = item.track;
 
+        if (track.downloadable) track.purchase_url = track.permalink_url;
+
         if (track.purchase_url) track.purchase_url_domain = truncatePurchaseUrl(track.purchase_url);
 
         var query = 'MATCH (u:Channel {name: {name}}) ' +
@@ -136,6 +138,8 @@ module.exports = function(db){
 
     function addPlaylistTracksRecurse(tracks, index, done){
         var track = tracks[index];
+
+        if (track.downloadable) track.purchase_url = track.permalink_url;
 
         if (track.purchase_url) track.purchase_url_domain = truncatePurchaseUrl(track.purchase_url);
 
