@@ -45,7 +45,7 @@ router.post('/:id/approve', function(req, res, next) {
   							if (error) {
        						res.json(error);
       					}
-  							db.addPlaylistTracks(playlists, function(complete, error){
+  							db.addPlaylistTracks(db_user, playlists, function(complete, error){
     							if (error) {
        							res.json(error);
     							}

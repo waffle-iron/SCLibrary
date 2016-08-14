@@ -6,6 +6,7 @@ var database = require('./database.js');
 
 //used for get requests to soundcloud API
 function getRequest(href, done){
+  console.log(href);
     var options = {
         url: href,
         method: 'GET'
@@ -55,7 +56,7 @@ function getCollection(user, done){
 function getCollectionRecurse(user, collection, next_href, done){
     getRequest(next_href, function(response){
         var updatedCollection = collection.concat(response.collection);
-        if (response.next_href){
+        if (response.next_href && collection.length == 0){
             var href = response.next_href + '&client_id=' + config.auth.client_id;
             database.checkExistence(user.id, response.collection[0], function(found, error){
                 if (error)
@@ -67,7 +68,6 @@ function getCollectionRecurse(user, collection, next_href, done){
             });
         }
         else {
-            console.log("done grabbing collection");
             done(updatedCollection);
         }
     });
@@ -83,7 +83,7 @@ function getPlaylists(pids, done){
 }
 
 function getPlaylistsRecurse(pids, playlists, index, done){
-    var href = "http://api.soundcloud.com/playlists/" + pids[index] + "?client_id=" + config.auth.client_id;
+    var href = "http://api-v2.soundcloud.com/playlists/" + pids[index].id + "?client_id=" + config.auth.client_id;
 
     getRequest(href, function(response, error){
         if (error){
@@ -91,13 +91,13 @@ function getPlaylistsRecurse(pids, playlists, index, done){
             done(null, error);
         }
         else {
+            response.date_liked = pids[index].date_liked;
             playlists.push(response);
             index++;
             if (index < pids.length){
                 getPlaylistsRecurse(pids, playlists, index, done);
             }
             else{
-                console.log("done grabbing playlists");
                 done(playlists);
             }
         }
@@ -110,7 +110,7 @@ function getTrack(tid, done){
 }
 
 function getPlaylist(pid, done){
-    var href = "http://api.soundcloud.com/playlists/" + pid + "?client_id=" + config.auth.client_id;
+    var href = "http://api-v2.soundcloud.com/playlists/" + pid + "?client_id=" + config.auth.client_id;
     getRequest(href, done);
 }
 

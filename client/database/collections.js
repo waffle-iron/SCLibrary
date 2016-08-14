@@ -43,7 +43,11 @@ module.exports = function(db){
                 else {
                     addPlaylist(user, item, function(success, error){
                         if (success){
-                            pids.push(item.playlist.id);
+                            var playlist = {
+                              id: item.playlist.id,
+                              date_liked: item.created_at
+                            }
+                            pids.push(playlist);
                             index++;
                             if (index < collection.length - 1) {
                                 addItems(user, collection, index, pids, done);
@@ -79,8 +83,9 @@ module.exports = function(db){
         query = query + 'waveform_url: {waveform_url} }) ' +
                     'MERGE (c:Channel { name: {channel} }) ' +
                     'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
-                    'CREATE (u)-[r1:LIKES_TRACK { created_at: {date_liked}, play_count: 0, rating: 0, downloaded: false }]->(t) ' +
-                    'CREATE (c)-[r2:UPLOADED]->(t) ' +
+                    'MERGE (u)-[r1:LIKES_TRACK]->(t) ' +
+                    'ON CREATE SET r1.created_at = {date_liked}, r1.play_count = 0, r1.rating = 0, r1.downloaded = false ' +
+                    'MERGE (c)-[r2:UPLOADED]->(t) ' +
                     'RETURN u, r1, c, r2, t';
 
         db.cypher({
@@ -116,7 +121,7 @@ module.exports = function(db){
 
     }
 
-    module.addPlaylistTracks = function(playlists, done){
+    module.addPlaylistTracks = function(user, playlists, done){
 
         if (playlists.length === 0){
             done(true);
@@ -128,72 +133,87 @@ module.exports = function(db){
                 var ptracks = playlists[i].tracks;
                 for (var j = 0; j < ptracks.length; j++){
                     ptracks[j].pid = playlists[i].id;
+                    ptracks[j].date_liked = playlists[i].date_liked;
                 }
                 var updatedtracks = tracks.concat(ptracks);
                 tracks = updatedtracks;
             }
-            addPlaylistTracksRecurse(tracks, 0, done);
+            addPlaylistTracksRecurse(user, tracks, 0, done);
         }
     };
 
-    function addPlaylistTracksRecurse(tracks, index, done){
+    function addPlaylistTracksRecurse(user, tracks, index, done){
         var track = tracks[index];
 
-        if (track.downloadable) track.purchase_url = track.permalink_url;
+        if (track.user){
+          if (track.downloadable) track.purchase_url = track.permalink_url;
 
-        if (track.purchase_url) track.purchase_url_domain = truncatePurchaseUrl(track.purchase_url);
+          if (track.purchase_url) track.purchase_url_domain = truncatePurchaseUrl(track.purchase_url);
 
-        var query = 'MATCH (p:SCPlaylist {scid: {pid}}) ' +
-                    'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
-                    'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
-        if (track.genre != null)
-            query += 'genre: {genre}, ';
-        if (track.purchase_url != null)
-            query += 'purchase_url: {purchase_url}, purchase_url_domain: {purchase_url_domain}, ';
-        if (track.artwork_url != null)
-            query += 'artwork_url: {artwork_url}, ';
-        query = query + 'waveform_url: {waveform_url} }) ' +
-                    'MERGE (c:Channel { name: {channel} }) ' +
-                    'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
-                    'CREATE (p)-[r1:CONTAINS]->(t) ' +
-                    'CREATE (c)-[r2:UPLOADED]->(t) ' +
-                    'RETURN p, r1, c, r2, t';
+          var query = 'MATCH (p:SCPlaylist {scid: {pid}}), (u:Channel {name: {name}}) ' +
+                      'MERGE (t:Track { name: {title}, duration: {duration}, scid: {tid}, ' +
+                      'url: {url}, tag_list: {tag_list}, created_at: {created_at}, ';
+          if (track.genre != null)
+              query += 'genre: {genre}, ';
+          if (track.purchase_url != null)
+              query += 'purchase_url: {purchase_url}, purchase_url_domain: {purchase_url_domain}, ';
+          if (track.artwork_url != null)
+              query += 'artwork_url: {artwork_url}, ';
+          query = query + 'waveform_url: {waveform_url} }) ' +
+                      'MERGE (c:Channel { name: {channel} }) ' +
+                      'ON MATCH SET c.channel_url = {channel_url}, c.avatar_url = {avatar_url}, c.scid = {uid} ' +
+                      'MERGE (u)-[r1:LIKES_TRACK]->(t) ' +
+                      'ON CREATE SET r1.created_at = {date_liked}, r1.play_count = 0, r1.rating = 0, r1.downloaded = false ' +
+                      'MERGE (p)-[r2:CONTAINS]->(t) ' +
+                      'MERGE (c)-[r3:UPLOADED]->(t) ' +
+                      'RETURN p, r1, r2, c, r3, t';
 
-        db.cypher({
-            query: query,
-            params: {
-                pid: track.pid,
-                title: track.title,
-                duration: track.duration,
-                genre: track.genre,
-                tid: track.id,
-                url: track.permalink_url,
-                purchase_url: track.purchase_url,
-                purchase_url_domain: track.purchase_url_domain,
-                tag_list: track.tag_list,
-                artwork_url: track.artwork_url,
-                created_at: track.created_at,
-                waveform_url: track.waveform_url,
-                channel: track.user.username,
-                channel_url: track.user.permalink_url,
-                avatar_url: track.user.avatar_url,
-                uid: track.user.id
-            },
-        }, function(error, results){
-            if (error){
-                console.log(error);
-                done(false, error);
-            }
-            else {
-                console.log(results);
+          db.cypher({
+              query: query,
+              params: {
+                  name: user.properties.name,
+                  pid: track.pid,
+                  title: track.title,
+                  duration: track.duration,
+                  genre: track.genre,
+                  tid: track.id,
+                  url: track.permalink_url,
+                  purchase_url: track.purchase_url,
+                  purchase_url_domain: track.purchase_url_domain,
+                  tag_list: track.tag_list,
+                  artwork_url: track.artwork_url,
+                  created_at: track.created_at,
+                  waveform_url: track.waveform_url,
+                  date_liked: track.date_liked,
+                  channel: track.user.username,
+                  channel_url: track.user.permalink_url,
+                  avatar_url: track.user.avatar_url,
+                  uid: track.user.id
+              },
+          }, function(error, results){
+              if (error){
+                  console.log(error);
+                  done(false, error);
+              }
+              else {
                 index++;
                 //Is this off by 1? too baked.
                 if (index < tracks.length - 1)
-                    addPlaylistTracksRecurse(tracks, index, done);
+                    addPlaylistTracksRecurse(user, tracks, index, done);
                 else
                     done(true);
-            }
-        });
+              }
+          });
+        } else {
+          index++;
+          //Is this off by 1? too baked.
+          if (index < tracks.length - 1)
+              addPlaylistTracksRecurse(user, tracks, index, done);
+          else
+              done(true);
+        }
+
+
     }
 
 
@@ -238,9 +258,7 @@ module.exports = function(db){
                 done(true);
             }
         });
-
     }
-
 
     // Check for the existence of a [:LIKES] relationship between a channel and a track.
     // Return true if it exists, false if it does not.
@@ -262,7 +280,6 @@ module.exports = function(db){
                     // If no match, create an entry for the user
                     if (results.length === 0) {
                         done(false);
-                        //TODO: Update access token
                     }
                     else {
                         done(true);
@@ -286,12 +303,9 @@ module.exports = function(db){
                 else {
                     // If no match, create an entry for the user
                     if (results.length === 0) {
-                        console.log("No relationship found.");
                         done(false);
-                        //TODO: Update access token
                     }
                     else {
-                        console.log("Relationship already exists.");
                         done(true);
                     }
                 }

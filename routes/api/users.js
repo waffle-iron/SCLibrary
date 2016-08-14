@@ -30,12 +30,10 @@ router.get('/:id/collection', function(req, res, next) {
 router.post('/:id/collection/update', function(req, res, next) {
 	var scuid = req.params.id;
 	sc.getUser(scuid, function(sc_user, error){
-		console.log(sc_user);
 		if (error){
 			res.json(error);
 		}
 		db.getUserByScuid(scuid, function(db_user, error){
-			console.log(db_user);
 			if (error) {
 				res.json(error);
 			}
@@ -51,7 +49,7 @@ router.post('/:id/collection/update', function(req, res, next) {
 						if (error) {
 							res.json(error);
 						}
-						db.addPlaylistTracks(playlists, function(complete, error){
+						db.addPlaylistTracks(db_user, playlists, function(complete, error){
 							if (error) {
 								res.json(error);
 							}
