@@ -7,43 +7,37 @@ var ensureLoggedOut = require('../middleware/ensureLoggedOut');
 
 /* GET login page. */
 router.get('/', ensureLoggedOut, function(req, res, next) {
-  res.render('login', {msg: null});
+  res.render('login', {
+    msg: null
+  });
 });
 
-/* GET login/submit page. */
-router.get('/submit/', ensureLoggedOut, function(req, res, next) {
+/* POST login/submit page. */
+router.post('/submit/', ensureLoggedOut, function(req, res, next) {
+  var name = req.body.name;
+  var password = req.body.password;
 
-  var name = req.query.name;
-  var password = req.query.password;
-
-  db.loginToAccount(name, password, function(results, error){
-    if (error){
-      var message = 'There was an error when trying to login to your account.';
-      res.render('login', {msg: message});
-    }
-    if (!results.account){
-      var message = 'We were not able to find that account.';
-      res.render('login', {msg: message});
-    }
-    if (results.users.length > 0){
-      console.log(results);
+  db.loginToAccount(name, password, function(results, error) {
+    var message;
+    if (error) {
+      message = 'There was an error when trying to login to your account.';
+    } else if (!results.account) {
+      message = 'We were not able to find that account.';
+    } else if (results.users.length > 0) {
       req.session.account = results.account;
-      if (results.account.a.properties.approved == true){
+      if (results.account.a.properties.approved == true) {
         req.session.user = results.users[0].u;
         res.redirect('/library/');
+      } else {
+        message = 'This account has not yet been approved.';
       }
-      else {
-        var message = 'This account has not yet been approved.';
-        res.render('login', {msg: message});
-      }
-      
+    } else {
+      message = "You don't have any soundcloud accounts associated with your username";
     }
-    else {
-      var message = "You don't have any soundcloud accounts associated with your username";
-      res.render('login', {msg: message});
-    }
+    res.render('login', {
+      msg: message
+    });
   })
-  
 });
 
 module.exports = router;
