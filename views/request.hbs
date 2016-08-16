@@ -3,10 +3,10 @@
 
 <div class="container">
 	<div class="row full-center">
-			<div class="col-md-8" id="signup-panel">
+			<div class="col-md-6" id="request-panel">
 					<div class="login-panel panel panel-default login-panel">
 							<div class="panel-heading text-center">
-									<h3 class="panel-title">Sign Up</h3>
+									<h3 class="panel-title">Request Account</h3>
 							</div>
 							<div class="panel-body">
 								<div class="banner">
@@ -14,7 +14,7 @@
 										{{msg}}
 									{{/if}}
 								</div>
-								<form action="/signup/submit" method="post" class="simple-form">
+								<form action="/request/submit" method="post" class="simple-form">
 												<div class="form-group">
 														<input class="form-control" placeholder="Name" name="name" type="text" autofocus>
 												</div>
@@ -35,7 +35,7 @@
 
 												<button type="submit" value="Submit" class="btn btn-success btn-block">Submit</button>
 												<hr>
-												<a href="javascript:loadLogin();" class="btn btn-success btn-block">Login</a>
+												<a href="/login/" class="btn btn-success btn-block">Login</a>
 									</form>
 							</div>
 					</div>
@@ -45,4 +45,4 @@
 
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 
-<script src="/js/login-signup.js"></script>
+<script src="/js/login-request.js"></script>

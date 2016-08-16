@@ -17,8 +17,8 @@ module.exports = function(db) {
         if (results.length === 0) {
           //Account does not exist, create a new one
           db.cypher({
-            query: 'CREATE (a:Account {username:{name}, password:{pw}, type:"user", approved:"false" })-[:REQUESTS]->' +
-              '(r:Request {username:{sc_name}, complete:"false"}) ' +
+            query: 'CREATE (a:Account {username:{name}, password:{pw}, type:"user", approved:false })-[:REQUESTS]->' +
+              '(r:Request {username:{sc_name}, complete:false}) ' +
               'RETURN a, r',
             params: {
               name: username,

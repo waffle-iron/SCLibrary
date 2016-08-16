@@ -23,14 +23,12 @@ router.post('/submit/', ensureLoggedOut, function(req, res, next) {
       message = 'There was an error when trying to login to your account.';
     } else if (!results.account) {
       message = 'We were not able to find that account.';
+    } else if (!results.account.a.properties.approved) {
+      message = 'This account has not yet been approved.';
     } else if (results.users.length > 0) {
       req.session.account = results.account;
-      if (results.account.a.properties.approved == true) {
-        req.session.user = results.users[0].u;
-        res.redirect('/library/');
-      } else {
-        message = 'This account has not yet been approved.';
-      }
+      req.session.user = results.users[0].u;
+      res.redirect('/library/');
     } else {
       message = "You don't have any soundcloud accounts associated with your username";
     }

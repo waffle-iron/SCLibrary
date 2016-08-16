@@ -685,12 +685,12 @@ div#behind-vid {
     z-index: -101;
 };
 
-#signup-panel,
+#request panel,
 #login-panel {
   opacity: 0.0;
   transition: opacity 1s ease .2s;
 }
-#signup-panel.loaded,
+#request panel.loaded,
 #login-panel.loaded {
   opacity: 1.0;
 }

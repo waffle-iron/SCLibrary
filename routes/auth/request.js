@@ -5,14 +5,14 @@ var db = require('../../client/database');
 
 var ensureLoggedOut = require('../middleware/ensureLoggedOut');
 
-/* GET signup page. */
+/* GET request page. */
 router.get('/', ensureLoggedOut, function(req, res, next) {
-  res.render('signup', {
+  res.render('request', {
     msg: null
   });
 });
 
-/* GET signup/submit page. */
+/* GET request/submit page. */
 router.post('/submit', ensureLoggedOut, function(req, res, next) {
   var name = req.body.name;
   var password = req.body.password;
@@ -26,7 +26,7 @@ router.post('/submit', ensureLoggedOut, function(req, res, next) {
     } else if (created) {
       var message = 'Your account was requested.';
     }
-    res.render('signup', {
+    res.render('request', {
       msg: message
     });
   })
