@@ -6,7 +6,6 @@ var database = require('./database.js');
 
 // Get requests to soundcloud API
 function getRequest(href, done){
-  console.log(href);
   var options = {
     url: href,
     method: 'GET'
@@ -99,12 +98,12 @@ function getPlaylistsRecurse(pids, playlists, index, done){
         if (!tracks[i].user) {
           incomplete_track_ids.push(tracks[i].id);
         } else {
+            
           complete_tracks.push(tracks[i]);
         }
       }
       // Get the incomplete tracks with another API call
       getTracksByID(incomplete_track_ids, function(more_tracks){
-        // Replace the tracks object in the playlist
         playlist.tracks = complete_tracks.concat(more_tracks);
         // Give the playlist it's date_liked for when we add these tracks to the database
         playlist.date_liked = pids[index].date_liked;
@@ -133,9 +132,9 @@ function getTracksByID(tids, done){
     var id_string = "";
     for (var i = 0; i < tids.length; i++){
       if (i == 0){
-        id_string += tids[i].id;
+        id_string += tids[i];
       } else {
-        id_string += "%2C" + tids[i].id;
+        id_string += "%2C" + tids[i];
       }
     }
     var href = "https://api-v2.soundcloud.com/tracks?ids=" + id_string + "&client_id=" + config.auth.client_id;
