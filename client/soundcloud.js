@@ -52,7 +52,7 @@ function getCollectionRecurse(user, collection, next_href, done){
       var href = response.next_href + '&client_id=' + config.auth.client_id;
       // Make sure the first track doesn't already have an existing relationship with the user before continuing
       // This is so that we don't make unnecessary API calls
-      // Warning: If user unlikes/relikes a track, we may stop adding tracks to the collection prematurely
+      // TODO: fix possible glitch - if user unlikes/relikes a track, we may stop adding tracks to the collection prematurely
       database.checkExistence(user.id, response.collection[0], function(found, error){
         if (error) {
           done(null, error);
