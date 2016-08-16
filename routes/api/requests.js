@@ -22,50 +22,48 @@ router.post('/:id/approve', function(req, res, next) {
   var rid = req.params.id;
 
   db.getRequest(rid, function(request, error) {
-    if (error)
+    if (error) {
       res.json(error);
-    else {
-      //TODO: make this work with multiple requests
-      var username = request[0].r.properties.username;
-      sc.getUserFromUsername(username, function(sc_user, error) {
+    }
+    //TODO: make this work with multiple requests
+    var username = request[0].r.properties.username;
+    sc.getUserFromUsername(username, function(sc_user, error) {
+      if (error) {
+        res.json(error);
+      }
+      db.addUser(sc_user, function(db_user, error) {
         if (error) {
           res.json(error);
         }
-        db.addUser(sc_user, function(db_user, error) {
+        sc.getCollection(sc_user, function(collection, error) {
           if (error) {
             res.json(error);
           }
-          sc.getCollection(sc_user, function(collection, error) {
+          db.addCollection(db_user, collection, function(error, pids) {
             if (error) {
               res.json(error);
             }
-            db.addCollection(db_user, collection, function(error, pids) {
+            sc.getPlaylists(pids, function(playlists, error) {
               if (error) {
                 res.json(error);
               }
-              sc.getPlaylists(pids, function(playlists, error) {
+              db.addPlaylistTracks(db_user, playlists, function(complete, error) {
                 if (error) {
                   res.json(error);
                 }
-                db.addPlaylistTracks(db_user, playlists, function(complete, error) {
+                db.approveRequest(aid, rid, db_user._id, function(request, error) {
                   if (error) {
                     res.json(error);
+                  } else {
+                    res.json(request);
                   }
-                  var uid = db_user._id;
-                  db.approveRequest(aid, rid, uid, function(request, error) {
-                    if (error) {
-                      res.json(error);
-                    } else {
-                      res.json(request);
-                    }
-                  });
                 });
               });
             });
           });
         });
       });
-    }
+    });
   });
 });
 
