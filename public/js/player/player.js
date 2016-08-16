@@ -153,16 +153,25 @@ setInterval(function() {
   if (refresh) waveform();
 }, options.refresh_rate);
 
+var sub, lows, mids1, mids2, highs1, highs2;
+
+function composite(a, b, c, d, e, f, g) {
+  var num = (a * kick) + (b * lows) + (c * mids2) + (d * mids1) + (e * highs3) + (f * highs2) + (g * highs1);
+  var dem = a + b + c + d + e + f + g;
+  return num / dem;
+}
+
 function waveform() {
   analyser.getByteFrequencyData(fd);
   document.getElementById('wf_box').innerHTML = "";
 
-  var highs1 = d3.mean(fd.slice(190, 250)) * options.height;
-  var highs2 = d3.mean(fd.slice(145, 188)) * options.height;
-  var mids1 = d3.mean(fd.slice(93, 140)) * options.height * .95;
-  var mids2 = d3.mean(fd.slice(55, 88)) * options.height * .9;
-  var lows = d3.mean(fd.slice(40, 50)) * options.height * .8;
-  var sub = d3.mean(fd.slice(0, 22)) * options.height * .7;
+  highs1 = d3.mean(fd.slice(201, 246)) * options.height;
+  highs2 = d3.mean(fd.slice(165, 190)) * options.height;
+  highs3 = d3.mean(fd.slice(135, 155)) * options.height;
+  mids1 = d3.mean(fd.slice(99, 102)) * options.height * .95;
+  mids2 = d3.mean(fd.slice(60, 63)) * options.height * .9;
+  lows = d3.mean(fd.slice(34, 37)) * options.height * .8;
+  kick = ((d3.mean(fd.slice(7, 9)) * options.height * .7) - 15) * 1.7;
 
   var data = [];
   var b = 33 - window_width;
@@ -203,14 +212,17 @@ function waveform() {
       return x_offset;
     })
     .attr("y", function(d, i) {
-      var y_offset = y(d * options.bar_height) / h;
-      if (i % 6 === 0) y_offset *= highs1;
-      if (i % 6 === 1) y_offset *= lows;
-      if (i % 6 === 2) y_offset *= mids2;
-      if (i % 6 === 3) y_offset *= highs2;
-      if (i % 6 === 4) y_offset *= sub;
-      if (i % 6 === 5) y_offset *= mids1;
-      return h - Math.pow(Math.max(y_offset, .01), 1.5);
+      var height = y(d * options.bar_height) / h;
+      if (i % 9 === 0) height *= composite(1, 0, 0, 0, 0, 0, 0);
+      if (i % 9 === 1) height *= composite(1, 1, 0, 0, 0, 0, 0);
+      if (i % 9 === 2) height *= composite(1, 4, 0, 0, 0, 0, 0);
+      if (i % 9 === 3) height *= composite(3, 2, 0, 0, 0, 0, 0);
+      if (i % 9 === 4) height *= composite(5, 1, 0, 0, 0, 0, 0);
+      if (i % 9 === 5) height *= composite(3, 2, 0, 0, 0, 0, 0);
+      if (i % 9 === 6) height *= composite(1, 4, 0, 0, 0, 0, 0);
+      if (i % 9 === 7) height *= composite(1, 1, 0, 0, 0, 0, 0);
+      if (i % 9 === 8) height *= composite(1, 0, 0, 0, 0, 0, 0);
+      return h - Math.pow(Math.max(height, .01), 1.5);
     })
     .attr("width", function(d) {
       var width = Math.max((w * max / 900 - 0.25), 0.1);
@@ -218,12 +230,15 @@ function waveform() {
     })
     .attr("height", function(d, i) {
       var height = y(d * options.bar_height) / h;
-      if (i % 6 === 0) height *= highs1;
-      if (i % 6 === 1) height *= lows;
-      if (i % 6 === 2) height *= mids2;
-      if (i % 6 === 3) height *= highs2;
-      if (i % 6 === 4) height *= sub;
-      if (i % 6 === 5) height *= mids1;
+      if (i % 9 === 0) height *= composite(1, 0, 0, 0, 0, 0, 0);
+      if (i % 9 === 1) height *= composite(1, 1, 0, 0, 0, 0, 0);
+      if (i % 9 === 2) height *= composite(1, 4, 0, 0, 0, 0, 0);
+      if (i % 9 === 3) height *= composite(3, 2, 0, 0, 0, 0, 0);
+      if (i % 9 === 4) height *= composite(5, 1, 0, 0, 0, 0, 0);
+      if (i % 9 === 5) height *= composite(3, 2, 0, 0, 0, 0, 0);
+      if (i % 9 === 6) height *= composite(1, 4, 0, 0, 0, 0, 0);
+      if (i % 9 === 7) height *= composite(1, 1, 0, 0, 0, 0, 0);
+      if (i % 9 === 8) height *= composite(1, 0, 0, 0, 0, 0, 0);
       return Math.pow(Math.max(height, .01), 1.5) + options.bar_y_offset;
     });
 }
