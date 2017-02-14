@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/mimen/SCLibrary.png?label=ready&title=Ready)](https://waffle.io/mimen/SCLibrary)
 # SCLibrary
 SCLibrary is a library interface for SoundCloud, making use of the SoundCloud API in order to provide an iTunes-like interface for browsing, sorting, and making playlists out of your SoundCloud favorites.
 
